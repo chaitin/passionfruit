@@ -70,6 +70,7 @@ class IPAspect(object):
 
 
 if __name__ == '__main__':
-  for item in IPAspect('data/test.ipa').run():
+  import sys
+  for item in IPAspect(sys.argv[1]).run():
+    # todo: template
     print(item['msg'])
-
