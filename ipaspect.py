@@ -16,6 +16,9 @@ import shutil
 import hashlib
 
 import scans
+import scans.flags
+import scans.infoleak
+import scans.metainfo
 
 
 def sha256_checksum(filename, block_size=65536):
@@ -38,7 +41,9 @@ class IPAspect(object):
 
   def run(self):
     self.extract()
-    for name in ['flags', 'infoleak']:
+
+    # todo: configurable checklist?
+    for name in ['flags', 'infoleak', 'metainfo']:
       yield from getattr(scans, name).scan(self.root)
 
 

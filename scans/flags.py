@@ -5,6 +5,8 @@ import plistlib
 from core.manifest import load as load_meta
 
 
+# dumb check, since there's no perfect macho loader in python
+
 def check_pie(filename):
   output = subprocess.check_output(['otool', '-hv', filename])
   if b'PIE' in output:

@@ -1,6 +1,11 @@
 import os
 
-from . import flags, infoleak, metainfo
+
+INFO = 0
+SECURE = 0
+LOW = 1
+MIDDLE = 2
+CRITICAL = 3
 
 
 def test(name):
@@ -11,3 +16,13 @@ def test(name):
   result = __import__(name).scan(testcase)
   print(list(result))
 
+
+# todo: yield Message from scanners
+class Message(object):
+  def __init__(self, msg, filename='N/A', level=INFO):
+    self.filename = kwargs.get('filename', 'N/A')
+    self.level = level
+    self.msg = msg
+
+  def __str__(self):
+    return str(self.msg)

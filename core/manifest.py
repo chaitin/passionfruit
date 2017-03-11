@@ -30,7 +30,10 @@ class Manifest(object):
   @property
   def urls(self):
     url_types = self.dict['CFBundleURLTypes']
-    return [item['CFBundleURLSchemes'] for item in url_types if 'CFBundleURLSchemes' in item]
+    return ['%s://' % url
+      for item in url_types 
+      for url in item['CFBundleURLSchemes']
+      if 'CFBundleURLSchemes' in item]
 
 
 def info_plist(directory):
