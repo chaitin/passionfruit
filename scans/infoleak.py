@@ -38,7 +38,16 @@ def check_plist(directory):
 
 
 def check_string(directory):
-  output = subprocess.check_output(['egrep', '-r', __RE_INTERNAL_IP__, directory])
+  try:
+    output = subprocess.check_output(['egrep', '-r', __RE_INTERNAL_IP__, directory])
+  except:
+    yield {
+      'filename': 'N/A',
+      'issue': 'Internal IP (may be false positive)',
+      'msg': 'No internal IP found in plain text files',
+    }
+    return
+
   for line in output.decode('utf8').split('\n'):
     try:
       filename, body = line.split(':', 1)
@@ -48,7 +57,7 @@ def check_string(directory):
 
     yield {
       'filename': filename,
-      'issue': 'Internal IP (may be false posivive)',
+      'issue': 'Internal IP (may be false positive)',
       'msg': 'found [%s]' % body
     }
 

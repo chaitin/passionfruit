@@ -55,18 +55,16 @@ class IPAspect(object):
     os.makedirs(root, exist_ok=True)
 
     with zipfile.ZipFile(self.ipa_name, 'r') as ipa:
-      for arcname in ipa.namelist():
-        # fix encoding issue
-        src = arcname.encode('CP437').decode('utf8')
-        secure_path = os.path.realpath('/%s' % src)[1:]
-
-        dest = os.path.join(root, secure_path)
+      for info in ipa.infolist():
+        decoded = info.filename.encode('CP437').decode('utf8')
+        sanitized = os.path.realpath('/%s' % decoded)[1:]
+        dest = os.path.join(root, sanitized)
         parent = os.path.dirname(dest)
-        if not os.path.exists(parent):
-          os.makedirs(parent, exist_ok=True)
-
-        with ipa.open(arcname) as fin, open(dest, 'wb') as fout:
-          shutil.copyfileobj(fin, fout)
+        if info.is_dir():
+          os.makedirs(dest, exist_ok=True)
+        else:
+          with ipa.open(info.filename) as fin, open(dest, 'wb') as fout:
+            shutil.copyfileobj(fin, fout)
 
 
 if __name__ == '__main__':
