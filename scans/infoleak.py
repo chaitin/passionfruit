@@ -29,7 +29,7 @@ def check_plist(directory):
     with open(filename, 'rb') as fp:
       try:
         root = plistlib.load(fp)
-      except Exception:
+      except:
         continue
 
       for val in deep_values(root):
@@ -39,6 +39,16 @@ def check_plist(directory):
             'issue': 'Internal IP (may be false positive)',
             'msg': 'found [%s]' % val
           }
+
+
+def check_restrict(filename):
+  output = subprocess.check_output(['otool', '-l', filename])
+  if b'sectname __restrict' in output and b'segname __RESTRICT' in output:
+    yield {
+      'level': 'SECURE',
+      'filename': filename,
+      'msg': '__restrict section found',
+    }
 
 
 def check_string(directory):
@@ -69,6 +79,7 @@ def check_string(directory):
 def scan(directory):
   yield from check_string(directory)
   yield from check_plist(directory)
+  yield from check_restrict(macho)
 
 
 if __name__ == '__main__':
