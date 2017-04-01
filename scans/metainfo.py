@@ -13,7 +13,7 @@ def scan(directory):
   }
 
   yield {
-    'raw': plistlib.dumps(manifest),
+    'raw': manifest.dump(),
     'level': 'message',
     'msg': 'content of Info.plist',
   }

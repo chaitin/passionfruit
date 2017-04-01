@@ -27,7 +27,11 @@ def check_plist(directory):
   pattern = os.path.join(directory, '**/*.plist')
   for filename in glob.glob(pattern, recursive=True):
     with open(filename, 'rb') as fp:
-      root = plistlib.load(fp)
+      try:
+        root = plistlib.load(fp)
+      except:
+        continue
+
       for val in deep_values(root):
         if type(val) is str and re.search(__RE_INTERNAL_IP__, val):
           yield {

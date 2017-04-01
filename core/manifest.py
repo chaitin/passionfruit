@@ -35,6 +35,9 @@ class Manifest(object):
       for url in item['CFBundleURLSchemes']
       if 'CFBundleURLSchemes' in item]
 
+  def dump(self):
+    return plistlib.dumps(self.dict)
+
 
 def info_plist(directory):
   payload = os.path.join(directory, 'Payload')
