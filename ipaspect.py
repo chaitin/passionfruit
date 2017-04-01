@@ -63,6 +63,9 @@ class IPAspect(object):
         if info.is_dir():
           os.makedirs(dest, exist_ok=True)
         else:
+          if not os.path.isdir(parent):
+            os.makedirs(parent, exist_ok=True)
+
           with ipa.open(info.filename) as fin, open(dest, 'wb') as fout:
             shutil.copyfileobj(fin, fout)
 

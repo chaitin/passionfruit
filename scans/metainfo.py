@@ -1,6 +1,7 @@
 import os
 
 from core.manifest import load as load_meta
+import plistlib
 
 
 # todo: cache meta somewhere
@@ -13,7 +14,7 @@ def scan(directory):
   }
 
   yield {
-    'raw': plistlib.dumps(manifest),
+    'raw': plistlib.dumps(manifest.dict),
     'level': 'message',
     'msg': 'content of Info.plist',
   }

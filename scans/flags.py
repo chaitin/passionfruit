@@ -17,6 +17,16 @@ def check_pie(filename):
     }
 
 
+def check_restrict(filename):
+  output = subprocess.check_output(['otool', '-l', filename])
+  if b'sectname __restrict' in output and b'segname __RESTRICT' in output:
+    yield {
+      'level': 'SECURE',
+      'filename': filename,
+      'msg': '__restrict section found',
+    }
+
+
 def check_sp_and_arc(filename):
   output = subprocess.check_output(['otool', '-Iv', filename])
   # print(output.decode())
@@ -54,6 +64,7 @@ def scan(directory):
 
   yield from check_pie(macho)
   yield from check_sp_and_arc(macho)
+  yield from check_restrict(macho)
 
 
 if __name__ == '__main__':
