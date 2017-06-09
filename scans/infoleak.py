@@ -79,7 +79,6 @@ def check_string(directory):
 def scan(directory):
   yield from check_string(directory)
   yield from check_plist(directory)
-  yield from check_restrict(macho)
 
 
 if __name__ == '__main__':
