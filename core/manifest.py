@@ -41,12 +41,13 @@ class Manifest(object):
 
 def info_plist(directory):
   payload = os.path.join(directory, 'Payload')
-  app, = os.listdir(payload)
-  if not app.endswith('.app'):
-    raise IOError('invalid IPA package %s' % directory)
+  for item in os.listdir(payload):
+    if item.endswith('.app'):
+      return os.path.join(payload, item, 'Info.plist')
 
-  return os.path.join(payload, app, 'Info.plist')
   
+  raise IOError('invalid IPA package %s' % directory)
+
 
 def load(directory):
   path = info_plist(directory)

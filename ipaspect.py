@@ -30,14 +30,18 @@ def sha256_checksum(filename, block_size=65536):
 
 
 class IPAspect(object):
-  def __init__(self, ipa_name):
-    ver = sha256_checksum(ipa_name)
-    name = os.path.basename(ipa_name)
-    root = 'output/%s_%s' % (name, ver)
+  def __init__(self, path):
+    if os.path.isfile(path):
+      ver = sha256_checksum(path)
+      name = os.path.basename(path)
+      root = 'output/%s_%s' % (name, ver)
+    elif os.path.isdir(path):
+      root = path
+    else:
+      raise IOError('invalid filename')
 
-    self.ipa_name = ipa_name
+    self.ipa_name = path
     self.root = root
-
 
   def run(self):
     self.extract()
