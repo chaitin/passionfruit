@@ -8,7 +8,7 @@ NOTE: This project is just for fun, the author has no guarantee for its accuracy
 
 ```
 virtualenv env
-source env/bin/active
+source env/bin/activate
 pip install -r requirements.pip
 ```
 
