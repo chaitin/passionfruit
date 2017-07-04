@@ -1,3 +1,1 @@
-capstone==3.0.4
-frida==9.1.16
-r2pipe==0.8.9
+frida==10.1.4
