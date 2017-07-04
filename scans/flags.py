@@ -13,7 +13,7 @@ def check_pie(filename):
     yield {
       'level': 'SECURE',
       'filename': filename,
-      'msg': 'fPIE -pie is found',
+      'msg': 'fPIE -pie has been found',
     }
 
 
@@ -23,7 +23,7 @@ def check_restrict(filename):
     yield {
       'level': 'SECURE',
       'filename': filename,
-      'msg': '__restrict section found',
+      'msg': '__restrict section has been found',
     }
 
 
@@ -35,7 +35,7 @@ def check_sp_and_arc(filename):
     yield {
       'level': 'SECURE',
       'filename': filename,
-      'msg': 'fstack-protector-all is found.',
+      'msg': 'fstack-protector-all has been found',
     }
   else:
     yield {
@@ -48,13 +48,13 @@ def check_sp_and_arc(filename):
     yield {
       'level': 'SECURE',
       'filename': filename,
-      'msg': 'fobjc-arc is found.'
+      'msg': 'fobjc-arc has been found',
     }
   else:
     yield {
       'level': 'HIGH',
       'filename': filename,
-      'msg': 'fobjc-arc not found.'
+      'msg': 'fobjc-arc has been found',
     }
 
 

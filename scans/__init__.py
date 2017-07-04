@@ -1,17 +1,18 @@
 import os
+import importlib
 
 
 INFO = 0
 SECURE = 0
 LOW = 1
-MIDDLE = 2
+MEDIUM = 2
 CRITICAL = 3
 
 
 def test(name):
   root = os.path.dirname(__file__)
   testcase = os.path.join(root, '..', 'output',
-    'test.ipa_327dcdbd564e48662c31fcb7d4f28617d1dd9cf86ea4acab3cb0342ec7ea8ff3')
+    'DVIA.ipa_1934a73c32df86ccb6887bd198536dfc7e674c2c16a79e94724c3ee2be437ac5')
   testcase = os.path.realpath(testcase)
   result = __import__(name).scan(testcase)
   print(list(result))
@@ -26,3 +27,8 @@ class Message(object):
 
   def __str__(self):
     return str(self.msg)
+
+
+checklist = ['flags', 'infoleak', 'metainfo']
+
+__all__ = ['INFO', 'SECURE', 'LOW', 'MEDIUM', 'CRITICAL'] + checklist

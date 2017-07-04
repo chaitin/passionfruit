@@ -14,11 +14,9 @@ import zipfile
 import os
 import shutil
 import hashlib
+import importlib
 
 import scans
-import scans.flags
-import scans.infoleak
-import scans.metainfo
 
 
 def sha256_checksum(filename, block_size=65536):
@@ -43,12 +41,12 @@ class IPAspect(object):
     self.ipa_name = path
     self.root = root
 
+
   def run(self):
     self.extract()
-
-    # todo: configurable checklist?
-    for name in ['flags', 'infoleak', 'metainfo']:
-      yield from getattr(scans, name).scan(self.root)
+    for check in scans.checklist:
+      plugin = importlib.import_module('scans.%s' % check)
+      yield from plugin.scan(self.root)
 
 
   def extract(self):
