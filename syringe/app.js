@@ -1,6 +1,7 @@
 const frida = require('frida')
 const Koa = require('koa')
 const IO = require('koa-socket')
+const logger = require('koa-logger')
 const json = require('koa-json')
 const compress = require('koa-compress')
 
@@ -36,6 +37,8 @@ router
 
 io.attach(app)
 
+const port = process.env.PORT || 31337
+
 app
   .use(compress({
     filter(contentType) {
@@ -45,14 +48,13 @@ app
     threshold: 2048,
     flush: require('zlib').Z_SYNC_FLUSH
   }))
-  .use(async function(ctx, next) {
-    console.log(ctx, next)
-    return await next()
-  })
+  .use(logger())
   .use(router.routes())
   .use(router.allowedMethods())
   .use(json({
     pretty: false,
     param: 'pretty'
   }))
-  .listen(process.env.PORT || 31337)
+  .listen(port)
+
+console.info(`listening on http://localhost:${port}`)

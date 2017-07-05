@@ -26,6 +26,7 @@
     "koa": "^2.3.0",
     "koa-compress": "^2.0.0",
     "koa-json": "^2.0.2",
+    "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
     "koa-socket": "^4.4.0"
   },
