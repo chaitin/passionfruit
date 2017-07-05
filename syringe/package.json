@@ -1,0 +1,35 @@
+{
+  "name": "syringe",
+  "version": "0.0.1",
+  "description": "Inject to iOS App",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest --forceExit",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ChiChou/ipaspect.git"
+  },
+  "keywords": [
+    "iOS",
+    "frida"
+  ],
+  "author": "CodeColorist",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChiChou/ipaspect/issues"
+  },
+  "homepage": "https://github.com/ChiChou/ipaspect#readme",
+  "dependencies": {
+    "frida": "^10.1.4",
+    "koa": "^2.3.0",
+    "koa-compress": "^2.0.0",
+    "koa-json": "^2.0.2",
+    "koa-router": "^7.2.1",
+    "koa-socket": "^4.4.0"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
