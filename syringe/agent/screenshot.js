@@ -33,7 +33,9 @@ rpc.exports.screenshot = function screenshot () {
     ObjC.schedule(ObjC.mainQueue, function () {
       const view = UIWindow.keyWindow();
       const bounds = view.bounds();
-      const size = bounds[1];
+      const [, size] = bounds;
+      const [width, height] = size;
+
       UIGraphicsBeginImageContextWithOptions(size, 0, 0);
 
       view.drawViewHierarchyInRect_afterScreenUpdates_(bounds, true);
@@ -43,14 +45,12 @@ rpc.exports.screenshot = function screenshot () {
 
       const png = new ObjC.Object(UIImagePNGRepresentation(image));
       const bytes = new Uint8Array(Memory.readByteArray(png.bytes(), png.length()));
+
       return resolve({
-        info: {
-          timestamp: Date.now(),
-          format: 'png',
-          width: size[0],
-          height: size[1],
-          scale: view.contentScaleFactor()
-        },
+        format: 'png',
+        width,
+        height,
+        scale: view.contentScaleFactor(),
         png: base64.fromByteArray(bytes)
       });
     });
