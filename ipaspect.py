@@ -61,8 +61,11 @@ class IPAspect(object):
                 sanitized = os.path.realpath('/%s' % decoded)[1:]
                 dest = os.path.join(root, sanitized)
                 parent = os.path.dirname(dest)
+                mode = ((info.external_attr >> 16) & 0x01FF) or 0o644
+
                 if info.is_dir():
                     os.makedirs(dest, exist_ok=True)
+                    os.chmod(parent, mode)
                 else:
                     if not os.path.isdir(parent):
                         os.makedirs(parent, exist_ok=True)
@@ -70,6 +73,7 @@ class IPAspect(object):
                     with ipa.open(info.filename) as fin, open(dest, 'wb') as fout:
                         shutil.copyfileobj(fin, fout)
 
+                    os.chmod(dest, mode)
 
 if __name__ == '__main__':
     import sys
