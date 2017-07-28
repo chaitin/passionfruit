@@ -1,3 +1,5 @@
+const path = require('path')
+
 const frida = require('frida')
 const fridaLoad = require('frida-load')
 const Koa = require('koa')
@@ -17,18 +19,72 @@ Buffer.prototype.toJSON = function() {
   return this.toString('base64')
 }
 
+class DeviceNotFoundError extends Error {}
+class DeviceNotReadyError extends Error {}
+
+const DEVICE = Symbol('device')
+const SESSION = Symbol('device')
+const TARGET = Symbol('target')
+const SCRIPTS = Symbol('scripts')
+
 class State {
   constructor() {
-    this.device = null;
-    this.session = null;
-    this.target = null;
+    this[TARGET] = null
+    this[DEVICE] = null
+    this[SESSION] = null
   }
 
-  async initSession(target) {
-    this.target = target
-    this.session = await this.device.attach(target)
-    this.session.enableJit()
-    // this.session.events.listen('message', this.onMessage)
+  async selectDevice(id) {
+    const list = await frida.enumerateDevices()
+    const dev = list.find(dev => dev.id.indexOf(id) == 0)
+    if (!dev)
+      throw new DeviceNotFoundError('can not find device id: ' + id)
+
+    this[DEVICE] = dev
+  }
+
+  get device() {
+    if (this[DEVICE])
+      return this[DEVICE]
+
+    throw new DeviceNotReadyError()
+  }
+
+  async loadScript(filename) {
+    let normalized = path.normalize(path.sep + filename)
+    let fullPath = path.join('.', 'agent', normalized)
+    let source = await fridaLoad(require.resolve(fullPath))
+    let script = await state.session.createScript(source)
+    await script.load(SCRIPTS)
+    return await script.getExports()
+  }
+
+  async getSession() {
+    if (this[SESSION])
+      return this[SESSION]
+
+    let app = await this.device.getFrontmostApplication()
+    if (!app)
+      throw Error('no app running')
+
+    return await this.startSession(app.pid)
+  }
+
+  async startSession(target) {
+    // detach previous session
+    if (this[SESSION])
+      this[SESSION].detach()
+
+    let session = await this.device.attach(target)
+    if (!session)
+      throw Error('unable to find target: ' + target)
+
+    session.enableJit()
+
+    this[TARGET] = target
+    this[SESSION] = session
+    // session.events.listen
+    return session
   }
 
   onMessage() {
@@ -39,57 +95,30 @@ class State {
 const state = new State()
 
 router
-  .get('/devices', async function(ctx) {
+  .get('/devices', async ctx => {
     const list = await frida.enumerateDevices()
     let usb = list.filter(dev => dev.type == 'tether')
     ctx.body = usb
   })
-  .get('/apps/:device', async function(ctx) {
-    const list = await frida.enumerateDevices()
-    const dev = list.find(dev => dev.id.indexOf(ctx.params.device) == 0) // starts with
-
-    if (dev) {
-      const apps = await dev.enumerateApplications()
-      ctx.body = apps
-    } else {
-      ctx.status = 400
-      ctx.body = 'device not found'
-      return
+  .get('/apps', async ctx => {
+    ctx.body = await this.device.enumerateApplications()
+  })
+  .post('/app', async ctx => {
+    await state.startSession(ctx.request.body.app)
+  })
+  .post('/device', async ctx => {
+    await state.selectDevice(ctx.request.body.device)
+    ctx.body = {
+      status: 'ok'
     }
   })
-  .post('/select', async function(ctx) {
-    const list = await frida.enumerateDevices()
-    const dev = list.find(dev => dev.id.indexOf(ctx.request.body.device) == 0)
-
-    if (dev) {
-      state.device = dev
-      ctx.body = { status: 'ok' }
-    } else {
-      ctx.status = 400
-      ctx.body = 'device not found' // todo: middleware
-      return
-    }
+  .get('/appinfo', async ctx => {
+    let api = await state.loadScript('info')
+    let result = api.info()
+    ctx.body = result
   })
-  .get('/appinfo', async function(ctx) {
-
-  })
-  .get('/screenshot', async function(ctx) {
-    if (!state.device) {
-      ctx.status = 404
-      ctx.body = 'please select a device first'
-      return
-    }
-
-    if (!state.session) {
-      let app = await state.device.getFrontmostApplication()
-      await state.initSession(app.pid)
-    }
-
-    let source = await fridaLoad(require.resolve('./agent/screenshot.js'))
-    let script = await state.session.createScript(source)
-
-    await script.load()
-    let api = await script.getExports()
+  .get('/screenshot', async ctx => {
+    let api = await loadScript('screenshot')
     let result = await api.screenshot()
 
     ctx.body = Buffer.from(result.png, 'base64')
@@ -110,6 +139,16 @@ app
   }))
   .use(bodyParser())
   .use(logger())
+  .use(async (ctx, next) => {
+    try {
+      await next()
+    } catch (e) {
+      if (e instanceof DeviceNotFoundError)
+        ctx.throw(404, e.message || 'please select a device first')
+      else
+        ctx.throw(500, e.message || 'internal error')
+    }
+  })
   .use(router.routes())
   .use(router.allowedMethods())
   .use(json({
@@ -119,3 +158,4 @@ app
   .listen(port)
 
 console.info(`listening on http://localhost:${port}`)
+
