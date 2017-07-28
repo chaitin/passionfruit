@@ -1,5 +1,5 @@
 rpc.exports.info = function() {
-  let info = ObjC.classes.NSBundle.mainBundle().infoDictionary()  
+  const info = ObjC.classes.NSBundle.mainBundle().infoDictionary()
 
   return {
     name: info.objectForKey_('CFBundleName').toString(),
