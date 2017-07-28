@@ -23,7 +23,7 @@
   "homepage": "https://github.com/ChiChou/ipaspect#readme",
   "dependencies": {
     "base64-js": "^1.2.1",
-    "frida": "^10.1.4",
+    "frida": "^10.3.1",
     "frida-load": "^1.0.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
