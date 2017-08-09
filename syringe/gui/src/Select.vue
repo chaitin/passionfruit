@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="navbar">
+    <div class="section">
       <div class="container">
         <b-dropdown v-model="device">
           <button class="button is-primary" type="button" slot="trigger">
@@ -47,6 +47,7 @@
           </b-table-column>
 
           <b-table-column field="pid" label="PID" sortable>
+            <
             {{ props.row.pid }}
           </b-table-column>
         </template>

@@ -18,6 +18,13 @@ deviceMgr.events.listen('changed', async () => {
   let devices = await frida.enumerateDevices()
   io.broadcast('deviceChange', devices.filter(dev => dev.type == 'tether'))
 })
+deviceMgr.events.listen('added', async device => {
+  io.broadcast('deviceAdd', device)
+})
+deviceMgr.events.listen('removed', async device => {
+  io.broadcast('deviceRemove', device)
+})
+
 
 const router = new Router({prefix: '/api'})
 
@@ -65,6 +72,13 @@ class State {
   }
 
   async selectDevice(id) {
+    if (this[DEVICE]) {
+      if (this[DEVICE].id == id) {
+        return
+      }
+      dev.disableSpawnGating()
+    }
+
     const list = await frida.enumerateDevices()
     const dev = list.find(dev => dev.id.indexOf(id) == 0)
     if (!dev)

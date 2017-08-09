@@ -11,7 +11,7 @@ import "material-design-icons/iconfont/material-icons.css"
 
 Vue.use(Buefy)
 
-new Vue({
+const v = new Vue({
   el: '#app',
   router,
   render: h => h(App)
@@ -20,5 +20,13 @@ new Vue({
 // todo: vuex
 
 const socket = io({ path: '/msg' })
-socket.on('changed', console.log.bind(console))
-socket.on('deviceChange', console.log.bind(console))
+socket
+  .on('deviceChange', console.log.bind(console))
+  .on('deviceRemove', dev => {
+    v.$toast.open(`${dev.name} has been removed`)
+
+    // todo: if current device
+  })
+  .on('deviceAdd', dev => {
+    v.$toast.open(`${dev.name} has been connected`)
+  })
