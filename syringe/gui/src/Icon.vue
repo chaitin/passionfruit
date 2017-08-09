@@ -17,6 +17,7 @@ export default {
       let imageData = ctx.createImageData(width, height)
       let buf = Uint8ClampedArray.from(atob(pixels), c => c.charCodeAt())
       imageData.data.set(buf)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.putImageData(imageData, 0, 0)
     }
   },
