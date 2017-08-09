@@ -8,7 +8,7 @@
 export default {
   data () {
     return {
-      activeTab: 0
+
     }
   }
 }

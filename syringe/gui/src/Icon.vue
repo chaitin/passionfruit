@@ -22,7 +22,7 @@ export default {
     }
   },
   watch: {
-    pixels() {
+    icon() {
       this.paint()
     }
   },
