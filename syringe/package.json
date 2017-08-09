@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --forceExit",
-    "start": "node app.js"
+    "start": "node app.js",
+    "report": "open coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,9 @@
   "homepage": "https://github.com/ChiChou/ipaspect#readme",
   "dependencies": {
     "base64-js": "^1.2.1",
+    "buffer": "^5.0.6",
     "frida": "^10.3.1",
+    "frida-fs": "^1.1.1",
     "frida-load": "^1.0.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
@@ -31,9 +34,11 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
-    "koa-socket": "^4.4.0"
+    "koa-socket": "^4.4.0",
+    "macho": "^1.2.1",
+    "mz": "^2.6.0"
   },
   "devDependencies": {
-    "jest": "^20.0.4"
+    "koa-webpack": "^0.6.0"
   }
 }
