@@ -2,13 +2,21 @@
   <div>
     <b-dropdown v-model="device">
       <button class="button is-primary" type="button" slot="trigger">
-        <template>
-          <span>{{ deviceName }}</span>
-        </template>
+        <div class="media">
+          <div class="media-content">
+            <template v-if="device">
+              <h3><icon :icon="device.icon"></icon> {{ device.name }}</h3>
+              <small>{{ device.id }}</small>
+            </template>
+            <template v-else>
+              <span>Please select a device</span>
+            </template>
+          </div>
+        </div>    
         <b-icon icon="arrow_drop_down"></b-icon>
       </button>
 
-      <b-dropdown-item v-for="(dev, index) in devices" :value="dev">
+      <b-dropdown-item v-for="(dev, index) in devices" :value="dev" :key="dev.id">
         <div class="media">
           <div class="media-content">
             <h3><icon :icon="dev.icon"></icon> {{ dev.name }}</h3>
@@ -26,7 +34,7 @@
       default-sort="app.identifier">
 
       <template scope="props">
-        <b-table-column width="64">
+        <b-table-column field="app.largeIcon" width="64" label="">
           <icon :icon="props.row.largeIcon"></icon>
         </b-table-column>
 
@@ -90,7 +98,6 @@ export default {
   data() {
     return {
       device: null,
-      deviceName: 'Please select a device',
       devices: [],
       apps: [],
     }

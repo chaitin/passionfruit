@@ -853,6 +853,13 @@ browserslist@^2.1.2:
     caniuse-lite "^1.0.30000704"
     electron-to-chromium "^1.3.16"
 
+buefy@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/buefy/-/buefy-0.5.0.tgz#3e9cf37cc8961f10817d1d6cb4fa2b36740363d8"
+  dependencies:
+    bulma "^0.5.1"
+    vue "^2.4.2"
+
 buffer-indexof@^1.0.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/buffer-indexof/download/buffer-indexof-1.1.0.tgz#f54f647c4f4e25228baa656a2e57e43d5f270982"
@@ -876,6 +883,10 @@ builtin-modules@^1.0.0:
 builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/builtin-status-codes/download/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
+
+bulma@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/bulma/-/bulma-0.5.1.tgz#db2831c94afe732250c7b12527a7b792a4dc9ef8"
 
 bytes@2.5.0:
   version "2.5.0"
@@ -4241,7 +4252,7 @@ vue-template-es2015-compiler@^1.2.2:
   version "1.5.3"
   resolved "http://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.5.3.tgz#22787de4e37ebd9339b74223bc467d1adee30545"
 
-vue@^2.3.3:
+vue@^2.3.3, vue@^2.4.2:
   version "2.4.2"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.4.2.tgz#a9855261f191c978cc0dc1150531b8d08149b58c"
 
