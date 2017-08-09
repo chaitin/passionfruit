@@ -49,6 +49,10 @@ module.exports = {
       '/api': {
         target: 'http://localhost:31337',
         secure: false
+      },
+      '/msg': {
+        target: 'http://localhost:31337',
+        secure: false
       }
     }
   },

@@ -4,7 +4,7 @@
   "description": "Inject to iOS App",
   "main": "app.js",
   "scripts": {
-    "test": "jest --forceExit",
+    "dev": "cross-env NODE_ENV=development npm start",
     "start": "node app.js",
     "report": "open coverage/lcov-report/index.html"
   },
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/ChiChou/ipaspect#readme",
   "dependencies": {
     "base64-js": "^1.2.1",
+    "buefy": "^0.5.0",
     "buffer": "^5.0.6",
     "frida": "^10.3.1",
     "frida-fs": "^1.1.1",
@@ -39,6 +40,8 @@
     "mz": "^2.6.0"
   },
   "devDependencies": {
+    "babel-loader": "^7.1.1",
+    "cross-env": "^5.0.5",
     "koa-webpack": "^0.6.0"
   }
 }

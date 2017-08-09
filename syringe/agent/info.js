@@ -1,12 +1,15 @@
 rpc.exports.info = function() {
-  const info = ObjC.classes.NSBundle.mainBundle().infoDictionary()
+  const mainBundle = ObjC.classes.NSBundle.mainBundle()
+  const info = mainBundle.infoDictionary()
 
+  // todo: CFBundleURLTypes
   return {
-    name: info.objectForKey_('CFBundleName').toString(),
-    id: ObjC.classes.NSBundle.mainBundle().bundleIdentifier().toString(),
+    name: info.objectForKey_('CFBundleDisplayName').toString(),
+    id: mainBundle.bundleIdentifier().toString(),
     version: info.objectForKey_('CFBundleVersion').toString(),
-    bundle: ObjC.classes.NSBundle.mainBundle().bundlePath().toString(),
+    semVer: info.objectForKey_('CFBundleShortVersionString').toString(),
+    bundle: mainBundle.bundlePath().toString(),
     data: ObjC.classes.NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString(),
-    binary: ObjC.classes.NSBundle.mainBundle().executablePath().toString(),
+    binary: mainBundle.executablePath().toString()
   }
 }

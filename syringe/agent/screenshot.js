@@ -33,7 +33,7 @@ rpc.exports.screenshot = function screenshot () {
     ObjC.schedule(ObjC.mainQueue, function () {
       const view = UIWindow.keyWindow();
       const bounds = view.bounds();
-      const [, size] = bounds;
+      const [top, size] = bounds;
       const [width, height] = size;
 
       UIGraphicsBeginImageContextWithOptions(size, 0, 0);
