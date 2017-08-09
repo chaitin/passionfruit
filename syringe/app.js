@@ -15,7 +15,7 @@ const io = new IO({ioOptions: {path: '/msg'}})
 const deviceMgr = frida.getDeviceManager()
 
 deviceMgr.events.listen('changed', async () => {
-  let devices = await frida.enumerateDevices()
+  let devices = await state.devices()
   io.broadcast('deviceChange', devices.filter(dev => dev.type == 'tether'))
 })
 deviceMgr.events.listen('added', async device => {
@@ -71,15 +71,13 @@ class State {
     this[SESSION] = null
   }
 
-  async selectDevice(id) {
-    if (this[DEVICE]) {
-      if (this[DEVICE].id == id) {
-        return
-      }
-      dev.disableSpawnGating()
-    }
-
+  async devices() {
     const list = await frida.enumerateDevices()
+    return list.filter(dev => dev.type == 'tether')
+  }
+
+  async selectDevice(id) {
+    const list = await this.devices()
     const dev = list.find(dev => dev.id.indexOf(id) == 0)
     if (!dev)
       throw new DeviceNotFoundError(id)
@@ -168,9 +166,7 @@ const state = new State()
 
 router
   .get('/devices', async ctx => {
-    const list = await frida.enumerateDevices()
-    let usb = list.filter(dev => dev.type == 'tether')
-    ctx.body = usb
+    ctx.body = await state.devices()
   })
   .get('/apps', async ctx => {
     ctx.body = await state.device.enumerateApplications()
