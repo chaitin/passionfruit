@@ -1,40 +1,45 @@
 <template>
   <div class="container">
     <div class="section">
-      <div class="container">
-        <b-dropdown v-model="device">
-          <button class="button is-primary" type="button" slot="trigger">
-            <template v-if="device">
-              <h3><icon :icon="device.icon"></icon> {{ device.name }}</h3>
-            </template>
-            <template v-else>
-              <h3><b-icon icon="important_devices"></b-icon>
-                Please select a device</h3>              
-            </template>
-            <b-icon icon="arrow_drop_down"></b-icon>
-          </button>
+      <b-dropdown v-model="device">
+        <button class="button is-primary" type="button" slot="trigger">
+          <template v-if="device">
+            <h3><icon :icon="device.icon"></icon> {{ device.name }}</h3>
+          </template>
+          <template v-else>
+            <h3><b-icon icon="important_devices"></b-icon>
+              Please select a device</h3>
+          </template>
+          <b-icon icon="arrow_drop_down"></b-icon>
+        </button>
 
-          <b-dropdown-item v-for="(dev, index) in devices" :value="dev" :key="dev.id">
-            <div class="media">
-              <div class="media-content">
-                <h3><icon :icon="dev.icon"></icon> {{ dev.name }}</h3>
-                <small>{{ dev.id }}</small>
-              </div>
+        <b-dropdown-item v-for="(dev, index) in devices" :value="dev" :key="dev.id">
+          <div class="media">
+            <div class="media-content">
+              <h3><icon :icon="dev.icon"></icon> {{ dev.name }}</h3>
+              <small>{{ dev.id }}</small>
             </div>
-          </b-dropdown-item>
-        </b-dropdown>
-      </div>
-    </div>
+          </div>
+        </b-dropdown-item>
+      </b-dropdown>
 
-    <div class="section">
+      <div class="field is-pulled-right">
+        <b-switch v-model="smallIcon">Small Icon</b-switch>
+      </div>
+
       <b-table
         :data="apps"
+        :narrowed="smallIcon"
         :loading="false"
         :hasDetails="false"
         default-sort="name">
 
         <template scope="props">
-          <b-table-column field="largeIcon" width="64" label="">
+          <b-table-column field="smallIcon" width="16" label="" v-show="smallIcon">
+            <icon :icon="props.row.smallIcon"></icon>
+          </b-table-column>
+
+          <b-table-column field="largeIcon" width="32" label="" v-show="!smallIcon">
             <icon :icon="props.row.largeIcon"></icon>
           </b-table-column>
 
@@ -47,7 +52,6 @@
           </b-table-column>
 
           <b-table-column field="pid" label="PID" sortable>
-            <
             {{ props.row.pid }}
           </b-table-column>
         </template>
@@ -103,6 +107,7 @@ export default {
       device: null,
       devices: [],
       apps: [],
+      smallIcon: false,
     }
   },
   mounted() {
