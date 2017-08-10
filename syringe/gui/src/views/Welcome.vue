@@ -35,17 +35,22 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 import Icon from '~/components/Icon.vue'
 
 export default {
   components: {
     Icon
   },
+  computed: {
+    ...mapGetters({
+      devices: 'devices'
+    })
+  },
   methods: {
-    refresh() {
-      axios.get('/api/devices').then(({ data }) => this.devices = data)
-    },
+    ...mapActions({
+      refresh: 'refreshDevices'
+    })
   },
   watch: {
     $route(to, from) {
@@ -53,11 +58,6 @@ export default {
     },
     device(to, from) {
       this.loadApps()
-    }
-  },
-  data() {
-    return {
-      devices: [],
     }
   },
   mounted() {

@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions, mapGetters } from 'vuex'
 import Icon from '~/components/Icon.vue'
 
 export default {
@@ -91,8 +91,14 @@ export default {
     Icon
   },
   watch: {
-    $route(from, to) {
+    $route(to, from) {
       this.refresh()
+    },
+    devices(to, from) {
+      if (to.length) {
+        this.$store.commit('device', this.$route.params.device)
+        this.refreshApps()
+      }
     }
   },
   computed: {
@@ -104,25 +110,31 @@ export default {
     },
     isLargeIcon() {
       return this.view == 'large'
-    }
+    },
+    ...mapGetters({
+      device: 'device',
+      devices: 'devices',
+      apps: 'apps',
+    })
   },
   data() {
     return {
       deviceId: '',
-      apps: [],
       largeIcon: true,
       view: 'grid',
     }
   },
   methods: {
     refresh() {
-      this.deviceId = this.$route.params.device
-      axios.get('/api/apps/' + this.deviceId).then(({ data }) => this.apps = data)
-    }
+      this.refreshDevices(this.$route.params.device)
+    },
+    ...mapActions({
+      refreshDevices: 'refreshDevices',
+      refreshApps: 'refreshApps',
+    })
   },
   mounted() {
-    // todo: vuex
-    this.refresh()
+    // this.refresh()
   }
 }
 </script>
@@ -139,7 +151,7 @@ export default {
     margin-bottom: 1em;
     overflow: hidden;
 
-    @for $i from 1 through 6 {
+    @for $i from 1 through 4 {
       @media screen and (min-width: $i * 360px) {
         width: round(percentage(1 / $i))
       }

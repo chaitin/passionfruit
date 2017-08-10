@@ -12,28 +12,26 @@ const store = new Vuex.Store({
     app: null,
     apps: [],
   },
+  getters: {
+    device(state) { return state.devices.length ? state.device : {} },
+    devices(state) { return state.devices},
+    apps(state) { return state.apps },
+    app(state) { return state.apps.length ? state.app : {} }
+  },
   mutations: {
-    devices(state, list) {
-      state.devices = list
-    },
-    addDevice(state, device) {
-      state.devices.push(device)
-    },
+    addDevice(state, device) { state.devices.push(device) },
     removeDevice(state, device) {
       if (device.id == state.device.id) {
         state.app = []
         device = null
       }
-
       // remove
       state.devices = state.devices.filter(dev => dev.id !== device.id)
     },
-    switchDevice(state, device) {
-      state.device = device
-    },
-    selectApp(state, app) {
-      state.app = app
-    }
+    devices(state, list) { state.devices = list },
+    device(state, id) { state.device = state.devices.find(dev => dev.id == id) },
+    app(state, app) { state.app = app },
+    apps(state, list) { state.apps = list}
   },
   actions: {
     refreshDevices({ commit }) {
@@ -42,7 +40,7 @@ const store = new Vuex.Store({
     },
     refreshApps({ commit, state }) {
       axios.get('/api/apps/' + state.device.id)
-        .then(({ data }) => commit('apps', this.apps))
+        .then(({ data }) => commit('apps', data))
     }
   }
 })

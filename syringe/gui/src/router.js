@@ -9,6 +9,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
+  linkActiveClass: 'is-active',
   routes: [
     {
       path: '/welcome',
