@@ -82,10 +82,10 @@ class State {
     if (!dev)
       throw new DeviceNotFoundError(id)
 
-    dev.events.listen('spawned', async spawn => {
-      io.broadcast('spawned', await state.device.enumerateApplications())
-    })
-    dev.enableSpawnGating()
+    // dev.events.listen('spawned', async spawn => {
+    //   io.broadcast('spawned', await state.device.enumerateApplications())
+    // })
+    // dev.enableSpawnGating()
     this[DEVICE] = dev
   }
 
