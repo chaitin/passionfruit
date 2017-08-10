@@ -36,7 +36,7 @@
 
 <script>
 import axios from 'axios'
-import Icon from './Icon.vue'
+import Icon from '~/components/Icon.vue'
 
 export default {
   components: {

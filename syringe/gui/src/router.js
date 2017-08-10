@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import WelcomeView from './Welcome.vue'
-import DeviceView from './Device.vue'
-import InspectView from './Inspect.vue'
+import WelcomeView from '~/views/Welcome.vue'
+import DeviceView from '~/views/Device.vue'
+import InspectView from '~/views/Inspect.vue'
 
 Vue.use(VueRouter)
 

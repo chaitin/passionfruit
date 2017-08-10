@@ -1,9 +1,9 @@
 import Vue from 'vue'
+import io from 'socket.io-client'
 import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
 
 
-import io from 'socket.io-client'
 import App from './App.vue'
 import router from './router'
 

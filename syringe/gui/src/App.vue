@@ -4,16 +4,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-
-    }
-  }
-}
-</script>
-
 <style lang="scss">
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
