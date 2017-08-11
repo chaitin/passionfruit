@@ -1,4 +1,6 @@
 const path = require('path')
+const os = require('os')
+const spawn = require('mz/child_process').spawn
 
 const frida = require('frida')
 const fridaLoad = require('frida-load')
@@ -16,7 +18,7 @@ const deviceMgr = frida.getDeviceManager()
 
 deviceMgr.events.listen('changed', async () => {
   let devices = await state.devices()
-  io.broadcast('deviceChange', devices.filter(dev => dev.type == 'tether'))
+  io.broadcast('deviceChange', devices)
 })
 deviceMgr.events.listen('added', async device => {
   io.broadcast('deviceAdd', device)
@@ -56,6 +58,12 @@ class AppNotFoundError extends Error {
   }
 }
 
+class InvalidDeviceError extends Error {
+  constructor(id) {
+    super(`${id} is not an iOS device`)
+  }
+}
+
 // TODO: move to a module
 
 const DEVICE = Symbol('device')
@@ -81,6 +89,18 @@ class State {
     const dev = list.find(dev => dev.id.indexOf(id) == 0)
     if (!dev)
       throw new DeviceNotFoundError(id)
+
+    let processes
+    try {
+      processes = await dev.enumerateProcesses()
+    } catch(e) {
+      console.error(e)
+      throw new InvalidDeviceError(dev.id)
+    }
+
+    if (!processes.some(p => p.name == 'launchd')) {
+      throw new InvalidDeviceError(dev.id)
+    }
 
     // dev.events.listen('spawned', async spawn => {
     //   io.broadcast('spawned', await state.device.enumerateApplications())
@@ -181,20 +201,26 @@ router
     await state.selectDevice(ctx.request.body.device)
     ctx.body = { status: 'ok' }
   })
-  .get('/appinfo', async ctx => {
+  .post('/spawn', async ctx => {
+    let pid = await state.device.spawn([ctx.request.body.bundle])
+    // todo: attach
+    ctx.body = { status: 'ok'}
+  })
+  .get('/script', async ctx => {
+    let script = ctx.request.body.script
+
     let api = await state.loadScript('info')
-    ctx.body = await api.info()
+    ctx.body = await api.main()
   })
   .get('/detach', async ctx => {
     await state.detachSession()
     ctx.body = { status: 'ok' }
   })
   .get('/screenshot', async ctx => {
-    let api = await state.loadScript('screenshot')
-    let result = await api.screenshot()
-
-    ctx.body = Buffer.from(result.png, 'base64')
-    ctx.response.attachment('screenshot-' + new Date().getTime() + '.png')
+    const filename = os.tmpdir() + new Date().getTime() + '.png'
+    letspawn('idevicescreenshot', ['-u', '', filename])
+    // todo: use idevicescreenshot
+    ctx.throw(501, 'to be implemented')
   })
 
 io.attach(app)
@@ -214,7 +240,7 @@ app
     try {
       await next()
     } catch (e) {
-      if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError].some(clz => e instanceof clz)) {
+      if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError, InvalidDeviceError].some(clz => e instanceof clz)) {
         ctx.throw(404, e.message)
       }
 

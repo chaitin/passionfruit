@@ -99,9 +99,6 @@ export default {
     Icon
   },
   watch: {
-    $route(to, from) {
-      this.refresh()
-    },
     devices(to, from) {
       if (to.length) {
         this.$store.commit('device', this.$route.params.device)
@@ -141,16 +138,9 @@ export default {
     }
   },
   methods: {
-    refresh() {
-      this.refreshDevices(this.$route.params.device)
-    },
     ...mapActions({
-      refreshDevices: 'refreshDevices',
       refreshApps: 'refreshApps',
     })
-  },
-  mounted() {
-    // this.refresh()
   }
 }
 </script>

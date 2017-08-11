@@ -56,9 +56,6 @@ export default {
     $route(to, from) {
       this.refresh()
     },
-    device(to, from) {
-      this.loadApps()
-    }
   },
   mounted() {
     this.refresh()
