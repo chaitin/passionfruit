@@ -5,6 +5,9 @@ import re
 import plistlib
 
 
+from core.message import Message
+
+
 # 10.0.0.0-10.255.255.255
 # 172.16.0.0—172.31.255.255
 # 192.168.0.0-192.168.255.255
@@ -37,21 +40,11 @@ def check_plist(directory):
 
             for val in deep_values(root):
                 if type(val) is str and re.search(__RE_INTERNAL_IP__, val):
-                    yield {
-                        'filename': filename,
-                        'issue': 'Internal IP (may be false positive)',
-                        'msg': 'found [%s]' % val
-                    }
-
-
-def check_restrict(filename):
-    output = subprocess.check_output(['otool', '-l', filename])
-    if b'sectname __restrict' in output and b'segname __RESTRICT' in output:
-        yield {
-            'level': 'SECURE',
-            'filename': filename,
-            'msg': '__restrict section found',
-        }
+                    yield Message(
+                        'found [%s]' % val,
+                        filename=filename,
+                        level='MEDIUM'
+                        issue='Internal IP (may be false positive)')
 
 
 def check_string(directory):
@@ -59,11 +52,9 @@ def check_string(directory):
         output = subprocess.check_output(
             ['egrep', '-r', __RE_INTERNAL_IP__, directory])
     except:
-        yield {
-            'filename': 'N/A',
-            'issue': 'Internal IP (may be false positive)',
-            'msg': 'No internal IP found in plain text files',
-        }
+        yield Message('No internal IP found in plain text files',
+                      issue='Internal IP (may be false positive)')
+
         return
 
     for line in output.decode('utf8').split('\n'):
@@ -73,11 +64,11 @@ def check_string(directory):
             filename = line[len('Binary file '):-len(' matches')]
             body = 'binary matches'
 
-        yield {
-            'filename': filename,
-            'issue': 'Internal IP (may be false positive)',
-            'msg': 'found [%s]' % body
-        }
+        yield Message(
+            'found [%s]' % body,
+            filename=filename,
+            level='MEDIUM'
+            issue='Internal IP (may be false positive)')
 
 
 def scan(directory):

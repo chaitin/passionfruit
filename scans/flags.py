@@ -3,28 +3,21 @@ import os
 import plistlib
 
 from core.manifest import load as load_meta
+from core.message import Message
 
 
-# dumb check, since there's no perfect macho loader in python
+# todo: lief
 
 def check_pie(filename):
     output = subprocess.check_output(['otool', '-hv', filename])
     if b'PIE' in output:
-        yield {
-            'level': 'SECURE',
-            'filename': filename,
-            'msg': 'fPIE -pie has been found',
-        }
+        yield Message('fPIE -pie is found', filename=filename)
 
 
 def check_restrict(filename):
     output = subprocess.check_output(['otool', '-l', filename])
     if b'sectname __restrict' in output and b'segname __RESTRICT' in output:
-        yield {
-            'level': 'SECURE',
-            'filename': filename,
-            'msg': '__restrict section has been found',
-        }
+        yield Message('__restrict section is found', filename=filename)
 
 
 def check_sp_and_arc(filename):
@@ -32,31 +25,21 @@ def check_sp_and_arc(filename):
     # print(output.decode())
     # todo: disassembly and CFG
     if b'stack_chk_guard' in output:
-        yield {
-            'level': 'SECURE',
-            'filename': filename,
-            'msg': 'fstack-protector-all has been found',
-        }
+        yield Message('fstack-protector-all has been found', filename=filename)
     else:
-        yield {
-            'level': 'HIGH',
-            'filename': filename,
-            'msg': 'fstack-protector-all not found, app ' +
+        yield Messsage(
+            'fstack-protector-all not found, app ' +
             'is vulnerable to Stack Overflows/Stack Smashing Attacks.',
-        }
+            level='CRITICAL',
+            filename=filename)
 
     if b'_objc_release' in output:
-        yield {
-            'level': 'SECURE',
-            'filename': filename,
-            'msg': 'fobjc-arc has been found',
-        }
+        yield Message('fobjc-arc has been found', filename=filename)
     else:
-        yield {
-            'level': 'HIGH',
-            'filename': filename,
-            'msg': 'fobjc-arc has been found',
-        }
+        yield Message(
+            'fobjc-arc has not been enabled. Use ARC for better memory management.',
+            level='MEDIUM',
+            filename=filename)
 
 
 def scan(directory):

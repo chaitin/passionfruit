@@ -8,16 +8,9 @@ import plistlib
 def scan(directory):
     manifest = load_meta(directory)
     urls = manifest.urls
-    yield {
-        'urls': urls,
-        'msg': 'found following urls: \n%s' % '\n'.join(urls)
-    }
 
-    yield {
-        'raw': manifest.dump(),
-        'level': 'message',
-        'msg': 'content of Info.plist',
-    }
+    yield Message('found following urls: \n%s' % '\n'.join(urls), extra=urls)
+    yield Message('content of Info.plist', extra=manifest.dump())
 
     # todo: url fuzzer!
 
