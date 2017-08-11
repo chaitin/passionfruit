@@ -31,12 +31,12 @@ const store = new Vuex.Store({
     apps: [],
     app: {},
     loadingApps: false,
-    appLoadErr: ''
+    appsLoadErr: ''
   },
   getters: {
     device(state) { return state.devices.length ? state.device : {} },
     app(state) { return state.apps.length ? state.app : {} },
-    ...directGetter('apps', 'devices', 'appLoadErr')
+    ...directGetter('apps', 'devices', 'appsLoadErr', 'loadingApps')
   },
   mutations: {
     removeDevice(state, device) {
@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     app(state, bundle) { state.app = state.apps.find(app => app.identifier == bundle) },
     addDevice(state, device) { state.devices.push(device) },
 
-    ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appLoadErr'),
+    ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appsLoadErr'),
 
     // devices(state, list) { state.devices = list },
     // apps(state, list) { state.apps = list },
@@ -71,6 +71,7 @@ const store = new Vuex.Store({
     },
     refreshApps({ commit, state }) {
       commit('loadingApps', true)
+      commit('appsLoadErr', '')
       axios.get('/api/apps/' + state.device.id)
         .then(({ data }) => {
           commit('loadingApps', false)
@@ -79,7 +80,7 @@ const store = new Vuex.Store({
         .catch(err => {
           commit('loadingApps', false)
           commit('apps', [])
-          commit('appLoadErr', err.response.data)
+          commit('appsLoadErr', err.response.data)
         })
     }
   }
