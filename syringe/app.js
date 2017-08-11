@@ -107,8 +107,6 @@ class State {
       // todo
     })
     await script.load()
-    // stuck here
-
     return await script.getExports()
   }
 
