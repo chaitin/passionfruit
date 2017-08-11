@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
 
 export default {
@@ -99,19 +99,23 @@ export default {
     Icon
   },
   watch: {
-    devices(to, from) {
-      if (to.length) {
-        this.$store.commit('device', this.$route.params.device)
-        this.refreshApps()
+    // $route(to, from) {
+    //   this.load()
+    // },
+    device(to, from) {
+      if (!to || !to.id) {
+        this.$toast.open('Device connection lost')
       }
     },
-    device(to) {
-      if (!to) {
-        this.$toast.open('Device connection lost')
-        // todo: 404
-      }
+    devices(to, from) {
+      this.setDevice(this.$route.params.device)
+      this.refreshApps()
+      // todo: timer
     }
   },
+  // mounted() {
+  //   this.load()
+  // },
   computed: {
     isGrid() {
       return this.view == 'grid'
@@ -138,6 +142,12 @@ export default {
     }
   },
   methods: {
+    // load() {
+    //   this.devices && this.devices.length && this.refreshApps(this.$route.params.device)
+    // },
+    ...mapMutations({
+      setDevice: 'setDevice',
+    }),
     ...mapActions({
       refreshApps: 'refreshApps',
     })

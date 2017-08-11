@@ -24,6 +24,7 @@ deviceMgr.events.listen('added', async device => {
   io.broadcast('deviceAdd', device)
 })
 deviceMgr.events.listen('removed', async device => {
+  console.info(`${device} removed`)
   io.broadcast('deviceRemove', device)
 })
 

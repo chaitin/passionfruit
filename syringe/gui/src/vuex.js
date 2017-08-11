@@ -42,34 +42,41 @@ const store = new Vuex.Store({
     removeDevice(state, device) {
       if (device.id == state.device.id) {
         state.app = []
-        device = null
+        device = {}
       }
       // remove
       state.devices = state.devices.filter(dev => dev.id !== device.id)
     },
-    device(state, id) { state.device = state.devices.find(dev => dev.id == id) },
+    setDevice(state, id) {
+      let dev = state.devices.find(dev => dev.id == id)
+      if (!dev)
+        state.appsLoadErr = 'device not found'
+      else
+        state.device = dev
+    },
     app(state, bundle) { state.app = state.apps.find(app => app.identifier == bundle) },
     addDevice(state, device) { state.devices.push(device) },
-
     ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appsLoadErr'),
-
-    // devices(state, list) { state.devices = list },
-    // apps(state, list) { state.apps = list },
-    // loadingApps(state, loading) { state.loadingApp = loading },
-    // loadingDevices(state, loading) { state.loadingDevices = loading },
   },
   actions: {
     refreshDevices({ commit }) {
-      commit('loadingDevices')
+      commit('loadingDevices', true)
       axios.get('/api/devices')
         .then(({ data }) => {
+          commit('loadingDevices', false)
           commit('devices', data)
         })
         .catch(err => {
+          commit('loadingDevices', false)
+          commit('devices', [])
+          commit('device', {})
           // todo: handle error
         })
     },
     refreshApps({ commit, state }) {
+      if (state.loadingDevices || !state.device || !state.device.id)
+        return
+
       commit('loadingApps', true)
       commit('appsLoadErr', '')
       axios.get('/api/apps/' + state.device.id)
