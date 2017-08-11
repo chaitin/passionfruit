@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-message type="is-danger" has-icon v-if="appLoadErr">
+      {{ appLoadErr }}
+    </b-message>
+
     <div class="field is-pulled-right">
       <b-field>
         <b-radio-button v-model="view" native-value="grid">
@@ -22,7 +26,7 @@
           <router-link :to="{ name: 'inspect', params: { device: device.id, bundle: app.identifier } }">
             <icon :icon="app.largeIcon" class="icon"></icon>
             <div class="content">
-              <h3>{{ app.name }} </h3>
+              <h3 :class="{ 'is-success': app.pid }">{{ app.name }} </h3>
               <p class="has-text-grey">{{ app.identifier }}</p>
               <!-- <div class="tags has-addons" v-if="app.pid">
                 <span class="tag is-success">pid</span>
@@ -101,6 +105,12 @@ export default {
         this.$store.commit('device', this.$route.params.device)
         this.refreshApps()
       }
+    },
+    device(to) {
+      if (!to) {
+        this.$toast.open('Device connection lost')
+        // todo: 404
+      }
     }
   },
   computed: {
@@ -117,6 +127,7 @@ export default {
       device: 'device',
       devices: 'devices',
       apps: 'apps',
+      appLoadErr: 'appLoadErr',
     })
   },
   data() {

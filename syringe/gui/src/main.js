@@ -24,7 +24,7 @@ const v = new Vue({
 
 const socket = io({ path: '/msg' })
 socket
-  .on('deviceChange', console.log.bind(console))
+  // .on('deviceChange', console.log.bind(console))
   .on('deviceRemove', dev => {
     store.commit('removeDevice', dev)
     v.$toast.open(`${dev.name} has been removed`)
