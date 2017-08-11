@@ -19,15 +19,17 @@
     <div class="is-clearfix">
       <ul v-if="isGrid" class="app-list">
         <li v-for="app in apps" :key="app.identifier" :class="{'is-success': app.pid }">
-          <icon :icon="app.largeIcon" class="icon"></icon>
-          <div class="content">
-            <h3>{{ app.name }} </h3>
-            <p class="has-text-grey">{{ app.identifier }}</p>
-            <!-- <div class="tags has-addons" v-if="app.pid">
-              <span class="tag is-success">pid</span>
-              <span class="tag">{{ app.pid }}</span>
-            </div> -->
-          </div>
+          <router-link :to="{ name: 'inspect', params: { device: device.id, bundle: app.identifier } }">
+            <icon :icon="app.largeIcon" class="icon"></icon>
+            <div class="content">
+              <h3>{{ app.name }} </h3>
+              <p class="has-text-grey">{{ app.identifier }}</p>
+              <!-- <div class="tags has-addons" v-if="app.pid">
+                <span class="tag is-success">pid</span>
+                <span class="tag">{{ app.pid }}</span>
+              </div> -->
+            </div>
+          </router-link>
         </li>
       </ul>
 
@@ -48,7 +50,7 @@
           </b-table-column>
 
           <b-table-column field="name" label="Name" sortable>
-            {{ props.row.name }}
+            <router-link :to="{ name: 'inspect', params: { device: device.id, bundle: props.row.identifier } }">{{ props.row.name }}</router-link>
           </b-table-column>
 
           <b-table-column field="identifier" label="Bundle ID" sortable>
@@ -146,9 +148,8 @@ export default {
   margin: 4em 0;
 
   li {
-  	display: flex;
+  	display: block;
     padding: 4px;
-    margin-bottom: 1em;
     overflow: hidden;
 
     @for $i from 1 through 4 {
@@ -164,7 +165,18 @@ export default {
     }
 
     .content {
-      margin-left: 1em;
+      margin-left: 2.75em;
+    }
+
+    a {
+      display: block;
+      padding: 10px;
+      border-radius: 4px;
+      transition: background-color, .2s;
+
+      &:hover {
+        background: #f7f7f7;
+      }
     }
 
     h3 {

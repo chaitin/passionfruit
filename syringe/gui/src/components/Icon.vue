@@ -12,6 +12,8 @@ export default {
   methods: {
     paint() {
       let canvas = this.$refs.icon
+      if (!canvas)
+        return
       let ctx = canvas.getContext('2d')
       let { width, height, pixels } = this.icon
       let imageData = ctx.createImageData(width, height)
@@ -22,7 +24,7 @@ export default {
     }
   },
   watch: {
-    icon() {
+    icon(val) {
       this.paint()
     }
   },

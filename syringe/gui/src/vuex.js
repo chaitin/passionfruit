@@ -8,13 +8,13 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     devices: [],
-    device: null,
-    app: null,
+    device: {},
+    app: {},
     apps: [],
   },
   getters: {
     device(state) { return state.devices.length ? state.device : {} },
-    devices(state) { return state.devices},
+    devices(state) { return state.devices },
     apps(state) { return state.apps },
     app(state) { return state.apps.length ? state.app : {} }
   },
@@ -30,7 +30,7 @@ const store = new Vuex.Store({
     },
     devices(state, list) { state.devices = list },
     device(state, id) { state.device = state.devices.find(dev => dev.id == id) },
-    app(state, app) { state.app = app },
+    app(state, bundle) { state.app = state.apps.find(app => app.identifier == bundle) },
     apps(state, list) { state.apps = list}
   },
   actions: {

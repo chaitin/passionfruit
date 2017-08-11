@@ -7,6 +7,7 @@ import InspectView from '~/views/Inspect.vue'
 
 Vue.use(VueRouter)
 
+
 const router = new VueRouter({
   mode: 'history',
   linkActiveClass: 'is-active',
@@ -20,7 +21,7 @@ const router = new VueRouter({
         path: 'apps/:device', component: DeviceView, name: 'apps'
       }]
     },
-    { path: '/app/:device/:bundle', component: InspectView },
+    { path: '/app/:device/:bundle', component: InspectView, name: 'inspect' },
     { path: '/', redirect: '/welcome' }
   ]
 })
