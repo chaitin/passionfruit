@@ -27,6 +27,7 @@ const store = new Vuex.Store({
   state: {
     devices: [],
     device: {},
+    deviceStatus: 'disconnected',
     loadingDevices: false,
     apps: [],
     app: {},
@@ -36,27 +37,31 @@ const store = new Vuex.Store({
   getters: {
     device(state) { return state.devices.length ? state.device : {} },
     app(state) { return state.apps.length ? state.app : {} },
-    ...directGetter('apps', 'devices', 'appsLoadErr', 'loadingApps')
+    ...directGetter('apps', 'devices', 'appsLoadErr', 'loadingApps', 'loadingDevices')
   },
   mutations: {
     removeDevice(state, device) {
       if (device.id == state.device.id) {
         state.app = []
-        device = {}
+        state.device = {}
+        state.deviceStatus = 'disconnected'
       }
       // remove
       state.devices = state.devices.filter(dev => dev.id !== device.id)
     },
     setDevice(state, id) {
       let dev = state.devices.find(dev => dev.id == id)
-      if (!dev)
+      if (!dev) {
         state.appsLoadErr = 'device not found'
-      else
+        state.deviceStatus = 'disconnected'
+      } else {
         state.device = dev
+        state.deviceStatus = 'connected'
+      }
     },
     app(state, bundle) { state.app = state.apps.find(app => app.identifier == bundle) },
     addDevice(state, device) { state.devices.push(device) },
-    ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appsLoadErr'),
+    ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appsLoadErr', 'deviceStatus'),
   },
   actions: {
     refreshDevices({ commit }) {

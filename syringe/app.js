@@ -16,16 +16,15 @@ const app = new Koa()
 const io = new IO({ioOptions: {path: '/msg'}})
 const deviceMgr = frida.getDeviceManager()
 
-deviceMgr.events.listen('changed', async () => {
-  let devices = await state.devices()
-  io.broadcast('deviceChange', devices)
-})
+// deviceMgr.events.listen('changed', async () => {
+//   let devices = await state.devices()
+//   io.broadcast('deviceChange')
+// })
 deviceMgr.events.listen('added', async device => {
-  io.broadcast('deviceAdd', device)
+  io.broadcast('deviceAdd', serializeDevice(device))
 })
 deviceMgr.events.listen('removed', async device => {
-  console.info(`${device} removed`)
-  io.broadcast('deviceRemove', device)
+  io.broadcast('deviceRemove', serializeDevice(device))
 })
 
 
@@ -72,6 +71,12 @@ const SESSION = Symbol('device')
 const TARGET = Symbol('target')
 const SCRIPTS = Symbol('scripts')
 
+
+function serializeDevice(dev) {
+  let { name, id, icon } = dev
+  icon.pixels = icon.pixels.toJSON()
+  return { name, id, icon }
+}
 
 class State {
   constructor() {
@@ -185,7 +190,8 @@ const state = new State()
 
 router
   .get('/devices', async ctx => {
-    ctx.body = await state.devices()
+    let list = await state.devices()
+    ctx.body = list.map(serializeDevice)
   })
   .get('/apps', async ctx => {
     ctx.body = await state.device.enumerateApplications()

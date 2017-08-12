@@ -13,7 +13,7 @@
                 <icon :icon="dev.icon"></icon> {{ dev.name }}
               </router-link>
             </li>
-            <li v-if="!devices.length"><a>No device found</a></li>
+            <li v-if="!devices.length"><b-icon icon="error"></b-icon> No device found</li>
           </ul>
           <p class="menu-label">
             General

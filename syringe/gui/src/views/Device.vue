@@ -102,11 +102,6 @@ export default {
     // $route(to, from) {
     //   this.load()
     // },
-    device(to, from) {
-      if (!to || !to.id) {
-        this.$toast.open('Device connection lost')
-      }
-    },
     devices(to, from) {
       this.setDevice(this.$route.params.device)
       this.refreshApps()
@@ -131,6 +126,7 @@ export default {
       devices: 'devices',
       apps: 'apps',
       appsLoadErr: 'appsLoadErr',
+      loadingDevices: 'loadingDevices',
       loadingApps: 'loadingApps',
     })
   },
