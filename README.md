@@ -6,15 +6,28 @@ NOTE: This project is just for fun, the author has no guarantee for its accuracy
 
 ## Setup
 
-```
-virtualenv env
-source env/bin/activate
-pip install -r requirements.pip
+Requirements: latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/)
+
+
+
+### Server Side
+
+```shell
+yarn
+npm run dev
 ```
 
-## Usage
+### GUI
 
-`python ipaspect.py test.ipa`
+```shell
+cd gui
+yarn
+npm run dev
+```
+
+Not open localhost:8080 in browser.
+
+![Home](screen.png)
 
 ## LICENCE
 
