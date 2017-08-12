@@ -31,6 +31,7 @@ const store = new Vuex.Store({
     loadingDevices: false,
     apps: [],
     app: {},
+    appStatus: '',
     loadingApps: false,
     appsLoadErr: ''
   },

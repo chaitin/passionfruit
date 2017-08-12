@@ -34,7 +34,7 @@
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
 
 export default {
@@ -47,7 +47,7 @@ export default {
     },
     devices(to, from) {
       if (to.length) {
-        this.$store.commit('device', this.$route.params.device)
+        this.setDevice(this.$route.params.device)
         this.refreshApps()
       }
     },
@@ -65,6 +65,9 @@ export default {
     connect() {
       this.refreshDevices()
     },
+    ...mapMutations({
+      setDevice: 'setDevice',
+    }),
     ...mapActions({
       refreshApps: 'refreshApps',
       refreshDevices: 'refreshDevices',
