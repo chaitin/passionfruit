@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import axios from 'axios'
 
+axios.defaults.baseURL = '/api'
 
 Vue.use(Vuex)
 
@@ -67,7 +68,7 @@ const store = new Vuex.Store({
   actions: {
     refreshDevices({ commit }) {
       commit('loadingDevices', true)
-      axios.get('/api/devices')
+      axios.get('/devices')
         .then(({ data }) => {
           commit('loadingDevices', false)
           commit('devices', data)
@@ -85,7 +86,7 @@ const store = new Vuex.Store({
 
       commit('loadingApps', true)
       commit('appsLoadErr', '')
-      axios.get('/api/apps/' + state.device.id)
+      axios.get(`/device/${state.device.id}/apps/`)
         .then(({ data }) => {
           commit('loadingApps', false)
           commit('apps', data)

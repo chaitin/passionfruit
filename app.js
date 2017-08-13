@@ -1,10 +1,11 @@
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
-const spawn = require('mz/child_process').spawn
+const childProc = require('mz/child_process')
 
 const frida = require('frida')
 const fridaLoad = require('frida-load')
+const plist = require('plist')
 const Koa = require('koa')
 const IO = require('koa-socket')
 const logger = require('koa-logger')
@@ -66,35 +67,28 @@ class InvalidDeviceError extends Error {
 
 // TODO: move to a module
 
-const DEVICE = Symbol('device')
-const SESSION = Symbol('device')
-const TARGET = Symbol('target')
-const SCRIPTS = Symbol('scripts')
-
-
 function serializeDevice(dev) {
   let { name, id, icon } = dev
   icon.pixels = icon.pixels.toJSON()
   return { name, id, icon }
 }
 
-const state = new State()
-
 class FridaUtil {
   static async getDevice(id) {
-    let list = await frida.enumerateDevices().map(serializeDevice)
+    let list = await frida.enumerateDevices()
     let dev = list.find(dev => dev.id == id && dev.type == 'tether')
 
     if (dev)
       return dev
     
-    throw new DeviceNotFoundError(ctx.params.device)
+    throw new DeviceNotFoundError(id)
   }
+
   static screenshot(id) {
     const tmp = os.tmpdir() + new Date().getTime() + '.png'
     return new Promise((resolve, reject) => {
       // TODO: configurable executable path
-      spawn('idevicescreenshot', ['-u', id, tmp]).on('close', code => {
+      childProc.spawn('idevicescreenshot', ['-u', id, tmp]).on('close', code => {
         if (code == 0)
           resolve(tmp)
         else
@@ -102,23 +96,31 @@ class FridaUtil {
       })
     })
   }
+
+  static async info(id) {
+    let [stdout, stderr] = await childProc.exec('ideviceinfo -x')
+    return plist.parse(stdout)
+  }
 }
 
 router
   .get('/devices', async ctx => {
     const list = await frida.enumerateDevices()
-    ctx.body = list.filter(dev => dev.type == 'tether')
+    ctx.body = list.filter(dev => dev.type == 'tether').map(serializeDevice)
   })
-  .get('/apps/:device', async ctx => {
+  .get('/device/:device/info', async ctx => {
+    ctx.body = await FridaUtil.info(ctx.params.device)
+  })
+  .get('/device/:device/apps', async ctx => {
     let dev = await FridaUtil.getDevice(ctx.params.device)
     ctx.body = await dev.enumerateApplications()
   })
-  .get('/screenshot/:device', async ctx => {
+  .get('/device/:device/screenshot', async ctx => {
     let image = await FridaUtil.screenshot(ctx.params.device)
     ctx.body = fs.createReadStream(image)
     ctx.attachment(path.basename(image))
   })
-  .post('/spawn', async ctx => {
+  .post('/device/spawn', async ctx => {
     let { device, bundle } = ctx.request.body
 
     let dev = await FridaUtil.getDevice(ctx.params.device)

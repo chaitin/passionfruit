@@ -34,7 +34,8 @@
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
     "koa-socket": "^4.4.0",
-    "mz": "^2.6.0"
+    "mz": "^2.6.0",
+    "plist": "^2.1.0"
   },
   "devDependencies": {
     "cross-env": "^5.0.5"
