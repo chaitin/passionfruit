@@ -1,8 +1,9 @@
 <template>
-
   <div class="container is-fluid">
-    <b-tabs position="is-centered" :expanded="true" :animated="false">
-      <b-tab-item label="General" v-if="app">
+    <div class="columns section">
+      <div class="column is-one-quarter">
+        <h1 class="title has-text-grey-darker"><router-link :to="'/welcome'">ipaspect</router-link></h1>
+        <p class="menu-label">App</p>
         <article class="media">
           <figure class="media-left">
             <p class="image is-32x32">
@@ -17,19 +18,27 @@
             </div>
           </div>
         </article>
+      </div>
 
-      </b-tab-item>
+      <div class="column">
+        <b-tabs position="is-centered" :expanded="true" :animated="false">
+          <b-tab-item label="General" v-if="app">
 
-      <b-tab-item label="Modules">
+          </b-tab-item>
 
-      </b-tab-item>
+          <b-tab-item label="Modules">
 
-      <b-tab-item label="Screenshots">
+          </b-tab-item>
 
-      </b-tab-item>
-    </b-tabs>
+          <b-tab-item label="Screenshots">
 
+          </b-tab-item>
+        </b-tabs>
+      </div>
+
+    </div>
   </div>
+
 </template>
 
 <script>

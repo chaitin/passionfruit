@@ -19,7 +19,10 @@
         </b-field>
       </div>
 
-      <div class="content"><h2 class="title">Select an App to inspect</h2></div>
+      <div class="content"><h2 class="title">Select an App to inspect</h2>
+        <a class="button is-light" :href="'/api/screenshot/' + device.id" target="_blank">
+          <b-icon icon="camera"></b-icon> <span>Screenshot</span></a>
+      </div>
 
       <div class="is-clearfix">
         <ul v-if="isGrid" class="app-list">
