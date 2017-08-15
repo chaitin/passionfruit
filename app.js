@@ -29,7 +29,8 @@ deviceMgr.events.listen('removed', async device => {
   io.broadcast('deviceRemove', serializeDevice(device))
 })
 
-const router = new Router({prefix: '/api'})
+
+const router = new Router({ prefix: '/api' })
 
 Buffer.prototype.toJSON = function() {
   return this.toString('base64')
@@ -102,6 +103,26 @@ class FridaUtil {
     return plist.parse(stdout)
   }
 }
+
+io.on('connection', data => {
+  let device = null, session = null, injected = null
+
+  let socket = data.socket
+  // attach to process
+  socket.on('attach', async data => {
+    try {
+      device = await FridaUtil.getDevice(data.device)
+      // injected = await device.injectLibraryFile(data.app, libraryPath, 'entry', '')
+      session = await device.attach(data.app)
+    } catch(ex) {
+      return socket.disconnect(ex.message)
+    }
+    session.events.listen('detached', reason =>
+      socket.emit('detached', reason))
+  }).on('spawn', data => {
+    // todo: spawn process
+  })
+})
 
 router
   .get('/devices', async ctx => {

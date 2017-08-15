@@ -1,0 +1,10 @@
+Package: cn.chaitin.ipagent
+Name: ipagent
+Depends: 
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Agent lib for proccess injection
+Maintainer: CodeColorist
+Author: CodeColorist
+Section: System
+Tag: role::developer

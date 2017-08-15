@@ -1,44 +1,38 @@
 <template>
   <div class="container is-fluid">
-    <div class="columns section">
-      <div class="column is-one-quarter">
-        <h1 class="title has-text-grey-darker"><router-link :to="'/welcome'">ipaspect</router-link></h1>
-        <p class="menu-label">App</p>
-        <article class="media">
-          <figure class="media-left">
-            <p class="image is-32x32">
-              <icon :icon="app.largeIcon" v-if="app.largeIcon"></icon>
-            </p>
-          </figure>
-
-          <div class="media-content">
-            <div class="content">
-              <h1>{{ app.name }}</h1>
-              <p>{{ app.identifier }}</p>
+    <header>
+      <nav class="breadcrumb nav-bar" aria-label="breadcrumbs">
+        <ul>
+          <li><a href="/">ipaspect</a></li>
+          <li><router-link v-if="device" :to="{ name: 'apps', params: { device: device.id }}">
+            <icon :icon="device.icon"></icon> {{ device.name }}</router-link></li>
+          <li class="is-active"><a href="#" aria-current="page">
+            <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
+            <div class="tags has-addons">
+              <span class="tag is-light">{{ app.identifier }}</span>
+              <span class="tag is-success" v-if="app.pid">pid: {{ app.pid }}</span>
             </div>
-          </div>
-        </article>
-      </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
 
-      <div class="column">
-        <b-tabs position="is-centered" :expanded="true" :animated="false">
-          <b-tab-item label="General" v-if="app">
+    <div>
+      <b-tabs position="is-centered" :expanded="true" :animated="false">
+        <b-tab-item label="General" v-if="app">
 
-          </b-tab-item>
+        </b-tab-item>
 
-          <b-tab-item label="Modules">
+        <b-tab-item label="Modules">
 
-          </b-tab-item>
+        </b-tab-item>
 
-          <b-tab-item label="Screenshots">
+        <b-tab-item label="Screenshots">
 
-          </b-tab-item>
-        </b-tabs>
-      </div>
-
+        </b-tab-item>
+      </b-tabs>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -93,6 +87,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.breadcrumb {
+  margin: 10px auto;
+
+  canvas {
+    margin-right: 4px;
+  }
+}
 
 </style>
