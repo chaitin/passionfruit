@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="icon" :width="icon.width" :height="icon.height"></canvas>
+  <canvas ref="icon" :width="w" :height="h"></canvas>
 </template>
 
 <script>
@@ -8,12 +8,15 @@ export default {
   name: 'icon',
   props: {
     icon: Object,
+    width: Number,
+    height: Number
   },
   methods: {
     paint() {
       let canvas = this.$refs.icon
-      if (!canvas)
-        return
+      if (!this.icon)
+        return setTimeout(() => this.paint(), 20) // retry
+
       let ctx = canvas.getContext('2d')
       let { width, height, pixels } = this.icon
       let imageData = ctx.createImageData(width, height)
@@ -26,6 +29,14 @@ export default {
   watch: {
     icon(val) {
       this.paint()
+    }
+  },
+  computed: {
+    w() {
+      return this.icon ? this.icon.width : this.width
+    },
+    h() {
+      return this.icon ? this.icon.height : this.height
     }
   },
   mounted() {
