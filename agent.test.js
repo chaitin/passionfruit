@@ -44,7 +44,7 @@ async function main(filename) {
     return await session.detach()
   }
 
-  let source = await fridaLoad(require.resolve('./agent/' + filename))
+  let source = await fridaLoad(require.resolve('./frida/' + filename))
   let script = await session.createScript(source)
 
   await script.load()
