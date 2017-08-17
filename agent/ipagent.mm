@@ -57,6 +57,7 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
         flags.insert("ENCRYPTED");
       }
     } else if (lc->cmd == LC_SEGMENT || lc->cmd == LC_SEGMENT_64) {
+      // FIXME: if __restricted, this dylib can not be injected by frida
       struct segment_command *sc = (struct segment_command *)lc;
       if (strcmp(sc->segname, "__RESTRICTED") &&
           strcmp(sc->segname, "__restricted")) {
@@ -78,7 +79,7 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
   printf("%s\n%lu\n", buf, *size);
 }
 
-//
+// frida callback
 extern "C" __attribute__((visibility("default"))) void
 frida_main(const char *payload) {
   NSLog(@"successfully injected");
@@ -86,11 +87,11 @@ frida_main(const char *payload) {
 }
 
 /* debug */
-extern "C" __attribute__((constructor)) void
-entrance(int argc, const char **argv, const char **envp, const char **apple,
-         struct ProgramVars *pvars) {
-  char buf[1024];
-  size_t size = strlen(buf);
-  checksec(buf, &size);
-}
+// extern "C" __attribute__((constructor)) void
+// entrance(int argc, const char **argv, const char **envp, const char **apple,
+//          struct ProgramVars *pvars) {
+//   char buf[1024];
+//   size_t size = strlen(buf);
+//   checksec(buf, &size);
+// }
 // vim:ft=objc
