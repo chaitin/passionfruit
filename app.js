@@ -81,7 +81,7 @@ class FridaUtil {
 
     if (dev)
       return dev
-    
+
     throw new DeviceNotFoundError(id)
   }
 
@@ -104,10 +104,9 @@ class FridaUtil {
   }
 }
 
-io.on('connection', data => {
+io.on('connection', { socket } => {
   let device = null, session = null, injected = null
 
-  let socket = data.socket
   // attach to process
   socket.on('attach', async data => {
     try {
@@ -167,7 +166,8 @@ app
     try {
       await next()
     } catch (e) {
-      if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError, InvalidDeviceError].some(clz => e instanceof clz)) {
+      if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError, InvalidDeviceError]
+          .some(clz => e instanceof clz)) {
         ctx.throw(404, e.message)
       }
 
