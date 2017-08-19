@@ -54,7 +54,7 @@ function serializeDevice(dev) {
   return { name, id, icon }
 }
 
-io.on('connection', { socket } => {
+io.on('connection', ({ socket }) => {
   let device = null, session = null, bundle = ''
   let ensureSession = callback => {
     if (session)
