@@ -20,7 +20,12 @@ export default {
       let ctx = canvas.getContext('2d')
       let { width, height, pixels } = this.icon
       let imageData = ctx.createImageData(width, height)
-      let buf = Uint8ClampedArray.from(atob(pixels), c => c.charCodeAt())
+      try {
+        pixels = atob(pixels)
+      } catch(ex) {
+        return
+      }
+      let buf = Uint8ClampedArray.from(pixels, c => c.charCodeAt())
       imageData.data.set(buf)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.putImageData(imageData, 0, 0)
@@ -33,10 +38,10 @@ export default {
   },
   computed: {
     w() {
-      return this.icon ? this.icon.width : this.width
+      return (this.icon ? this.icon.width : this.width) || 32
     },
     h() {
-      return this.icon ? this.icon.height : this.height
+      return (this.icon ? this.icon.height : this.height) || 32
     }
   },
   mounted() {
