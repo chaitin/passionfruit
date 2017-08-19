@@ -105,22 +105,39 @@ class FridaUtil {
 }
 
 io.on('connection', { socket } => {
-  let device = null, session = null, injected = null
-
+  let device = null, session = null, bundle = ''
+  let ensureSession = callback => {
+    if (session)
+      callback()
+    else
+      socket.emit('error', 'session not available')
+  }
   // attach to process
-  socket.on('attach', async data => {
+  socket.on('attach', async ({ device, app }) => {
     try {
-      device = await FridaUtil.getDevice(data.device)
-      // injected = await device.injectLibraryFile(data.app, libraryPath, 'entry', '')
-      session = await device.attach(data.app)
+      device = await FridaUtil.getDevice(device)
+      session = await device.attach(app)
     } catch(ex) {
       return socket.disconnect(ex.message)
     }
-    session.events.listen('detached', reason =>
-      socket.emit('detached', reason))
-  }).on('spawn', data => {
-    // todo: spawn process
-  })
+    bundle = app
+    session.events.listen('detached', reason => {
+      socket.emit('detached', reason)
+      socket.disconnect('session detached')
+    })
+  }).on('spawn', ensureSession(data => {
+
+  })).on('exec', ensureSession(async ({ device }) => {
+
+  })).on('modules', ensureSession(async data => {
+    let modules = await session.enumerateModules()
+    socket.emit('modules', modules)
+  })).on('disconnect', ensureSession(reason => {
+    try {
+      session.detach()
+    } catch(ignored) {}
+    session = device = null
+  }))
 })
 
 router
@@ -139,6 +156,15 @@ router
     let image = await FridaUtil.screenshot(ctx.params.device)
     ctx.body = fs.createReadStream(image)
     ctx.attachment(path.basename(image))
+  })
+  .get('/device/:device/installed', async ctx => {
+    // todo: query device command utils availability
+  })
+  .post('/device/:device/install', async ctx => {
+    // todo: install command utils on device
+  })
+  .post('/device/:device/credential', async ctx => {
+    // todo: save decive password or ssh key
   })
   .post('/device/spawn', async ctx => {
     let { device, bundle } = ctx.request.body

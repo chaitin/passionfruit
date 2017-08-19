@@ -35,7 +35,10 @@
     "koa-router": "^7.2.1",
     "koa-socket": "^4.4.0",
     "mz": "^2.6.0",
-    "plist": "^2.1.0"
+    "objection": "^0.8.7",
+    "plist": "^2.1.0",
+    "sqlite3": "^3.1.9",
+    "ssh2": "^0.5.5"
   },
   "devDependencies": {
     "cross-env": "^5.0.5"
