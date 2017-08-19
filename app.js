@@ -18,10 +18,20 @@ const app = new Koa()
 const io = new IO({ioOptions: {path: '/msg'}})
 const deviceMgr = frida.getDeviceManager()
 
+const FridaUtil = require('./lib/frida_util')
+const {
+  DeviceNotFoundError,
+  DeviceNotReadyError,
+  ProcessNotFoundError,
+  AppNotFoundError,
+  InvalidDeviceError,
+} = require('./lib/error')
+
 // deviceMgr.events.listen('changed', async () => {
 //   let devices = await state.devices()
 //   io.broadcast('deviceChange')
 // })
+
 deviceMgr.events.listen('added', async device => {
   io.broadcast('deviceAdd', serializeDevice(device))
 })
@@ -32,76 +42,16 @@ deviceMgr.events.listen('removed', async device => {
 
 const router = new Router({ prefix: '/api' })
 
+
+// hack: convert buffer to base64 string
 Buffer.prototype.toJSON = function() {
   return this.toString('base64')
 }
-
-class DeviceNotFoundError extends Error {
-  constructor(id) {
-    super('can not find device id: ' + id)
-  }
-}
-
-class DeviceNotReadyError extends Error {
-  constructor() {
-    super('you have to choose a device first')
-  }
-}
-
-class ProcessNotFoundError extends Error {
-  constructor(target) {
-    super(target + ' is not running')
-  }
-}
-
-class AppNotFoundError extends Error {
-  constructor(target) {
-    super(target + ' not found in Applications')
-  }
-}
-
-class InvalidDeviceError extends Error {
-  constructor(id) {
-    super(`${id} is not an iOS device`)
-  }
-}
-
-// TODO: move to a module
 
 function serializeDevice(dev) {
   let { name, id, icon } = dev
   icon.pixels = icon.pixels.toJSON()
   return { name, id, icon }
-}
-
-class FridaUtil {
-  static async getDevice(id) {
-    let list = await frida.enumerateDevices()
-    let dev = list.find(dev => dev.id == id && dev.type == 'tether')
-
-    if (dev)
-      return dev
-
-    throw new DeviceNotFoundError(id)
-  }
-
-  static screenshot(id) {
-    const tmp = os.tmpdir() + new Date().getTime() + '.png'
-    return new Promise((resolve, reject) => {
-      // TODO: configurable executable path
-      childProc.spawn('idevicescreenshot', ['-u', id, tmp]).on('close', code => {
-        if (code == 0)
-          resolve(tmp)
-        else
-          reject(code)
-      })
-    })
-  }
-
-  static async info(id) {
-    let [stdout, stderr] = await childProc.exec('ideviceinfo -x')
-    return plist.parse(stdout)
-  }
 }
 
 io.on('connection', { socket } => {
