@@ -102,18 +102,17 @@ export default {
     Icon
   },
   watch: {
-    // $route(to, from) {
-    //   this.load()
-    // },
-    devices(to, from) {
-      this.setDevice(this.$route.params.device)
-      this.refreshApps()
-      // todo: timer
+    device(to, from) {
+      if (!to.id)
+        this.$router.push({ name: 'welcome' })
+
+      if (to.id !== from.id)
+        this.refreshApps()
     }
   },
-  // mounted() {
-  //   this.load()
-  // },
+  mounted() {
+
+  },
   computed: {
     isGrid() {
       return this.view == 'grid'
@@ -141,11 +140,9 @@ export default {
     }
   },
   methods: {
-    // load() {
-    //   this.devices && this.devices.length && this.refreshApps(this.$route.params.device)
-    // },
     ...mapMutations({
       setDevice: 'setDevice',
+      setApp: 'app',
     }),
     ...mapActions({
       refreshApps: 'refreshApps',

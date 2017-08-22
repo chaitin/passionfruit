@@ -49,10 +49,12 @@ export default {
       this.connect()
     },
     devices(to, from) {
-      if (to.length) {
-        this.setDevice(this.$route.params.device)
+      this.setDevice(this.$route.params.device)
+      console.log(this.device)
+      if (this.device.id)
         this.refreshApps()
-      }
+      else
+        this.$route.redirect('/')
     },
     apps(to, from) {
       if (to.length) {

@@ -14,7 +14,7 @@ const compress = require('koa-compress')
 const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 
-const FridaUtil = require('./lib/frida_util')
+const { FridaUtil, serializeDevice } = require('./lib/utils')
 const io = require('./lib/channels.js')
 const {
   DeviceNotFoundError,
@@ -35,13 +35,6 @@ Buffer.prototype.toJSON = function() {
   return this.toString('base64')
 }
 
-function serializeDevice(dev) {
-  let { name, id, icon } = dev
-  icon.pixels = icon.pixels.toJSON()
-  return { name, id, icon }
-}
-
-
 router
   .get('/devices', async ctx => {
     const list = await frida.enumerateDevices()
@@ -59,22 +52,17 @@ router
     ctx.body = fs.createReadStream(image)
     ctx.attachment(path.basename(image))
   })
-  .get('/device/:device/installed', async ctx => {
+  .get('/device/:device/env', async ctx => {
     // todo: query device command utils availability
   })
-  .post('/device/:device/install', async ctx => {
+  .post('/device/:device/setup', async ctx => {
     // todo: install command utils on device
-  })
-  .post('/device/:device/credential', async ctx => {
-    // todo: save decive password or ssh key
   })
   .post('/device/spawn', async ctx => {
     let { device, bundle } = ctx.request.body
-
     let dev = await FridaUtil.getDevice(ctx.params.device)
     let pid = await dev.spawn([ctx.request.body.bundle])
-    // todo: attach
-    ctx.body = { status: 'ok'}
+    ctx.body = { status: 'ok', pid }
   })
 
 const port = process.env.PORT || 31337

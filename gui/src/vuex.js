@@ -61,7 +61,10 @@ const store = new Vuex.Store({
         state.deviceStatus = 'connected'
       }
     },
-    app(state, bundle) { state.app = state.apps.find(app => app.identifier == bundle) },
+    app(state, bundle) {
+      state.app = bundle ?
+        state.apps.find(app => app.identifier == bundle) : {}
+    },
     addDevice(state, device) { state.devices.push(device) },
     ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices', 'appsLoadErr', 'deviceStatus'),
   },

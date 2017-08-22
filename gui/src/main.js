@@ -22,7 +22,7 @@ const v = new Vue({
 
 // todo: vuex
 
-const socket = io({ path: '/msg' })
+const socket = io('/devices', { path: '/msg' })
 socket
   // .on('deviceChange', console.log.bind(console))
   .on('deviceRemove', dev => {
@@ -33,3 +33,4 @@ socket
     store.commit('addDevice', dev)
     v.$toast.open(`New device ${dev.name} has been connected`)
   })
+  .on('warning', msg => v.$toast.open(msg))
