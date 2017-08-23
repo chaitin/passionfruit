@@ -1,7 +1,6 @@
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
-const childProc = require('mz/child_process')
 
 const frida = require('frida')
 const fridaLoad = require('frida-load')
