@@ -4,7 +4,6 @@ const fs = require('fs')
 
 const frida = require('frida')
 const fridaLoad = require('frida-load')
-const plist = require('plist')
 const Koa = require('koa')
 
 const logger = require('koa-logger')

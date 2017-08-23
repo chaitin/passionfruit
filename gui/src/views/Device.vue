@@ -102,16 +102,22 @@ export default {
     Icon
   },
   watch: {
-    device(to, from) {
-      if (!to.id)
-        this.$router.push({ name: 'welcome' })
+    $route() {
+      this.select()
+    },
+    devices(value) {
+      if (!value.length)
+        this.home()
 
-      if (to.id !== from.id)
+      this.select()
+    },
+    device(value, old) {
+      if (!value.id)
+        this.home()
+
+      if (value.id != old.id)
         this.refreshApps()
     }
-  },
-  mounted() {
-
   },
   computed: {
     isGrid() {
@@ -140,6 +146,12 @@ export default {
     }
   },
   methods: {
+    select() {
+      this.setDevice(this.$route.params.device)
+    },
+    home() {
+      this.$route.push({'name': 'welcome'})
+    },
     ...mapMutations({
       setDevice: 'setDevice',
       setApp: 'app',

@@ -50,11 +50,12 @@ export default {
     },
     devices(to, from) {
       this.setDevice(this.$route.params.device)
-      console.log(this.device)
-      if (this.device.id)
+      if (this.device.id || this.loadingDevices)
         this.refreshApps()
       else
-        this.$route.redirect('/')
+        this.$route.redirect({
+          name: 'welcome'
+        })
     },
     apps(to, from) {
       if (to.length) {
@@ -68,14 +69,14 @@ export default {
   },
   methods: {
     connect() {
-      this.refreshDevices()
+      this.loadDevices()
     },
     ...mapMutations({
       setDevice: 'setDevice',
     }),
     ...mapActions({
       refreshApps: 'refreshApps',
-      refreshDevices: 'refreshDevices',
+      loadDevices: 'loadDevices',
     })
   },
   computed: {

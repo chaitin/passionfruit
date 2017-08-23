@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      refresh: 'refreshDevices'
+      refresh: 'loadDevices'
     })
   },
   watch: {
