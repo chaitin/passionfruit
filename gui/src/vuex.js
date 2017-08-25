@@ -28,7 +28,6 @@ function directGetter(...keys) {
 
 const store = new Vuex.Store({
   state: {
-    // todo: module and types
     devices: [],
 
     device: {},
@@ -39,12 +38,9 @@ const store = new Vuex.Store({
     apps: [],
     loadingApps: false,
     appsLoadErr: '',
-
-    app: {},
   },
   getters: {
     device(state) { return state.devices.length ? state.device : {} },
-    app(state) { return state.apps.length ? state.app : {} },
     ...directGetter('apps', 'devices', 'appsLoadErr', 'loadingApps', 'loadingDevices',
       'deviceDetail', 'loadingDeviceDetail')
   },
@@ -52,7 +48,7 @@ const store = new Vuex.Store({
     addDevice(state, device) { state.devices.push(device) },
     removeDevice(state, device) {
       if (device.id == state.device.id) {
-        state.app = []
+        state.apps = []
         state.device = {}
         state.appsLoadErr = 'device is disconnected'
       }
@@ -66,10 +62,6 @@ const store = new Vuex.Store({
         state.appsLoadErr = ''
         state.device = dev
       }
-    },
-    app(state, bundle) {
-      state.app = bundle ?
-        state.apps.find(app => app.identifier == bundle) : {}
     },
     ...directSetter('devices', 'apps', 'loadingApps', 'loadingDevices',
       'appsLoadErr', 'loadingDeviceDetail'),

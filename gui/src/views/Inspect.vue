@@ -45,46 +45,29 @@ export default {
     Icon,
   },
   watch: {
-    $route(to, from) {
-      this.connect()
+    devices(val, old) {
+      // detect device removal
+      if (this.device.id != this.$route.params.device)
+        this.$router.push({name: 'welcome'})
     },
-    devices(to, from) {
-      this.setDevice(this.$route.params.device)
-      if (this.device.id || this.loadingDevices)
-        this.refreshApps()
-      else
-        this.$route.redirect({
-          name: 'welcome'
-        })
-    },
-    apps(to, from) {
-      if (to.length) {
-        this.$store.commit('app', this.$route.params.bundle)
-        // todo
-      }
-    }
-  },
-  mounted() {
-    this.connect()
   },
   methods: {
-    connect() {
-      this.loadDevices()
-    },
-    ...mapMutations({
-      setDevice: 'setDevice',
-    }),
-    ...mapActions({
-      refreshApps: 'refreshApps',
-      loadDevices: 'loadDevices',
-    })
+
+  },
+  data() {
+
+  },
+  mounted() {
+    // todo: connect
+    
+  },
+  beforeDestroy() {
+    // todo: disconnect
   },
   computed: {
     ...mapGetters({
       device: 'device',
       devices: 'devices',
-      app: 'app',
-      apps: 'apps',
     })
   }
 }
