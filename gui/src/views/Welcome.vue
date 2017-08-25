@@ -52,11 +52,6 @@ export default {
       refresh: 'loadDevices'
     })
   },
-  watch: {
-    $route(to, from) {
-      this.refresh()
-    },
-  },
   mounted() {
     this.refresh()
   }

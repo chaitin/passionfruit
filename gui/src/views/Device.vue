@@ -5,23 +5,45 @@
     </b-message>
 
     <div v-else>
-      <div class="field is-pulled-right">
-        <b-field>
-          <b-radio-button v-model="view" native-value="grid">
-            <b-icon icon="view_comfy"></b-icon> Grid
-          </b-radio-button>
-          <b-radio-button v-model="view" native-value="large">
-            <b-icon icon="hdr_strong"></b-icon> Large
-          </b-radio-button>
-          <b-radio-button v-model="view" native-value="small">
-            <b-icon icon="hdr_weak"></b-icon> Small
-          </b-radio-button>
-        </b-field>
-      </div>
-
-      <div class="content"><h2 class="title">Select an App to inspect</h2>
+      <b-field class="is-pulled-right">
+        <b-dropdown v-model="view" is-align="right">
+          <button class="button is-light" slot="trigger">
+            <b-icon v-if="isGrid" icon="view_comfy"></b-icon>
+            <b-icon v-if="isLargeIcon" icon="hdr_strong"></b-icon>
+            <b-icon v-if="isSmallIcon" icon="hdr_weak"></b-icon>
+            <span>Display</span>
+            <b-icon icon="arrow_drop_down"></b-icon>
+          </button>
+          <b-dropdown-item value="grid"><b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
+          <b-dropdown-item value="large"><b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
+          <b-dropdown-item value="small"><b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
+        </b-dropdown>
         <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
           <b-icon icon="camera"></b-icon> <span>Screenshot</span></a>
+      </b-field>
+
+      <div v-if="deviceDetail" class="device-detail">
+        <div class="field is-grouped is-grouped-multiline">
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">{{ deviceDetail.DeviceName }}</span>
+              <span class="tag">{{ deviceDetail.ProductName }}
+                {{ deviceDetail.ProductVersion }}</span>
+            </div>
+          </div>
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">Hardware</span>
+              <span class="tag">{{ deviceDetail.HardwareModel }}</span>
+            </div>
+          </div>
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">Serial</span>
+              <span class="tag">{{ deviceDetail.SerialNumber }}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="is-clearfix">
@@ -106,16 +128,10 @@ export default {
       this.select()
     },
     devices(value) {
-      if (!value.length)
-        this.home()
-
       this.select()
     },
     device(value, old) {
-      if (!value.id)
-        this.home()
-
-      if (value.id != old.id)
+      if (value.id != old.id || !this.apps.length)
         this.refreshApps()
     }
   },
@@ -132,6 +148,7 @@ export default {
     ...mapGetters({
       device: 'device',
       devices: 'devices',
+      deviceDetail: 'deviceDetail',
       apps: 'apps',
       appsLoadErr: 'appsLoadErr',
       loadingDevices: 'loadingDevices',
@@ -148,26 +165,31 @@ export default {
   methods: {
     select() {
       this.setDevice(this.$route.params.device)
+      this.loadDeviceDetail()
     },
     home() {
       this.$route.push({'name': 'welcome'})
     },
     ...mapMutations({
       setDevice: 'setDevice',
-      setApp: 'app',
     }),
     ...mapActions({
       refreshApps: 'refreshApps',
+      loadDeviceDetail: 'loadDeviceDetail',
     })
   }
 }
 </script>
 
 <style lang="scss">
+.device-detail {
+  padding-top: 0.5em;
+}
+
 .app-list {
   display: flex;
   flex-wrap: wrap;
-  margin: 4em 0;
+  margin: 2em 0;
 
   li {
   	display: block;
