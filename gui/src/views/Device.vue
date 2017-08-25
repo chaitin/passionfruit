@@ -135,6 +135,9 @@ export default {
         this.refreshApps()
     }
   },
+  mounted() {
+    this.select()
+  },
   computed: {
     isGrid() {
       return this.view == 'grid'
