@@ -3,6 +3,7 @@ rpc.exports.main = function() {
   const info = mainBundle.infoDictionary()
 
   // todo: CFBundleURLTypes
+  // todo: convert infoDictionary to json
   return {
     name: info.objectForKey_('CFBundleDisplayName') + '',
     id: mainBundle.bundleIdentifier() + '',

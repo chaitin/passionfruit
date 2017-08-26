@@ -17,15 +17,47 @@
       </nav>
     </header>
 
-    <b-message type="is-danger" has-icon>{{ err }}</b-message>
+    <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
 
     <div>
       <b-tabs position="is-centered" :expanded="true" :animated="false">
-        <b-tab-item label="General" v-if="app">
+        <!-- todo: subview ? -->
+        <b-tab-item label="Modules">
+          <b-table
+            class="modules"
+            :data="modules"
+            :narrowed="true"
+            :hasDetails="false"
+            :loading="loading.modules"
+            :paginated="true"
+            :per-page="20"
+            default-sort="name">
 
+            <template scope="props">
+              <b-table-column field="name" label="Name" sortable>
+                {{ props.row.name }}
+              </b-table-column>
+
+              <b-table-column field="baseAddress" label="Base" sortable>
+                {{ props.row.baseAddress.value.toString(16) }}
+              </b-table-column>
+
+              <b-table-column field="size" label="Size" sortable>
+                {{ props.row.size }}
+              </b-table-column>
+
+              <b-table-column field="path" label="Path">
+                {{ props.row.path }}
+              </b-table-column>
+            </template>
+
+            <div slot="empty" class="has-text-centered">
+              Loading modules
+            </div>
+          </b-table>
         </b-tab-item>
 
-        <b-tab-item label="Modules">
+        <b-tab-item label="General" v-if="app">
 
         </b-tab-item>
 
@@ -49,6 +81,10 @@ export default {
   },
   watch: {
     // todo: detect device removal
+    app(val, old) {
+      if (val.name)
+        document.title = `ipaspect: ${val.name}`
+    }
   },
   methods: {
     createSocket() {
@@ -66,17 +102,30 @@ export default {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
           }
+
+          // initialize
+          this.loading.modules = true
+          this.socket.emit('modules', {}, modules => {
+            this.modules = modules
+            this.loading.modules = false
+          })
+
+          // todo: checksec
         })
     }
   },
   data() {
     const socket = this.createSocket()
-
     return {
       err: '',
       app: {},
       socket,
       device: {},
+      modules: [],
+
+      loading: {
+        modules: false,
+      }
     }
   },
   beforeDestroy() {
@@ -92,6 +141,11 @@ export default {
   canvas {
     margin-right: 4px;
   }
+}
+
+.modules {
+  font-family: monospace;
+  font-size: 14px;
 }
 
 </style>

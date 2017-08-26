@@ -93,19 +93,6 @@
             </b-table-column>
           </template>
 
-          <template slot="detail" scope="props">
-            <article class="media">
-              <figure class="media-left">
-                <p class="image is-64x64"></p>
-              </figure>
-              <div class="media-content">
-                <div class="content">
-                  <p></p>
-                </div>
-              </div>
-            </article>
-          </template>
-
           <div slot="empty" class="has-text-centered">
             Please select a device
           </div>
