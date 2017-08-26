@@ -20,11 +20,15 @@
 
 __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
                                                                 size_t *size) {
-  void *handle = dlopen(NULL, RTLD_GLOBAL | RTLD_NOW);
   struct mach_header *mh =
-      (struct mach_header *)dlsym(handle, "_mh_execute_header");
+      (struct mach_header *)_dyld_get_image_header(0);
   struct load_command *lc;
   std::set<std::string> flags;
+
+  if (!mh) {
+    strncpy(buf, "ERROR: unable to read macho header", *size);
+    return;
+  }
 
   if (mh->magic == MH_MAGIC_64) {
     lc = (struct load_command *)((unsigned char *)mh +
