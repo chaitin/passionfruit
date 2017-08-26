@@ -4,9 +4,9 @@
       <nav class="breadcrumb nav-bar" aria-label="breadcrumbs">
         <ul>
           <li><a href="/">ipaspect</a></li>
-          <li><router-link v-if="device" :to="{ name: 'apps', params: { device: device.id }}">
+          <li><router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
             <icon :icon="device.icon"></icon> {{ device.name }}</router-link></li>
-          <li class="is-active"><a href="#" aria-current="page">
+          <li class="is-active"><a href="#" v-if="app" aria-current="page">
             <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
             <div class="tags has-addons">
               <span class="tag is-light">{{ app.identifier }}</span>
@@ -16,6 +16,8 @@
         </ul>
       </nav>
     </header>
+
+    <b-message type="is-danger" has-icon>{{ err }}</b-message>
 
     <div>
       <b-tabs position="is-centered" :expanded="true" :animated="false">
@@ -37,6 +39,7 @@
 
 <script>
 
+import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
 
@@ -45,31 +48,40 @@ export default {
     Icon,
   },
   watch: {
-    devices(val, old) {
-      // detect device removal
-      if (this.device.id != this.$route.params.device)
-        this.$router.push({name: 'welcome'})
-    },
+    // todo: detect device removal
   },
   methods: {
-
+    createSocket() {
+      let { device, bundle } = this.$route.params
+      return io('/session', { path: '/msg' })
+        .on('attached', console.info.bind(console))
+        .on('close', console.warn.bind(console))
+        .on('disconnect', data => {
+          this.err = 'Application connection is closed'
+        })
+        .on('device', dev => this.device = dev)
+        .on('app', app => this.app = app)
+        .emit('attach', { device, bundle }, data => {
+          if (data.status == 'error') {
+            this.$toast.open(`failed to attach to ${bundle}`)
+            this.err = data.message
+          }
+        })
+    }
   },
   data() {
+    const socket = this.createSocket()
 
-  },
-  mounted() {
-    // todo: connect
-    
+    return {
+      err: '',
+      app: {},
+      socket,
+      device: {},
+    }
   },
   beforeDestroy() {
-    // todo: disconnect
+    this.socket.emit('detach')
   },
-  computed: {
-    ...mapGetters({
-      device: 'device',
-      devices: 'devices',
-    })
-  }
 }
 </script>
 

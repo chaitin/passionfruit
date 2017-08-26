@@ -68,6 +68,9 @@ const store = new Vuex.Store({
   },
   actions: {
     loadDevices({ commit, state }) {
+      if (state.devices.length)
+        return
+
       commit('devices', [])
       axios.get('/devices')
         .then(({ data }) => commit('devices', data))

@@ -106,4 +106,10 @@ if (process.env.NODE_ENV == 'development') {
 console.info(`listening on http://localhost:${port}`)
 app.listen(port)
 
+process.on('unhandledRejection', (err, p) => {
+  console.log('An unhandledRejection occurred: ');
+  console.log(`Rejection: ${err}`);
+  console.log(err.stack)
+})
+
 module.exports = app
