@@ -19,18 +19,26 @@
 
     <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
 
-    <div>
+    <div v-if="app">
       <b-tabs position="is-centered" :expanded="true" :animated="false">
-        <!-- todo: subview ? -->
         <b-tab-item label="Modules">
+          <b-field>
+            <b-select v-model="perPage.modules">
+              <option value="0">Don't paginate</option>
+              <option value="20">20 per page</option>
+              <option value="50">50 per page</option>
+              <option value="100">100 per page</option>
+            </b-select>
+          </b-field>
+
           <b-table
-            class="modules"
+            class="monospace"
             :data="modules"
             :narrowed="true"
             :hasDetails="false"
             :loading="loading.modules"
-            :paginated="true"
-            :per-page="20"
+            :paginated="perPage.modules > 0"
+            :per-page="perPage.modules"
             default-sort="name">
 
             <template scope="props">
@@ -57,11 +65,51 @@
           </b-table>
         </b-tab-item>
 
-        <b-tab-item label="General" v-if="app">
+        <b-tab-item label="Ranges">
+          <b-field grouped group-multiline>
+            <div class="control is-flex"><b-switch v-model="protectionFlags.x">Executable</b-switch></div>
+            <div class="control is-flex"><b-switch v-model="protectionFlags.r">Readable</b-switch></div>
+            <div class="control is-flex"><b-switch v-model="protectionFlags.w">Writable</b-switch></div>
+            <div class="control is-flex">
+              <b-select v-model="perPage.ranges">
+                <option value="0">Don't paginate</option>
+                <option value="20">20 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+              </b-select>
+            </div>
+          </b-field>
+          <b-table
+            class="monospace"
+            :data="ranges"
+            :narrowed="true"
+            :hasDetails="false"
+            :loading="loading.ranges"
+            :paginated="perPage.ranges > 0"
+            :per-page="perPage.ranges"
+            default-sort="name">
 
+            <template scope="props">
+              <b-table-column field="baseAddress" label="Base" sortable>
+                {{ props.row.baseAddress.value.toString(16) }}
+              </b-table-column>
+
+              <b-table-column field="size" label="Size" sortable>
+                {{ props.row.size }}
+              </b-table-column>
+
+              <b-table-column field="protection" label="Protection">
+                {{ props.row.protection }}
+              </b-table-column>
+            </template>
+
+            <div slot="empty" class="has-text-centered">
+              No matching range
+            </div>
+          </b-table>
         </b-tab-item>
 
-        <b-tab-item label="Screenshots">
+        <b-tab-item label="Todo">
 
         </b-tab-item>
       </b-tabs>
@@ -87,6 +135,17 @@ export default {
     }
   },
   methods: {
+    loadRanges() {
+      let protection = Object.keys(this.protectionFlags)
+        .filter(key => this.protectionFlags[key])
+        .join('')
+
+      this.loading.ranges = false
+      this.socket.emit('ranges', { protection: protection }, ranges => {
+        this.ranges = ranges
+        this.loading.ranges = false
+      })
+    },
     createSocket() {
       let { device, bundle } = this.$route.params
       return io('/session', { path: '/msg' })
@@ -109,9 +168,17 @@ export default {
             this.modules = modules
             this.loading.modules = false
           })
-
+          this.loadRanges()
           // todo: checksec
         })
+    }
+  },
+  watch: {
+    protectionFlags: {
+      handler() {
+        this.loadRanges()
+      },
+      deep: true
     }
   },
   data() {
@@ -122,9 +189,19 @@ export default {
       socket,
       device: {},
       modules: [],
-
+      ranges: [],
+      protectionFlags: {
+        x: false,
+        w: true,
+        r: true,
+      },
+      perPage: {
+        modules: 20,
+        ranges: 20,
+      },
       loading: {
         modules: false,
+        ranges: false,
       }
     }
   },
@@ -143,7 +220,7 @@ export default {
   }
 }
 
-.modules {
+.monospace {
   font-family: monospace;
   font-size: 14px;
 }
