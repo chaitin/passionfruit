@@ -4,31 +4,42 @@
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
 
+#include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
-#include <iterator>
 
-/*
-    ignore these error:
+#if __LP64__
+#define LC_ENCRYPT_INFO LC_ENCRYPTION_INFO_64
+#define macho_encryption_info_command encryption_info_command_64
 
-    'libkern/machine/OSByteOrder.h' file not found
-    #include <libkern/machine/OSByteOrder.h>
+#define LC_SEGMENT_COMMAND LC_SEGMENT_64
+#define macho_segment_command segment_command_64
+#define macho_section section_64
 
-    printf is for debugging, use DYLD_INSERT_LIBRARIES to load me
-*/
+#else
+#define LC_ENCRYPT_INFO LC_ENCRYPTION_INFO
+#define macho_encryption_info_command encryption_info_command
+
+#define LC_SEGMENT_COMMAND LC_SEGMENT
+#define macho_segment_command segment_command
+#define macho_section section
+#endif
 
 __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
                                                                 size_t *size) {
-  struct mach_header *mh =
-      (struct mach_header *)_dyld_get_image_header(0);
+  struct mach_header *mh = (struct mach_header *)_dyld_get_image_header(0);
   struct load_command *lc;
   std::set<std::string> flags;
 
   if (!mh) {
+    // todo: return status code
+    NSLog(@"unable to read macho header");
     strncpy(buf, "ERROR: unable to read macho header", *size);
     return;
   }
+
+  NSLog(@"checksec on %s", _dyld_get_image_name(0));
 
   if (mh->magic == MH_MAGIC_64) {
     lc = (struct load_command *)((unsigned char *)mh +
@@ -39,38 +50,56 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
   }
 
   if (mh->flags & MH_PIE) {
-    printf("[+] PIE\n");
+    NSLog(@"[+] PIE\n");
     flags.insert("PIE");
   }
 
   if (mh->flags & MH_ALLOW_STACK_EXECUTION) {
-    printf("[+] ALLOW_STACK_EXECUTION\n");
+    NSLog(@"[+] ALLOW_STACK_EXECUTION\n");
     flags.insert("ALLOW_STACK_EXECUTION");
   }
 
   if (mh->flags & MH_NO_HEAP_EXECUTION) {
-    printf("[+] NO_HEAP_EXECUTION\n");
+    NSLog(@"[+] NO_HEAP_EXECUTION\n");
     flags.insert("NO_HEAP_EXECUTION");
   }
 
   for (int i = 0; i < mh->ncmds; i++) {
-    if (lc->cmd == LC_ENCRYPTION_INFO || lc->cmd == LC_ENCRYPTION_INFO_64) {
+    switch (lc->cmd) {
+    case LC_ENCRYPT_INFO: {
       struct encryption_info_command *eic =
           (struct encryption_info_command *)lc;
       if (eic->cryptid == 1) {
-        printf("[+] encrypted\n");
+        NSLog(@"[+] encrypted\n");
         flags.insert("ENCRYPTED");
       }
-    } else if (lc->cmd == LC_SEGMENT || lc->cmd == LC_SEGMENT_64) {
-      // FIXME: if __restricted, this dylib can not be injected by frida
-      struct segment_command *sc = (struct segment_command *)lc;
-      if (strcmp(sc->segname, "__RESTRICTED") &&
-          strcmp(sc->segname, "__restricted")) {
-        printf("[+] segment: %s\n", sc->segname);
-      } else {
-        printf("[+] restricted\n");
-        flags.insert("RESTRICTED");
+      break;
+    }
+
+    case LC_SEGMENT_COMMAND: {
+      const struct macho_segment_command *seg =
+          (struct macho_segment_command *)lc;
+      bool is_restricted = false;
+      if (strcmp(seg->segname, "__RESTRICT") == 0) {
+        const struct macho_section *const sections_start =
+            (struct macho_section *)((char *)seg +
+                                     sizeof(struct macho_segment_command));
+        const struct macho_section *const sections_end =
+            &sections_start[seg->nsects];
+        for (const struct macho_section *sect = sections_start;
+             sect < sections_end; ++sect) {
+          if (strcmp(sect->sectname, "__restrict") == 0)
+            is_restricted = true;
+        }
       }
+      if (is_restricted) {
+        NSLog(@"[+] restricted\n");
+        flags.insert("RESTRICTED");
+      } else {
+        NSLog(@"[+] segment: %s\n", seg->segname);
+      }
+      break;
+    }
     }
     lc = (struct load_command *)((unsigned char *)lc + lc->cmdsize);
   }
@@ -81,15 +110,7 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
   std::string str = joint.str();
   strncpy(buf, str.c_str(), *size);
   *size = str.length();
-  printf("%s\n%lu\n", buf, *size);
+  NSLog(@"%s\n%lu\n", buf, *size);
 }
 
-/* debug */
-// extern "C" __attribute__((constructor)) void
-// entrance(int argc, const char **argv, const char **envp, const char **apple,
-//          struct ProgramVars *pvars) {
-//   char buf[1024];
-//   size_t size = strlen(buf);
-//   checksec(buf, &size);
-// }
 // vim:ft=objc
