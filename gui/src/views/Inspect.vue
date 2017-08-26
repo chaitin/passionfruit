@@ -23,27 +23,29 @@
       <b-tabs position="is-centered" :expanded="true" :animated="false">
         <b-tab-item label="Modules">
           <b-field>
-            <b-select v-model="perPage.modules">
+            <b-input icon="search" v-model="modules.filter" type="search"
+              placeholder="Filter modules..." expanded></b-input>
+            <b-select v-model="modules.paginator">
               <option value="0">Don't paginate</option>
-              <option value="20">20 per page</option>
               <option value="50">50 per page</option>
               <option value="100">100 per page</option>
+              <option value="200">200 per page</option>
             </b-select>
           </b-field>
 
           <b-table
             class="monospace"
-            :data="modules"
+            :data="modules.filtered"
             :narrowed="true"
             :hasDetails="false"
-            :loading="loading.modules"
-            :paginated="perPage.modules > 0"
-            :per-page="perPage.modules"
+            :loading="modules.loading"
+            :paginated="modules.paginator > 0"
+            :per-page="modules.paginator"
             default-sort="name">
 
             <template scope="props">
               <b-table-column field="name" label="Name" sortable>
-                {{ props.row.name }}
+                <a href="#" @click="showModuleInfo(props.row)">{{ props.row.name }}</a>
               </b-table-column>
 
               <b-table-column field="baseAddress" label="Base" sortable>
@@ -60,33 +62,58 @@
             </template>
 
             <div slot="empty" class="has-text-centered">
-              Loading modules
+              No matching module found
             </div>
           </b-table>
+
+          <b-modal :active.sync="showModuleInfoDialog" :width="720">
+            <div class="card">
+              <div class="card-content">
+                <div class="content">
+                  <h2>Export symbols from {{ modules.selected.name }}
+                    <a class="button is-loading is-light is-primary"
+                      v-show="modules.selected.loading">Loading</a></h2>
+
+                  <!-- todo: add hook! -->
+                  <!-- todo: search -->
+                  <ul v-if="modules.selected.exports.length || modules.selected.loading">
+                    <li v-for="symbol in modules.selected.exports">
+                      <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
+                      <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
+                      {{ symbol.name }}
+                    </li>
+                  </ul>
+                  <b-message v-else type="is-info" has-icon>
+                    No exported symbol found
+                  </b-message>
+                </div>
+              </div>
+            </div>
+          </b-modal>
         </b-tab-item>
 
         <b-tab-item label="Ranges">
           <b-field grouped group-multiline>
-            <div class="control is-flex"><b-switch v-model="protectionFlags.x">Executable</b-switch></div>
-            <div class="control is-flex"><b-switch v-model="protectionFlags.r">Readable</b-switch></div>
-            <div class="control is-flex"><b-switch v-model="protectionFlags.w">Writable</b-switch></div>
+            <div class="control is-flex"><b-switch v-model="ranges.filter.x">Executable</b-switch></div>
+            <div class="control is-flex"><b-switch v-model="ranges.filter.r">Readable</b-switch></div>
+            <div class="control is-flex"><b-switch v-model="ranges.filter.w">Writable</b-switch></div>
             <div class="control is-flex">
-              <b-select v-model="perPage.ranges">
+              <b-select v-model="ranges.paginator">
                 <option value="0">Don't paginate</option>
-                <option value="20">20 per page</option>
                 <option value="50">50 per page</option>
                 <option value="100">100 per page</option>
+                <option value="200">20 per page</option>
               </b-select>
             </div>
           </b-field>
           <b-table
             class="monospace"
-            :data="ranges"
+            :data="ranges.list"
             :narrowed="true"
             :hasDetails="false"
-            :loading="loading.ranges"
-            :paginated="perPage.ranges > 0"
-            :per-page="perPage.ranges"
+            :loading="ranges.loading"
+            :paginated="ranges.paginator > 0"
+            :per-page="ranges.paginator"
             default-sort="name">
 
             <template scope="props">
@@ -122,6 +149,7 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
+import { matcher, debounce } from '~/lib/utils'
 
 export default {
   components: {
@@ -132,18 +160,36 @@ export default {
     app(val, old) {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
-    }
+    },
+    'modules.filter': debounce(function(val, old) {
+      this.modules.filtered = val && val.length ?
+        this.modules.matcher(val) :
+        this.modules.list
+    }, 500),
+    'ranges.filter': {
+      handler() {
+        this.loadRanges()
+      },
+      deep: true
+    },
   },
   methods: {
+    showModuleInfo(module) {
+      this.modules.selected = {loading: true, name: module.name, exports: []}
+      this.socket.emit('exports', {module: module.name}, data => {
+        this.modules.selected = {loading: false, name: module.name, exports: data}
+      })
+      this.showModuleInfoDialog = true
+    },
     loadRanges() {
-      let protection = Object.keys(this.protectionFlags)
-        .filter(key => this.protectionFlags[key])
+      let protection = Object.keys(this.ranges.filter)
+        .filter(key => this.ranges.filter[key])
         .join('')
 
-      this.loading.ranges = false
+      this.ranges.loading = false
       this.socket.emit('ranges', { protection: protection }, ranges => {
-        this.ranges = ranges
-        this.loading.ranges = false
+        this.ranges.list = ranges
+        this.ranges.loading = false
       })
     },
     createSocket() {
@@ -163,22 +209,15 @@ export default {
           }
 
           // initialize
-          this.loading.modules = true
+          this.modules.loading = true
           this.socket.emit('modules', {}, modules => {
-            this.modules = modules
-            this.loading.modules = false
+            this.modules.filtered = this.modules.list = modules
+            this.modules.loading = false
+            this.modules.matcher = matcher(modules, 'name')
           })
           this.loadRanges()
           // todo: checksec
         })
-    }
-  },
-  watch: {
-    protectionFlags: {
-      handler() {
-        this.loadRanges()
-      },
-      deep: true
     }
   },
   data() {
@@ -188,21 +227,34 @@ export default {
       app: {},
       socket,
       device: {},
-      modules: [],
-      ranges: [],
-      protectionFlags: {
-        x: false,
-        w: true,
-        r: true,
+
+      // workaround: this can not be nested
+      showModuleInfoDialog: false,
+      modules: {
+        list: [],
+        filter: '',
+        filtered: [],
+        matcher: null,
+        loading: false,
+        paginator: 0,
+        selected: {
+          exports: [],
+          name: null,
+        },
       },
-      perPage: {
-        modules: 20,
-        ranges: 20,
-      },
-      loading: {
-        modules: false,
-        ranges: false,
+
+      ranges: {
+        list: [],
+        filtered: [],
+        loading: false,
+        paginator: 100,
+        filter: {
+          x: true,
+          w: false,
+          r: true,
+        },
       }
+
     }
   },
   beforeDestroy() {
