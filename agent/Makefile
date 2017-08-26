@@ -1,8 +1,12 @@
 ARCHS = armv7 armv7s arm64
+SDKVERSION = $(xcrun --sdk iphoneos --show-sdk-version)
 
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
-LIBRARY_NAME = ipagent
-ipagent_FILES = ipagent.mm
+TWEAK_NAME = ipaspect
+ipaspect_FILES = Tweak.xm
 
-include $(THEOS_MAKE_PATH)/library.mk
+include $(THEOS_MAKE_PATH)/tweak.mk
+
+after-install::
+	install.exec "killall -9 SpringBoard"

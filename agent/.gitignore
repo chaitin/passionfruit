@@ -55,3 +55,5 @@ dkms.conf
 
 obj/
 theos
+.theos/
+packages/

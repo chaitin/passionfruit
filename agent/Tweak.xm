@@ -7,6 +7,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <iterator>
 
 /*
     ignore these error:
@@ -77,13 +78,6 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
   strncpy(buf, str.c_str(), *size);
   *size = str.length();
   printf("%s\n%lu\n", buf, *size);
-}
-
-// frida callback
-extern "C" __attribute__((visibility("default"))) void
-frida_main(const char *payload) {
-  NSLog(@"successfully injected");
-  NSLog(@"payload from js: \n%s", payload);
 }
 
 /* debug */

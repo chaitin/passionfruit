@@ -1,10 +1,9 @@
-Package: cn.chaitin.ipagent
-Name: ipagent
-Depends: 
+Package: cn.chaitin.ipaspect
+Name: ipaspect agent
+Depends: mobilesubstrate
 Version: 0.0.1
 Architecture: iphoneos-arm
-Description: Agent lib for proccess injection
-Maintainer: CodeColorist
-Author: CodeColorist
-Section: System
-Tag: role::developer
+Description: Agent for ipaspect tool
+Maintainer: codecolorist
+Author: codecolorist
+Section: Tweaks
