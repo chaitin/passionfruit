@@ -4,11 +4,6 @@
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
 
-#include <iterator>
-#include <set>
-#include <sstream>
-#include <string>
-
 #if __LP64__
 #define LC_ENCRYPT_INFO LC_ENCRYPTION_INFO_64
 #define macho_encryption_info_command encryption_info_command_64
@@ -26,17 +21,20 @@
 #define macho_section section
 #endif
 
-__attribute__((visibility("default"))) extern "C" void checksec(char *buf,
-                                                                size_t *size) {
+#define FLAG_ENCRYPTED 0x1
+#define FLAG_PIE 0x2
+#define FLAG_CANARY 0x4
+#define FLAG_ARC 0x8
+#define FLAG_RESTRICT 0x10
+
+__attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
+  int result = 0;
   struct mach_header *mh = (struct mach_header *)_dyld_get_image_header(0);
   struct load_command *lc;
-  std::set<std::string> flags;
 
   if (!mh) {
-    // todo: return status code
     NSLog(@"unable to read macho header");
-    strncpy(buf, "ERROR: unable to read macho header", *size);
-    return;
+    return -1;
   }
 
   NSLog(@"checksec on %s", _dyld_get_image_name(0));
@@ -51,17 +49,15 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
 
   if (mh->flags & MH_PIE) {
     NSLog(@"[+] PIE\n");
-    flags.insert("PIE");
+    result |= FLAG_PIE;
   }
 
   if (mh->flags & MH_ALLOW_STACK_EXECUTION) {
     NSLog(@"[+] ALLOW_STACK_EXECUTION\n");
-    flags.insert("ALLOW_STACK_EXECUTION");
   }
 
   if (mh->flags & MH_NO_HEAP_EXECUTION) {
     NSLog(@"[+] NO_HEAP_EXECUTION\n");
-    flags.insert("NO_HEAP_EXECUTION");
   }
 
   for (int i = 0; i < mh->ncmds; i++) {
@@ -69,9 +65,9 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
     case LC_ENCRYPT_INFO: {
       struct encryption_info_command *eic =
           (struct encryption_info_command *)lc;
-      if (eic->cryptid == 1) {
+      if (eic->cryptid != 0) {
         NSLog(@"[+] encrypted\n");
-        flags.insert("ENCRYPTED");
+        result |= FLAG_ENCRYPTED;
       }
       break;
     }
@@ -94,7 +90,7 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
       }
       if (is_restricted) {
         NSLog(@"[+] restricted\n");
-        flags.insert("RESTRICTED");
+        result |= FLAG_RESTRICT;
       } else {
         NSLog(@"[+] segment: %s\n", seg->segname);
       }
@@ -104,13 +100,7 @@ __attribute__((visibility("default"))) extern "C" void checksec(char *buf,
     lc = (struct load_command *)((unsigned char *)lc + lc->cmdsize);
   }
 
-  std::ostringstream joint;
-  std::copy(flags.begin(), flags.end(),
-            std::ostream_iterator<std::string>(joint, ","));
-  std::string str = joint.str();
-  strncpy(buf, str.c_str(), *size);
-  *size = str.length();
-  NSLog(@"%s\n%lu\n", buf, *size);
+  return result;
 }
 
 // vim:ft=objc
