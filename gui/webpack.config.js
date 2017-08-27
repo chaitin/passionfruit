@@ -51,6 +51,12 @@ module.exports = {
           to: function() {
             return 'index.html';
           }
+        },
+        {
+          from: /^\/welcome\/.*$/,
+          to: function() {
+            return 'index.html';
+          }
         }
       ]
     },
