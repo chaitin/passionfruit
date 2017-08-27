@@ -1,12 +1,6 @@
 const frida = require('frida')
 const fridaLoad = require('frida-load')
-
-
-async function sleep(ms) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, ms)
-  })
-}
+const { sleep, FridaUtil } = require('./lib/utils')
 
 async function main(filename) {
   let dev = await frida.getUsbDevice()
@@ -19,31 +13,7 @@ async function main(filename) {
 
   console.info(`spawn ${targetApp.identifier}`)
 
-  let pid = await dev.spawn([targetApp.identifier])
-  let session = await dev.attach(pid)
-  console.info('app launching...')
-  await dev.resume(pid)
-
-  let probeScript = await session.createScript('rpc.exports.ok = function() { return true }')
-  await probeScript.load()
-  let probe = await probeScript.getExports()
-  let retry = 10
-  while(--retry > 0) {
-    sleep(200)
-    console.debug('retry:', retry)
-    try {
-      if (await probe.ok()) {
-        console.debug('ok')
-        break
-      }
-    } catch(ignored) {}
-  }
-
-  if (retry == 0) {
-    console.error(`failed to spawn or inject into ${targetApp.identifier}`)
-    return await session.detach()
-  }
-
+  let session = await FridaUtil.spawn(dev, targetApp)
   let source = await fridaLoad(require.resolve('./frida/' + filename))
   let script = await session.createScript(source)
 
@@ -55,8 +25,8 @@ async function main(filename) {
     console.error(`unable execute script`)
     console.error(e)
   } finally {
-    console.log('kill process')
-    await dev.kill(pid)
+    console.log('kill process', session.pid)
+    await dev.kill(session.pid)
     console.log('detach')
     await session.detach()
     console.log('bye')
