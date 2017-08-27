@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development npm start",
     "start": "node app.js",
-    "report": "open coverage/lcov-report/index.html"
+    "report": "open coverage/lcov-report/index.html",
+    "postinstall": "cd gui && npm install"
   },
   "repository": {
     "type": "git",

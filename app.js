@@ -42,19 +42,21 @@ router
     ctx.body = await FridaUtil.info(ctx.params.device)
   })
   .get('/device/:device/apps', async ctx => {
-    let dev = await FridaUtil.getDevice(ctx.params.device)
-    ctx.body = await dev.enumerateApplications()
+    let id = ctx.params.device
+    let dev = await FridaUtil.getDevice(id)
+    try {
+      ctx.body = await dev.enumerateApplications()
+    } catch(ex) {
+      if (ex.message.indexOf('Unable to connect to remote frida-server') === 0)
+        throw new InvalidDeviceError(id)
+      else
+        throw ex
+    }
   })
   .get('/device/:device/screenshot', async ctx => {
     let image = await FridaUtil.screenshot(ctx.params.device)
     ctx.body = fs.createReadStream(image)
     ctx.attachment(path.basename(image))
-  })
-  .get('/device/:device/env', async ctx => {
-    // todo: query device command utils availability
-  })
-  .post('/device/:device/setup', async ctx => {
-    // todo: install command utils on device
   })
   .post('/device/spawn', async ctx => {
     let { device, bundle } = ctx.request.body
@@ -107,9 +109,9 @@ console.info(`listening on http://localhost:${port}`)
 app.listen(port)
 
 process.on('unhandledRejection', (err, p) => {
-  console.log('An unhandledRejection occurred: ');
-  console.log(`Rejection: ${err}`);
-  console.log(err.stack)
+  console.error('An unhandledRejection occurred: ');
+  console.error(`Rejection: ${err}`);
+  console.error(err.stack)
 })
 
 module.exports = app
