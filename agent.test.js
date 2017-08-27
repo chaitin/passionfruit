@@ -14,21 +14,30 @@ async function main(filename) {
   console.info(`spawn ${targetApp.identifier}`)
 
   let session = await FridaUtil.spawn(dev, targetApp)
-  let source = await fridaLoad(require.resolve('./frida/' + filename))
+  let source = await fridaLoad(require.resolve('./frida/index'))
   let script = await session.createScript(source)
 
   await script.load()
   let api = await script.getExports()
+  let hr = '--'.repeat(10)
   try {
-    console.log(await api.main())
+    for (let key of Object.keys(api)) {
+      let method = api[key]
+      if (method.length)
+        continue // only test functions with no parameter
+
+      let result = await method()
+      console.log(hr, key, hr)
+      console.log(result)
+    }
   } catch(e) {
     console.error(`unable execute script`)
     console.error(e)
   } finally {
+    console.log(hr, 'detach', hr)
+    await session.detach()
     console.log('kill process', session.pid)
     await dev.kill(session.pid)
-    console.log('detach')
-    await session.detach()
     console.log('bye')
   }
 }

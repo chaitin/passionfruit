@@ -5,7 +5,7 @@ const FLAG_ARC = 0x8;
 const FLAG_RESTRICT = 0x10;
 
 
-rpc.exports.main = function() {
+module.exports = function() {
   return new Promise((resolve, reject) => {
     var result = {}
 

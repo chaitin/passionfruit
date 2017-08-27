@@ -1,4 +1,4 @@
-rpc.exports.main = function() {
+module.exports = function() {
   const mainBundle = ObjC.classes.NSBundle.mainBundle()
   const info = mainBundle.infoDictionary()
 
