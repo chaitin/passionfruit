@@ -44,9 +44,6 @@ async function main(filename) {
     return await session.detach()
   }
 
-  // NOTE: the 2nd argument is the path on device, not the host
-  await dev.injectLibraryFile(pid, '/tmp/ipagent.dylib', 'frida_main', 'greet')
-
   let source = await fridaLoad(require.resolve('./frida/' + filename))
   let script = await session.createScript(source)
 
