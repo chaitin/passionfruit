@@ -972,9 +972,9 @@ browserslist@^2.1.2:
     caniuse-lite "^1.0.30000704"
     electron-to-chromium "^1.3.16"
 
-buefy@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/buefy/-/buefy-0.5.0.tgz#3e9cf37cc8961f10817d1d6cb4fa2b36740363d8"
+buefy@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/buefy/-/buefy-0.5.1.tgz#7e5b6001cb2903f52675fa52b85158584dd52483"
   dependencies:
     bulma "^0.5.1"
     vue "^2.4.2"
