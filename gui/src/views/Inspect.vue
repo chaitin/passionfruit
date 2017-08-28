@@ -18,9 +18,73 @@
     </header>
 
     <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
+    <b-loading :active="modules.loading || general.loading || ranges.loading"
+      @cancel="onCancel" :canCancel="true"></b-loading>
 
     <div v-if="app">
       <b-tabs position="is-centered" :expanded="true" :animated="false">
+        <b-tab-item label="General">
+          <section class="section">
+            <h2 class="is-spaced title">Security flags</h2>
+
+            <b-field grouped group-multiline>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">Encrypted</b-tag>
+                  <b-tag type="is-info">{{ general.sec.encrypted }}</b-tag>
+                </b-taglist>
+              </div>
+
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">PIE</b-tag>
+                  <b-tag type="is-success" v-if="general.sec.arc">ENABLED</b-tag>
+                  <b-tag type="is-warning" v-else>N/A</b-tag>
+                </b-taglist>
+              </div>
+
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">ARC</b-tag>
+                  <b-tag type="is-success" v-if="general.sec.arc">ENABLED</b-tag>
+                  <b-tag type="is-success" v-else>N/A</b-tag>
+                </b-taglist>
+              </div>
+
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">Canary</b-tag>
+                  <b-tag type="is-success" v-if="general.sec.canary">ENABLED</b-tag>
+                  <b-tag type="is-warning" v-else>N/A</b-tag>
+                </b-taglist>
+              </div>
+
+            </b-field>
+          </section>
+
+          <section class="section">
+            <h2 class="is-spaced title">Info</h2>
+
+            <b-field label="Path">
+              <b-input :value="general.info.binary" readonly></b-input>
+            </b-field>
+
+            <b-field label="Bundle">
+              <b-input :value="general.info.bundle" readonly></b-input>
+            </b-field>
+
+            <b-field label="Data Directory">
+              <b-input :value="general.info.data" readonly></b-input>
+            </b-field>
+
+            <b-field label="Version">
+              <b-input :value="general.info.semVer" readonly></b-input>
+            </b-field>
+
+          </section>
+
+        </b-tab-item>
+
         <b-tab-item label="Modules">
           <b-field>
             <b-input icon="search" v-model="modules.filter" type="search"
@@ -174,7 +238,7 @@ export default {
     },
   },
   methods: {
-    showModuleInfo(module) {
+    showModualeInfo(module) {
       this.modules.selected = {loading: true, name: module.name, exports: []}
       this.socket.emit('exports', {module: module.name}, data => {
         this.modules.selected = {loading: false, name: module.name, exports: data}
@@ -192,31 +256,48 @@ export default {
         this.ranges.loading = false
       })
     },
+    loadModules() {
+      this.modules.loading = true
+      this.socket.emit('modules', {}, modules => {
+        this.modules.filtered = this.modules.list = modules
+        this.modules.loading = false
+        this.modules.matcher = matcher(modules, 'name')
+      })
+    },
+    loadInfo() {
+      this.general.loading = true
+      this.socket.emit('info', {}, ({sec, info}) => {
+        this.general.loading = false
+        this.general.sec = sec
+        this.general.info = info
+      })
+    },
+    onCancel() {
+      this.$route.push({name: 'welcome'})
+    },
     createSocket() {
       let { device, bundle } = this.$route.params
       return io('/session', { path: '/msg' })
         .on('attached', console.info.bind(console))
         .on('close', console.warn.bind(console))
-        .on('disconnect', data => {
+        .on('disconnect', () => {
           this.err = 'Application connection is closed'
         })
         .on('device', dev => this.device = dev)
         .on('app', app => this.app = app)
+        .on('ready', () => {
+          this.loadModules()
+          this.loadRanges()
+          this.loadInfo()
+        })
+        .on('err', err => {
+          this.err = err
+        })
         .emit('attach', { device, bundle }, data => {
           if (data.status == 'error') {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
           }
-
-          // initialize
-          this.modules.loading = true
-          this.socket.emit('modules', {}, modules => {
-            this.modules.filtered = this.modules.list = modules
-            this.modules.loading = false
-            this.modules.matcher = matcher(modules, 'name')
-          })
-          this.loadRanges()
-          // todo: checksec
         })
     }
   },
@@ -253,8 +334,13 @@ export default {
           w: false,
           r: true,
         },
-      }
+      },
 
+      general: {
+        loading: false,
+        sec: {},
+        info: {},
+      }
     }
   },
   beforeDestroy() {
