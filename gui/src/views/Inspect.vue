@@ -24,14 +24,12 @@
     <div v-if="app">
       <b-tabs position="is-centered" :expanded="true" :animated="false">
         <b-tab-item label="General">
-          <section class="section">
-            <h2 class="is-spaced title">Security flags</h2>
-
+          <section class="section" v-show="!general.loading">
             <b-field grouped group-multiline>
               <div class="control">
                 <b-taglist attached>
                   <b-tag type="is-light">Encrypted</b-tag>
-                  <b-tag type="is-info">{{ general.sec.encrypted }}</b-tag>
+                  <b-tag type="is-dark">{{ general.sec.encrypted ? 'YES' : 'NO' }}</b-tag>
                 </b-taglist>
               </div>
 
@@ -58,35 +56,17 @@
                   <b-tag type="is-warning" v-else>N/A</b-tag>
                 </b-taglist>
               </div>
-
             </b-field>
-          </section>
-
-          <section class="section">
-            <h2 class="is-spaced title">Info</h2>
-
-            <b-field label="Path">
-              <b-input :value="general.info.binary" readonly></b-input>
-            </b-field>
-
-            <b-field label="Bundle">
-              <b-input :value="general.info.bundle" readonly></b-input>
-            </b-field>
-
-            <b-field label="Data Directory">
-              <b-input :value="general.info.data" readonly></b-input>
-            </b-field>
-
-            <b-field label="Version">
-              <b-input :value="general.info.semVer" readonly></b-input>
-            </b-field>
-
+            <b-field label="Path"><p>{{ general.info.binary }}</p></b-field>
+            <b-field label="Bundle"><p>{{ general.info.bundle }}</p></b-field>
+            <b-field label="Data Directory"><p>{{ general.info.data }}</p></b-field>
+            <b-field label="Version"><p>{{ general.info.semVer }}</p></b-field>
           </section>
 
         </b-tab-item>
 
         <b-tab-item label="Modules">
-          <b-field>
+          <b-field class="column">
             <b-input icon="search" v-model="modules.filter" type="search"
               placeholder="Filter modules..." expanded></b-input>
             <b-select v-model="modules.paginator">
@@ -157,7 +137,7 @@
         </b-tab-item>
 
         <b-tab-item label="Ranges">
-          <b-field grouped group-multiline>
+          <b-field grouped group-multiline class="column">
             <div class="control is-flex"><b-switch v-model="ranges.filter.x">Executable</b-switch></div>
             <div class="control is-flex"><b-switch v-model="ranges.filter.r">Readable</b-switch></div>
             <div class="control is-flex"><b-switch v-model="ranges.filter.w">Writable</b-switch></div>
@@ -297,6 +277,7 @@ export default {
           if (data.status == 'error') {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
+            this.general.loading = this.ranges.loading = this.modules.loading = false
           }
         })
     }
@@ -316,7 +297,7 @@ export default {
         filter: '',
         filtered: [],
         matcher: null,
-        loading: false,
+        loading: true,
         paginator: 0,
         selected: {
           exports: [],
@@ -327,7 +308,7 @@ export default {
       ranges: {
         list: [],
         filtered: [],
-        loading: false,
+        loading: true,
         paginator: 100,
         filter: {
           x: true,
@@ -337,7 +318,7 @@ export default {
       },
 
       general: {
-        loading: false,
+        loading: true,
         sec: {},
         info: {},
       }
