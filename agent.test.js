@@ -20,26 +20,24 @@ async function main(filename) {
   await script.load()
   let api = await script.getExports()
   let hr = '--'.repeat(10)
-  try {
-    for (let key of Object.keys(api)) {
-      let method = api[key]
-      if (method.length)
-        continue // only test functions with no parameter
 
-      let result = await method()
+  for (let key of Object.keys(api)) {
+    let method = api[key]
+    try {
       console.log(hr, key, hr)
+      let result = await method()
       console.log(result)
+    } catch(e) {
+      console.error(`unable to execute script`)
+      console.error(e)
     }
-  } catch(e) {
-    console.error(`unable execute script`)
-    console.error(e)
-  } finally {
-    console.log(hr, 'detach', hr)
-    await session.detach()
-    console.log('kill process', session.pid)
-    await dev.kill(session.pid)
-    console.log('bye')
   }
+
+  console.log(hr, 'detach', hr)
+  await session.detach()
+  console.log('kill process', session.pid)
+  await dev.kill(session.pid)
+  console.log('bye')
 }
 
 process.on('unhandledRejection', error => {
