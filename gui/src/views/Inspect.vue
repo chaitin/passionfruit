@@ -1,6 +1,16 @@
 <template>
   <div class="container is-fluid">
     <header>
+      <div class="is-pulled-right">
+        <b-tooltip label="Screenshot" position="is-left">
+          <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
+          <b-icon icon="camera"></b-icon></a>
+        </b-tooltip>
+        <b-tooltip label="Kill Process" position="is-left">
+          <button class="button is-danger" @click="kill"><b-icon icon="exit_to_app"></b-icon></button>
+        </b-tooltip>
+      </div>
+
       <nav class="breadcrumb nav-bar" aria-label="breadcrumbs">
         <ul>
           <li><a href="/">ipaspect</a></li>
@@ -242,6 +252,23 @@ export default {
         this.modules.filtered = this.modules.list = modules
         this.modules.loading = false
         this.modules.matcher = matcher(modules, 'name')
+      })
+    },
+    kill() {
+      this.$dialog.confirm({
+        title: 'Kill App',
+        message: 'Are you sure you want to <b>kill</b> the process? The session will end.',
+        confirmText: 'Kill',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => {
+          this.$router.push({name: 'apps', params: this.$route.params})
+          this.socket.emit('kill', {}, result => {
+            if (result) {
+              this.$toast.open(`${bundle} has been terminiated`)
+            }
+          })
+        }
       })
     },
     loadInfo() {
