@@ -165,7 +165,6 @@
             :data="ranges.list"
             :narrowed="true"
             :hasDetails="false"
-            :loading="ranges.loading"
             :paginated="ranges.paginator > 0"
             :per-page="ranges.paginator"
             default-sort="name">
@@ -240,7 +239,7 @@ export default {
         .filter(key => this.ranges.filter[key])
         .join('')
 
-      this.ranges.loading = false
+      this.ranges.loading = true
       this.socket.emit('ranges', { protection: protection }, ranges => {
         this.ranges.list = ranges
         this.ranges.loading = false
@@ -275,8 +274,10 @@ export default {
       this.general.loading = true
       this.socket.emit('info', {}, ({sec, info}) => {
         this.general.loading = false
-        this.general.sec = sec
-        this.general.info = info
+        if (sec)
+          this.general.sec = sec
+        if (info)
+          this.general.info = info
       })
     },
     onCancel() {
