@@ -218,7 +218,7 @@ export default {
     },
   },
   methods: {
-    showModualeInfo(module) {
+    showModuleInfo(module) {
       this.modules.selected = {loading: true, name: module.name, exports: []}
       this.socket.emit('exports', {module: module.name}, data => {
         this.modules.selected = {loading: false, name: module.name, exports: data}
