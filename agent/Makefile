@@ -1,5 +1,9 @@
+THEOS_DEVICE_IP = localhost
+THEOS_DEVICE_PORT = 2222
+
 ARCHS = armv7 armv7s arm64
 SDKVERSION = $(xcrun --sdk iphoneos --show-sdk-version)
+CFLAGS :=-I./include/
 
 include $(THEOS)/makefiles/common.mk
 
