@@ -1,21 +1,29 @@
-export function matcher(items, prop) {
-  return needle => {
-    if (!needle)
-      return items
+const SearchWorker = require('worker-loader!./worker.js')
 
-    return items.filter(item => {
-      let j = -1
-      let heystack = (prop ? item[prop] : item).toLowerCase()
-      for (let i = 0; i < needle.length; i++) {
-        let l = needle.charAt(i)
-        if (!l || l.match(/\s/)) continue
 
-        j = heystack.indexOf(l, j + 1)
-        if (j === -1)
-          return false
-      }
-      return true
-    })
+export class AsyncSearch {
+  constructor(list, key) {
+    this.key = key
+    this.worker = new SearchWorker()
+    this.worker.onmessage = ({data}) => {
+      this.callbacks.forEach(cb => cb(data))
+    }
+    this.callbacks = new Set()
+    this.update(list, key)
+  }
+
+  update(list) {
+    this.list = list
+    this.worker.postMessage({action: 'update', payload: list, key: this.key})
+  }
+
+  search(needle) {
+    this.query = needle
+    this.worker.postMessage({action: 'search', payload: needle})
+  }
+
+  onMatch(callback) {
+    this.callbacks.add(callback)
   }
 }
 

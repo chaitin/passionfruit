@@ -161,7 +161,7 @@
             </div>
           </b-field>
           <b-table
-            class="monospace"
+            class="monospace ranges"
             :data="ranges.list"
             :narrowed="true"
             :hasDetails="false"
@@ -198,6 +198,7 @@
               <option value="100">100 per page</option>
               <option value="200">200 per page</option>
             </b-select>
+            <p class="search-stat">{{ classes.filtered.length }} / {{ classes.list.length }}</p>
           </b-field>
 
           <ul class="oc-classes">
@@ -221,7 +222,7 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
-import { matcher, debounce } from '~/lib/utils'
+import { AsyncSearch, debounce } from '~/lib/utils'
 
 
 export default {
@@ -234,12 +235,13 @@ export default {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
     },
-    'modules.list': debounce(function(val, old) {
+    ['modules.list'](val, old) {
       this.modules.filter = ''
       this.modules.filtered = val
-    }),
+      this.modules.matcher.update(val)
+    },
     'modules.filter': debounce(function(val, old) {
-      this.modules.filtered = this.modules.matcher(val)
+      this.modules.matcher.search(val)
     }),
     'ranges.filter': {
       handler() {
@@ -248,12 +250,13 @@ export default {
       deep: true
     },
     'classes.filter': debounce(function(val, old) {
-      this.classes.filtered = this.classes.matcher(val)
+      this.classes.matcher.search(val)
     }),
-    'classes.list': debounce(function(val, old) {
+    ['classes.list'](val, old) {
       this.classes.filter = ''
       this.classes.filtered = val
-    }),
+      this.classes.matcher.update(val)
+    },
     ['classes.page'](val, old) {
       this.paginateClasses(val, this.classes.filtered, this.classes.paginator)
     },
@@ -288,7 +291,9 @@ export default {
       this.socket.emit('modules', {}, modules => {
         this.modules.list = modules
         this.modules.loading = false
-        this.modules.matcher = matcher(modules, 'name')
+        this.modules.matcher = new AsyncSearch(modules, 'name')
+        this.modules.filtered = []
+        this.modules.matcher.onMatch(result => this.modules.filtered = result)
       })
     },
     loadClasses() {
@@ -296,9 +301,10 @@ export default {
       this.socket.emit('classes', {}, classes => {
         this.classes.list = classes
         this.classes.loading = false
-        this.classes.matcher = matcher(classes)
+        this.classes.matcher = new AsyncSearch(classes)
+        this.classes.matcher.onMatch(result => this.classes.filtered = result)
         this.classes.page = 1
-        this.paginateClasses(this.classes.page, this.classes.filtered, this.classes.paginator)
+        this.classes.filtered = []
       })
     },
     paginateClasses(page, filtered, paginator) {
@@ -379,7 +385,7 @@ export default {
         filtered: [],
         matcher: null,
         loading: true,
-        paginator: 0,
+        paginator: 100,
         selected: {
           exports: [],
           name: null,
@@ -444,8 +450,7 @@ export default {
 ul.oc-classes {
   display: flex;
   flex-wrap: wrap;
-  margin: 1em 0;
-  padding: 1em;
+  padding: 0 1em;
 
   li {
     display: block;
@@ -458,6 +463,16 @@ ul.oc-classes {
       }
     }
   }
+}
+
+p.search-stat {
+  font-size: 0.75em;
+  line-height: 2.25em;
+  margin-left: 1em;
+}
+
+.ranges {
+  max-width: 720px;
 }
 
 </style>
