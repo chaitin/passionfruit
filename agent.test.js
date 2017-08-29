@@ -2,7 +2,7 @@ const frida = require('frida')
 const fridaLoad = require('frida-load')
 const { sleep, FridaUtil } = require('./lib/utils')
 
-async function main(filename) {
+async function main(methodName) {
   let dev = await frida.getUsbDevice()
   let apps = await dev.enumerateApplications()
 
@@ -21,15 +21,22 @@ async function main(filename) {
   let api = await script.getExports()
   let hr = '--'.repeat(10)
 
-  for (let key of Object.keys(api)) {
-    let method = api[key]
+  let callMethod = async (name) => {
     try {
-      console.log(hr, key, hr)
-      let result = await method()
+      console.log(hr, name, hr)
+      let result = await api[name]()
       console.log(result)
     } catch(e) {
       console.error(`unable to execute script`)
       console.error(e)
+    }
+  }
+
+  if (methodName) {
+    await callMethod(methodName)
+  } else {
+    for (let key of Object.keys(api)) {
+      await callMethod(key)
     }
   }
 

@@ -3,6 +3,7 @@
 #include <mach-o/fat.h>
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
+#import <Foundation/Foundation.h>
 
 #if __LP64__
 #define LC_ENCRYPT_INFO LC_ENCRYPTION_INFO_64
@@ -27,17 +28,19 @@
 #define FLAG_ARC 0x8
 #define FLAG_RESTRICT 0x10
 
+#define LOG(fmt, ...) NSLog(@"[ipaspect]" fmt, ##__VA_ARGS__)
+
 __attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
   int result = 0;
   struct mach_header *mh = (struct mach_header *)_dyld_get_image_header(0);
   struct load_command *lc;
 
   if (!mh) {
-    NSLog(@"unable to read macho header");
+    LOG("unable to read macho header");
     return -1;
   }
 
-  NSLog(@"checksec on %s", _dyld_get_image_name(0));
+  LOG("checksec on %s", _dyld_get_image_name(0));
 
   if (mh->magic == MH_MAGIC_64) {
     lc = (struct load_command *)((unsigned char *)mh +
@@ -48,16 +51,16 @@ __attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
   }
 
   if (mh->flags & MH_PIE) {
-    NSLog(@"[+] PIE\n");
+    LOG("[+] PIE\n");
     result |= FLAG_PIE;
   }
 
   if (mh->flags & MH_ALLOW_STACK_EXECUTION) {
-    NSLog(@"[+] ALLOW_STACK_EXECUTION\n");
+    LOG("[+] ALLOW_STACK_EXECUTION\n");
   }
 
   if (mh->flags & MH_NO_HEAP_EXECUTION) {
-    NSLog(@"[+] NO_HEAP_EXECUTION\n");
+    LOG("[+] NO_HEAP_EXECUTION\n");
   }
 
   for (int i = 0; i < mh->ncmds; i++) {
@@ -66,7 +69,7 @@ __attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
       struct encryption_info_command *eic =
           (struct encryption_info_command *)lc;
       if (eic->cryptid != 0) {
-        NSLog(@"[+] encrypted\n");
+        LOG("[+] encrypted\n");
         result |= FLAG_ENCRYPTED;
       }
       break;
@@ -89,10 +92,10 @@ __attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
         }
       }
       if (is_restricted) {
-        NSLog(@"[+] restricted\n");
+        LOG("[+] restricted\n");
         result |= FLAG_RESTRICT;
       } else {
-        NSLog(@"[+] segment: %s\n", seg->segname);
+        LOG("[+] segment: %s\n", seg->segname);
       }
       break;
     }
