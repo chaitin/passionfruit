@@ -189,8 +189,27 @@
           </b-table>
         </b-tab-item>
 
-        <b-tab-item label="Todo">
+        <b-tab-item label="Classes">
+          <b-field class="column">
+            <b-input icon="search" v-model="classes.filter" type="search"
+              placeholder="Filter classes..." expanded></b-input>
+            <b-select v-model="classes.paginator">
+              <option value="50">50 per page</option>
+              <option value="100">100 per page</option>
+              <option value="200">200 per page</option>
+            </b-select>
+          </b-field>
 
+          <ul class="oc-classes">
+            <li v-for="clz in classes.slice">{{ clz }}</li>
+          </ul>
+
+          <b-pagination
+            :total="classes.filtered.length"
+            :current.sync="classes.page"
+            order="is-centered"
+            :per-page="classes.paginator">
+          </b-pagination>
         </b-tab-item>
       </b-tabs>
     </div>
@@ -204,6 +223,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Icon from '~/components/Icon.vue'
 import { matcher, debounce } from '~/lib/utils'
 
+
 export default {
   components: {
     Icon,
@@ -214,16 +234,34 @@ export default {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
     },
+    'modules.list': debounce(function(val, old) {
+      this.modules.filter = ''
+      this.modules.filtered = val
+    }),
     'modules.filter': debounce(function(val, old) {
-      this.modules.filtered = val && val.length ?
-        this.modules.matcher(val) :
-        this.modules.list
-    }, 500),
+      this.modules.filtered = this.modules.matcher(val)
+    }),
     'ranges.filter': {
       handler() {
         this.loadRanges()
       },
       deep: true
+    },
+    'classes.filter': debounce(function(val, old) {
+      this.classes.filtered = this.classes.matcher(val)
+    }),
+    'classes.list': debounce(function(val, old) {
+      this.classes.filter = ''
+      this.classes.filtered = val
+    }),
+    ['classes.page'](val, old) {
+      this.paginateClasses(val, this.classes.filtered, this.classes.paginator)
+    },
+    ['classes.filtered'](val, old) {
+      this.paginateClasses(this.classes.page, val, this.classes.paginator)
+    },
+    ['classes.paginator'](val, old) {
+      this.paginateClasses(this.classes.page, this.classes.filtered, val)
     },
   },
   methods: {
@@ -248,10 +286,24 @@ export default {
     loadModules() {
       this.modules.loading = true
       this.socket.emit('modules', {}, modules => {
-        this.modules.filtered = this.modules.list = modules
+        this.modules.list = modules
         this.modules.loading = false
         this.modules.matcher = matcher(modules, 'name')
       })
+    },
+    loadClasses() {
+      this.classes.loading = true
+      this.socket.emit('classes', {}, classes => {
+        this.classes.list = classes
+        this.classes.loading = false
+        this.classes.matcher = matcher(classes)
+        this.classes.page = 1
+        this.paginateClasses(this.classes.page, this.classes.filtered, this.classes.paginator)
+      })
+    },
+    paginateClasses(page, filtered, paginator) {
+      this.classes.slice = filtered.slice(
+        (page - 1) * paginator, page * paginator).sort()
     },
     kill() {
       this.$dialog.confirm({
@@ -297,6 +349,7 @@ export default {
           this.loadModules()
           this.loadRanges()
           this.loadInfo()
+          this.loadClasses() // will probably slow down
         })
         .on('err', err => {
           this.err = err
@@ -349,6 +402,22 @@ export default {
         loading: true,
         sec: {},
         info: {},
+      },
+
+      classes: {
+        list: [],
+        filtered: [],
+        slice: [],
+        page: 1,
+        filter: '',
+        loading: false,
+        paginator: 100,
+      },
+
+      methods: {
+        clazz: '',
+        list: [],
+        loading: false,
       }
     }
   },
@@ -370,6 +439,25 @@ export default {
 .monospace {
   font-family: monospace;
   font-size: 14px;
+}
+
+ul.oc-classes {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1em 0;
+  padding: 1em;
+
+  li {
+    display: block;
+    padding: 4px;
+    overflow: hidden;
+
+    @for $i from 1 through 3 {
+      @media screen and (min-width: $i * 360px) {
+        width: round(percentage(1 / $i))
+      }
+    }
+  }
 }
 
 </style>
