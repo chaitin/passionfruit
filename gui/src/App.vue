@@ -15,8 +15,8 @@ $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
 
-$speed-slow: 150ms !default
-$speed-slower: 250ms !default
+$speed-slow: 150ms !default;
+$speed-slower: 250ms !default;
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
@@ -40,4 +40,5 @@ $link-focus-border: $primary;
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
 </style>
