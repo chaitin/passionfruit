@@ -1,18 +1,8 @@
 <template>
   <div class="container is-fluid">
-    <header>
-      <div class="is-pulled-right">
-        <b-tooltip label="Screenshot" position="is-left">
-          <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-          <b-icon icon="camera"></b-icon></a>
-        </b-tooltip>
-        <b-tooltip label="Kill Process" position="is-left">
-          <button class="button is-danger" @click="kill"><b-icon icon="exit_to_app"></b-icon></button>
-        </b-tooltip>
-      </div>
-
-      <nav class="breadcrumb nav-bar" aria-label="breadcrumbs">
-        <ul>
+    <header class="level is-marginless">
+      <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
+        <ul class="level-item">
           <li><a href="/">ipaspect</a></li>
           <li><router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
             <icon :icon="device.icon"></icon> {{ device.name }}</router-link></li>
@@ -25,10 +15,22 @@
           </li>
         </ul>
       </nav>
+
+      <div class="level-right">
+        <nav class="level-item">
+          <b-tooltip label="Screenshot" position="is-left">
+            <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
+            <b-icon icon="camera"></b-icon></a>
+          </b-tooltip>
+          <b-tooltip label="Kill Process" position="is-left">
+            <button class="button is-danger" @click="kill"><b-icon icon="exit_to_app"></b-icon></button>
+          </b-tooltip>
+        </nav>
+      </div>
     </header>
 
     <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
-    <b-loading :active="modules.loading || general.loading || ranges.loading"
+    <b-loading :active="modules.loading || general.loading || ranges.loading || modules.selected.loading"
       @cancel="onCancel" :canCancel="true"></b-loading>
 
     <div v-if="app">
@@ -76,74 +78,76 @@
         </b-tab-item>
 
         <b-tab-item label="Modules">
-          <b-field class="column">
-            <b-input icon="search" v-model="modules.filter" type="search"
-              placeholder="Filter modules..." expanded></b-input>
-            <b-select v-model="modules.paginator">
-              <option value="0">Don't paginate</option>
-              <option value="50">50 per page</option>
-              <option value="100">100 per page</option>
-              <option value="200">200 per page</option>
-            </b-select>
-          </b-field>
+          <div class="columns search">
+            <b-field class="column">
+              <b-input icon="search" v-model="modules.filter" type="search"
+                placeholder="Filter modules..." expanded></b-input>
+              <b-select v-model="modules.paginator">
+                <option value="0">Don't paginate</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+                <option value="200">200 per page</option>
+              </b-select>
+            </b-field>
+          </div>
 
-          <b-table
-            class="monospace"
-            :data="modules.filtered"
-            :narrowed="true"
-            :hasDetails="false"
-            :loading="modules.loading"
-            :paginated="modules.paginator > 0"
-            :per-page="modules.paginator"
-            default-sort="name">
+          <div class="columns">
+            <div class="column">
+              <b-table
+                :data="modules.filtered"
+                narrowed
+                :loading="modules.loading"
+                :paginated="modules.paginator > 0"
+                :per-page="modules.paginator"
+                :selected.sync="modules.selected.item"
+                default-sort="name">
 
-            <template scope="props">
-              <b-table-column field="name" label="Name" sortable>
-                <a href="#" @click="showModuleInfo(props.row)">{{ props.row.name }}</a>
-              </b-table-column>
+                <template scope="props">
+                  <b-table-column field="name" label="Name" sortable>
+                    {{ props.row.name }}
+                  </b-table-column>
 
-              <b-table-column field="baseAddress" label="Base" sortable>
-                {{ props.row.baseAddress.value.toString(16) }}
-              </b-table-column>
+                  <b-table-column field="baseAddress" label="Base" class="monospace" sortable>
+                    {{ props.row.baseAddress.value.toString(16) }}
+                  </b-table-column>
 
-              <b-table-column field="size" label="Size" sortable>
-                {{ props.row.size }}
-              </b-table-column>
+                  <b-table-column field="size" label="Size" class="monospace" sortable>
+                    {{ props.row.size }}
+                  </b-table-column>
 
-              <b-table-column field="path" label="Path">
-                {{ props.row.path }}
-              </b-table-column>
-            </template>
+                  <b-table-column field="path" label="Path" class="break-all">
+                    {{ props.row.path }}
+                  </b-table-column>
+                </template>
 
-            <div slot="empty" class="has-text-centered">
-              No matching module found
-            </div>
-          </b-table>
-
-          <b-modal :active.sync="showModuleInfoDialog" :width="720">
-            <div class="card">
-              <div class="card-content">
-                <div class="content">
-                  <h2>Export symbols from {{ modules.selected.name }}
-                    <a class="button is-loading is-light is-primary"
-                      v-show="modules.selected.loading">Loading</a></h2>
-
-                  <!-- todo: add hook! -->
-                  <!-- todo: search -->
-                  <ul v-if="modules.selected.exports.length || modules.selected.loading">
-                    <li v-for="symbol in modules.selected.exports">
-                      <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
-                      <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
-                      {{ symbol.name }}
-                    </li>
-                  </ul>
-                  <b-message v-else type="is-info" has-icon>
-                    No exported symbol found
-                  </b-message>
+                <div slot="empty" class="has-text-centered">
+                  No matching module found
                 </div>
-              </div>
+              </b-table>
             </div>
-          </b-modal>
+
+            <div class="column is-one-third" v-show="modules.selected.item && modules.selected.item.name">
+              <article>
+                <header><button class="delete is-pulled-right" aria-label="delete" @click="modules.selected.item = {}"></button> 
+                  Exported symbols from {{ modules.selected.item.name }}</header>
+
+                <!-- todo: add hook! -->
+                <!-- todo: search -->
+
+                <ul v-if="modules.selected.exports.length || modules.selected.loading" class="exports">
+                  <li v-for="symbol in modules.selected.exports" :key="symbol.name">
+                    <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
+                    <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
+                    {{ symbol.name }}
+                  </li>
+                </ul>
+                <b-message v-else type="is-info" has-icon>
+                  No exported symbol found
+                </b-message>
+              </article>
+            </div>
+          </div>
+
         </b-tab-item>
 
         <b-tab-item label="Ranges">
@@ -202,7 +206,7 @@
           </b-field>
 
           <ul class="oc-classes">
-            <li v-for="clz in classes.slice">{{ clz }}</li>
+            <li v-for="clz in classes.slice" :key="clz">{{ clz }}</li>
           </ul>
 
           <b-pagination
@@ -243,6 +247,10 @@ export default {
     'modules.filter': debounce(function(val, old) {
       this.modules.matcher.search(val)
     }),
+    ['modules.selected.item'](val, old) {
+      if (val && val.name)
+        this.loadModuleInfo(val)
+    },
     'ranges.filter': {
       handler() {
         this.loadRanges()
@@ -268,12 +276,15 @@ export default {
     },
   },
   methods: {
-    showModuleInfo(module) {
-      this.modules.selected = {loading: true, name: module.name, exports: []}
-      this.socket.emit('exports', {module: module.name}, data => {
-        this.modules.selected = {loading: false, name: module.name, exports: data}
+    loadModuleInfo(module) {
+      let { name } = module
+      let selected = this.modules.selected
+      selected.loading = true
+      selected.exports = []
+      this.socket.emit('exports', {module: name}, exports => {
+        selected.loading = false
+        selected.exports = exports
       })
-      this.showModuleInfoDialog = true
     },
     loadRanges() {
       let protection = Object.keys(this.ranges.filter)
@@ -387,6 +398,7 @@ export default {
         loading: true,
         paginator: 100,
         selected: {
+          item: {},
           exports: [],
           name: null,
         },
@@ -434,8 +446,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .breadcrumb {
-  margin: 10px auto;
+  margin: 10px 0;
 
   canvas {
     margin-right: 4px;
@@ -444,7 +457,10 @@ export default {
 
 .monospace {
   font-family: monospace;
-  font-size: 14px;
+}
+
+.break-all {
+  word-break: break-all;
 }
 
 ul.oc-classes {
@@ -465,6 +481,11 @@ ul.oc-classes {
   }
 }
 
+ul.exports {
+  font-size: 0.875em;
+  padding: 10px;
+}
+
 p.search-stat {
   font-size: 0.75em;
   line-height: 2.25em;
@@ -473,6 +494,10 @@ p.search-stat {
 
 .ranges {
   max-width: 720px;
+}
+
+.search {
+  margin-top: 0;
 }
 
 </style>
