@@ -1,0 +1,25 @@
+// devices
+
+export const GET_DEVICES = 'GET_DEVICES'
+export const GET_DEVICE = 'GET_DEVICE'
+export const GET_APPS = 'GET_APPS'
+export const GET_DEVICE_DETAIL = 'GET_DEVICE_DETAIL'
+
+export const DEVICES_LOADING = 'DEVICES_LOADING'
+export const APPS_LOADING = 'APPS_LOADING'
+
+export const ADD_DEVICE = 'ADD_DEVICE'
+export const REMOVE_DEVICE = 'REMOVE_DEVICE'
+export const UPDATE_DEVICES = 'UPDATE_DEVICES'
+export const SELECT_DEVICE = 'SELECT_DEVICE'
+export const DEVICE_ERROR = 'DEVICE_ERROR'
+export const DEVICE_DETAIL = 'DEVICE_DETAIL'
+
+export const LOADING_APPS = 'LOADING_APPS'
+export const UPDATE_APPS = 'UPDATE_APPS'
+export const APPS_ERROR = 'APPS_ERROR'
+
+export const LOAD_DEVICES = 'LOAD_DEVICES'
+export const LOAD_DEVICE_DETAIL = 'LOAD_DEVICE_DETAIL'
+export const DEVICE_DETAIL_LOADING = 'DEVICE_DETAIL_LOADING'
+export const LOAD_APPS = 'LOAD_APPS'

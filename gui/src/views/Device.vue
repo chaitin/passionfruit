@@ -104,6 +104,21 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+
+import {
+  SELECT_DEVICE,
+  GET_DEVICE,
+  GET_DEVICES,
+  LOAD_APPS,
+  APPS_ERROR,
+  LOAD_DEVICE_DETAIL,
+  DEVICE_DETAIL_LOADING,
+  APPS_LOADING,
+  DEVICES_LOADING,
+  GET_DEVICE_DETAIL,
+  GET_APPS,
+  DEVICE_ERROR
+} from '~/vuex/types'
 import Icon from '~/components/Icon.vue'
 
 export default {
@@ -136,13 +151,15 @@ export default {
       return this.view == 'large'
     },
     ...mapGetters({
-      device: 'device',
-      devices: 'devices',
-      deviceDetail: 'deviceDetail',
-      apps: 'apps',
-      appsLoadErr: 'appsLoadErr',
-      loadingDevices: 'loadingDevices',
-      loadingApps: 'loadingApps',
+      device: GET_DEVICE,
+      deviceErr: DEVICE_ERROR,
+      devices: GET_DEVICES,
+      deviceDetail: GET_DEVICE_DETAIL,
+      apps: GET_APPS,
+      appsLoadErr: APPS_ERROR,
+      loadingDevices: DEVICES_LOADING,
+      loadingDetail: DEVICE_DETAIL_LOADING,
+      loadingApps: APPS_LOADING,
     })
   },
   data() {
@@ -154,18 +171,18 @@ export default {
   },
   methods: {
     select() {
-      this.setDevice(this.$route.params.device)
+      this.selectDevice(this.$route.params.device)
       this.loadDeviceDetail()
     },
     home() {
       this.$route.push({'name': 'welcome'})
     },
     ...mapMutations({
-      setDevice: 'setDevice',
+      selectDevice: SELECT_DEVICE,
     }),
     ...mapActions({
-      refreshApps: 'refreshApps',
-      loadDeviceDetail: 'loadDeviceDetail',
+      refreshApps: LOAD_APPS,
+      loadDeviceDetail: LOAD_DEVICE_DETAIL,
     })
   }
 }

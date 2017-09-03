@@ -36,6 +36,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { GET_DEVICES, LOAD_DEVICES } from '~/vuex/types'
 import Icon from '~/components/Icon.vue'
 
 export default {
@@ -44,12 +45,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      devices: 'devices'
+      devices: GET_DEVICES
     })
   },
   methods: {
     ...mapActions({
-      refresh: 'loadDevices'
+      refresh: LOAD_DEVICES
     })
   },
   mounted() {

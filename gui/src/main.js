@@ -3,6 +3,11 @@ import Vuex from 'vuex'
 import io from 'socket.io-client'
 import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
+import axios from 'axios'
+
+//
+require('promise.prototype.finally').shim()
+axios.defaults.baseURL = '/api'
 
 
 import App from '~/App.vue'
