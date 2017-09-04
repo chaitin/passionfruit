@@ -1,5 +1,5 @@
 <template>
-  <!--todo: dialog
+  <!--todo: dialog-->
   <div class="column is-one-third" v-show="selected.item && selected.item.name">
     <article>
       <header><button class="delete is-pulled-right" aria-label="delete" @click="selected.item = {}"></button>
@@ -16,5 +16,5 @@
         No exported symbol found
       </b-message>
     </article>
-  </div> -->
+  </div>
 </template>
