@@ -30,7 +30,7 @@
     </header>
 
     <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
-    <b-loading :active="modules.loading || general.loading || ranges.loading || modules.selected.loading"
+    <b-loading :active="loading.modules || general.loading || ranges.loading"
       @cancel="onCancel" :canCancel="true"></b-loading>
 
     <div v-if="app">
@@ -78,76 +78,7 @@
         </b-tab-item>
 
         <b-tab-item label="Modules">
-          <div class="columns search">
-            <b-field class="column">
-              <b-input icon="search" v-model="modules.filter" type="search"
-                placeholder="Filter modules..." expanded></b-input>
-              <b-select v-model="modules.paginator">
-                <option value="0">Don't paginate</option>
-                <option value="50">50 per page</option>
-                <option value="100">100 per page</option>
-                <option value="200">200 per page</option>
-              </b-select>
-            </b-field>
-          </div>
-
-          <div class="columns">
-            <div class="column">
-              <b-table
-                :data="modules.filtered"
-                narrowed
-                :loading="modules.loading"
-                :paginated="modules.paginator > 0"
-                :per-page="modules.paginator"
-                :selected.sync="modules.selected.item"
-                default-sort="name">
-
-                <template scope="props">
-                  <b-table-column field="name" label="Name" sortable>
-                    {{ props.row.name }}
-                  </b-table-column>
-
-                  <b-table-column field="baseAddress" label="Base" class="monospace" sortable>
-                    {{ props.row.baseAddress.value.toString(16) }}
-                  </b-table-column>
-
-                  <b-table-column field="size" label="Size" class="monospace" sortable>
-                    {{ props.row.size }}
-                  </b-table-column>
-
-                  <b-table-column field="path" label="Path" class="break-all">
-                    {{ props.row.path }}
-                  </b-table-column>
-                </template>
-
-                <div slot="empty" class="has-text-centered">
-                  No matching module found
-                </div>
-              </b-table>
-            </div>
-
-            <div class="column is-one-third" v-show="modules.selected.item && modules.selected.item.name">
-              <article>
-                <header><button class="delete is-pulled-right" aria-label="delete" @click="modules.selected.item = {}"></button> 
-                  Exported symbols from {{ modules.selected.item.name }}</header>
-
-                <!-- todo: add hook! -->
-                <!-- todo: search -->
-
-                <ul v-if="modules.selected.exports.length || modules.selected.loading" class="exports">
-                  <li v-for="symbol in modules.selected.exports" :key="symbol.name">
-                    <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
-                    <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
-                    {{ symbol.name }}
-                  </li>
-                </ul>
-                <b-message v-else type="is-info" has-icon>
-                  No exported symbol found
-                </b-message>
-              </article>
-            </div>
-          </div>
-
+          <modules :loading="loading.modules" :list="modules" @reload:modules="loadModules" @expand:module="loadModuleInfo"></modules>
         </b-tab-item>
 
         <b-tab-item label="Ranges">
@@ -225,31 +156,22 @@
 
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import Icon from '~/components/Icon.vue'
 import { AsyncSearch, debounce } from '~/lib/utils'
+
+import Icon from '~/components/Icon.vue'
+import Modules from '~/views/Modules.vue'
 
 
 export default {
   components: {
     Icon,
+    Modules
   },
   watch: {
     // todo: detect device removal
     app(val, old) {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
-    },
-    ['modules.list'](val, old) {
-      this.modules.filter = ''
-      this.modules.filtered = val
-      this.modules.matcher.update(val)
-    },
-    'modules.filter': debounce(function(val, old) {
-      this.modules.matcher.search(val)
-    }),
-    ['modules.selected.item'](val, old) {
-      if (val && val.name)
-        this.loadModuleInfo(val)
     },
     'ranges.filter': {
       handler() {
@@ -277,13 +199,14 @@ export default {
   },
   methods: {
     loadModuleInfo(module) {
+      return
+
+      // todo: dialog
       let { name } = module
-      let selected = this.modules.selected
-      selected.loading = true
-      selected.exports = []
-      this.socket.emit('exports', {module: name}, exports => {
-        selected.loading = false
-        selected.exports = exports
+      this.loading.moduleInfo = true
+      this.socket.emit('exports', { module: name }, exports => {
+        this.loading.moduleInfo = false
+      //   selected.exports = exports
       })
     },
     loadRanges() {
@@ -298,13 +221,10 @@ export default {
       })
     },
     loadModules() {
-      this.modules.loading = true
+      this.loading.modules = true
       this.socket.emit('modules', {}, modules => {
-        this.modules.list = modules
-        this.modules.loading = false
-        this.modules.matcher = new AsyncSearch(modules, 'name')
-        this.modules.filtered = []
-        this.modules.matcher.onMatch(result => this.modules.filtered = result)
+        this.modules = modules
+        this.loading.modules = false
       })
     },
     loadClasses() {
@@ -375,7 +295,8 @@ export default {
           if (data.status == 'error') {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
-            this.general.loading = this.ranges.loading = this.modules.loading = false
+            this.loading.modules = false
+            this.general.loading = this.ranges.loading = false
           }
         })
     }
@@ -390,19 +311,24 @@ export default {
 
       // workaround: this can not be nested
       showModuleInfoDialog: false,
-      modules: {
-        list: [],
-        filter: '',
-        filtered: [],
-        matcher: null,
-        loading: true,
-        paginator: 100,
-        selected: {
-          item: {},
-          exports: [],
-          name: null,
-        },
+      modules: [],
+      loading: {
+        modules: false,
       },
+
+      // modules: {
+      //   list: [],
+      //   filter: '',
+      //   filtered: [],
+      //   matcher: null,
+      //   loading: true,
+      //   paginator: 100,
+      //   selected: {
+      //     item: {},
+      //     exports: [],
+      //     name: null,
+      //   },
+      // },
 
       ranges: {
         list: [],

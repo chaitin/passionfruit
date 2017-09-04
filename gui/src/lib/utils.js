@@ -15,15 +15,18 @@ export class AsyncSearch {
   update(list) {
     this.list = list
     this.worker.postMessage({action: 'update', payload: list, key: this.key})
+    return this
   }
 
   search(needle) {
     this.query = needle
     this.worker.postMessage({action: 'search', payload: needle})
+    return this
   }
 
   onMatch(callback) {
     this.callbacks.add(callback)
+    return this
   }
 }
 
