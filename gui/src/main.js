@@ -16,6 +16,8 @@ import store from '~/vuex'
 
 import "material-design-icons/iconfont/material-icons.css"
 
+import { ADD_DEVICE, REMOVE_DEVICE } from '~/vuex/types'
+
 Vue.use(Buefy)
 
 const v = new Vue({
@@ -28,11 +30,11 @@ const v = new Vue({
 const socket = io('/devices', { path: '/msg' })
 socket
   .on('deviceRemove', dev => {
-    store.commit('removeDevice', dev)
+    store.commit(REMOVE_DEVICE, dev)
     v.$toast.open(`${dev.name} has been removed`)
   })
   .on('deviceAdd', dev => {
-    store.commit('addDevice', dev)
+    store.commit(ADD_DEVICE, dev)
     v.$toast.open(`New device ${dev.name} has been connected`)
   })
   .on('warning', msg => v.$toast.open(msg))

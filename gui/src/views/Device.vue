@@ -127,18 +127,17 @@ export default {
   },
   watch: {
     $route() {
-      this.select()
+      if (this.checkDevices(this.devices))
+        this.select()
     },
     devices(value) {
-      this.select()
+      if (this.checkDevices(value))
+        this.select()
     },
     device(value, old) {
       if (value.id != old.id || !this.apps.length)
         this.refreshApps()
     }
-  },
-  mounted() {
-    this.select()
   },
   computed: {
     isGrid() {
@@ -169,13 +168,27 @@ export default {
       view: 'grid',
     }
   },
+  mounted() {
+    if (this.devices.length)
+      this.select()
+  },
   methods: {
-    select() {
-      this.selectDevice(this.$route.params.device)
-      this.loadDeviceDetail()
+    checkDevices(devices) {
+      let id = this.$route.params.device
+      if (!devices.length) {
+        this.$toast.open(`device ${id} no longer connected`)
+        this.home()
+        return false
+      }
+      return true
     },
     home() {
-      this.$route.push({'name': 'welcome'})
+      this.$router.push({'name': 'welcome'})
+    },
+    select(devices) {
+      let id = this.$route.params.device
+      this.selectDevice(id)
+      this.loadDeviceDetail()
     },
     ...mapMutations({
       selectDevice: SELECT_DEVICE,
