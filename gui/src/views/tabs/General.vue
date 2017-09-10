@@ -1,0 +1,76 @@
+<template>
+  <div>
+    <loading-tab v-if="loading"></loading-tab>
+    <section class="section" v-else>
+      <b-field grouped group-multiline>
+        <div class="control">
+          <b-taglist attached>
+            <b-tag type="is-light">Encrypted</b-tag>
+            <b-tag type="is-dark">{{ sec.encrypted ? 'YES' : 'NO' }}</b-tag>
+          </b-taglist>
+        </div>
+
+        <div class="control">
+          <b-taglist attached>
+            <b-tag type="is-light">PIE</b-tag>
+            <b-tag type="is-success" v-if="sec.arc">ENABLED</b-tag>
+            <b-tag type="is-warning" v-else>N/A</b-tag>
+          </b-taglist>
+        </div>
+
+        <div class="control">
+          <b-taglist attached>
+            <b-tag type="is-light">ARC</b-tag>
+            <b-tag type="is-success" v-if="sec.arc">ENABLED</b-tag>
+            <b-tag type="is-success" v-else>N/A</b-tag>
+          </b-taglist>
+        </div>
+
+        <div class="control">
+          <b-taglist attached>
+            <b-tag type="is-light">Canary</b-tag>
+            <b-tag type="is-success" v-if="sec.canary">ENABLED</b-tag>
+            <b-tag type="is-warning" v-else>N/A</b-tag>
+          </b-taglist>
+        </div>
+      </b-field>
+      <b-field label="Path">
+        <p>{{ info.binary }}</p>
+      </b-field>
+      <b-field label="Bundle">
+        <p>{{ info.bundle }}</p>
+      </b-field>
+      <b-field label="Data Directory">
+        <p>{{ info.data }}</p>
+      </b-field>
+      <b-field label="Version">
+        <p>{{ info.semVer }}</p>
+      </b-field>
+    </section>
+  </div>
+</template>
+
+<script>
+import LoadingTab from '~/components/LoadingTab.vue'
+
+export default {
+  components: { LoadingTab },
+  props: ['socket'],
+  data() {
+    return { loading: true, }
+  },
+  methods: {
+    load() {
+      this.loading = true
+      this.socket.emit('info', {}, ({ info, sec }) => {
+        this.loading = false
+        this.info = info
+        this.sec = sec
+      })
+    },
+  },
+  mounted() {
+    this.load()
+  }
+}
+</script>

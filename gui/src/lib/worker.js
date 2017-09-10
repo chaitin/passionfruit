@@ -22,7 +22,7 @@ onmessage = ({ data }) => {
   let { action, payload, key } = data
 
   if (action == 'update') {
-    list = payload
+    list = payload || []
     prop = key
   } else if (action == 'search') {
     postMessage(search(payload))
