@@ -40,7 +40,7 @@ export const mutations = {
     if (device.id == state.selected.id) {
       state.selected = {}
     }
-    state.devices = state.devices.filter(dev => dev.id !== device.id)
+    state.list = state.list.filter(dev => dev.id !== device.id)
   },
   [types.UPDATE_DEVICES]: (state, list) => {
     state.list = list

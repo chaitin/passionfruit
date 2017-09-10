@@ -46,6 +46,24 @@
       <b-field label="Version">
         <p>{{ info.semVer }}</p>
       </b-field>
+
+      <div v-if="info.urls">
+        <h3>Urls</h3>
+        <b-panel collapsible v-for="url in info.urls" :key="url.name">
+          <span slot="header">{{ url.name || '(empty name)' }}</span>
+          <ul>
+            <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li> 
+          </ul>
+        </b-panel>
+      </div>
+
+      <b-panel collapsible>
+        <!-- todo: json viewer -->
+        <span slot="header">Info.plist</span>
+        <div class="content">
+          <pre class="info-plist">{{ info.json }}</pre>
+        </div>
+      </b-panel>
     </section>
   </div>
 </template>
@@ -74,3 +92,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.content pre.info-plist {
+  display: flex;
+  width: calc(100% - 40px);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>

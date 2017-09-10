@@ -6,11 +6,13 @@
           <li>
             <a href="/">ipaspect</a>
           </li>
-          <li>
+          <li v-if="err">Unknown device</li>
+          <li v-else>
             <router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
               <icon :icon="device.icon"></icon> {{ device.name }}</router-link>
           </li>
-          <li class="is-active">
+          <li v-if="err">Unknown App</li>
+          <li v-else class="is-active">
             <a href="#" v-if="app" aria-current="page">
               <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
             <div class="tags has-addons">
@@ -134,6 +136,7 @@ export default {
           if (data.status == 'error') {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
+            this.loading = false
           }
         })
     }
