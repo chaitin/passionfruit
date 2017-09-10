@@ -52,16 +52,17 @@
         <b-panel collapsible v-for="url in info.urls" :key="url.name">
           <span slot="header">{{ url.name || '(empty name)' }}</span>
           <ul>
-            <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li> 
+            <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li>
           </ul>
         </b-panel>
       </div>
 
-      <b-panel collapsible>
-        <!-- todo: json viewer -->
+      <b-panel collapsible v-if="info.json">
         <span slot="header">Info.plist</span>
         <div class="content">
-          <pre class="info-plist">{{ info.json }}</pre>
+          <ul>
+            <tree-view :model="{ name: 'root', val: info.json }" class="info-plist"></tree-view>
+          </ul>
         </div>
       </b-panel>
     </section>
@@ -70,12 +71,17 @@
 
 <script>
 import LoadingTab from '~/components/LoadingTab.vue'
+import TreeView from '~/components/TreeView.vue'
 
 export default {
-  components: { LoadingTab },
+  components: { LoadingTab, TreeView },
   props: ['socket'],
   data() {
-    return { loading: true, }
+    return {
+      loading: true,
+      info: {},
+      sec: {}
+    }
   },
   methods: {
     load() {
@@ -93,11 +99,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.content pre.info-plist {
-  display: flex;
-  width: calc(100% - 40px);
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-</style>

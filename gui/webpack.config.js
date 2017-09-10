@@ -9,19 +9,21 @@ module.exports = {
     filename: 'build.js'
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-          loaders: {
-          }
+          loaders: {}
           // other vue-loader options go here
         }
       },
       {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.js$/,
@@ -45,8 +47,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: {
-      rewrites: [
-        {
+      rewrites: [{
           from: /^\/app\/.*$/,
           to: function() {
             return 'index.html';
