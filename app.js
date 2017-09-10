@@ -46,7 +46,7 @@ router
     let dev = await FridaUtil.getDevice(id)
     try {
       ctx.body = await dev.enumerateApplications()
-    } catch(ex) {
+    } catch (ex) {
       if (ex.message.indexOf('Unable to connect to remote frida-server') === 0)
         throw new InvalidDeviceError(id)
       else
@@ -76,12 +76,12 @@ app
     flush: require('zlib').Z_SYNC_FLUSH
   }))
   .use(bodyParser())
-  .use(async (ctx, next) => {
+  .use(async(ctx, next) => {
     try {
       await next()
     } catch (e) {
       if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError, InvalidDeviceError]
-          .some(clz => e instanceof clz)) {
+        .some(clz => e instanceof clz)) {
         ctx.throw(404, e.message)
       }
 
