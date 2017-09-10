@@ -11,6 +11,10 @@ export default {
       if (!radius)
         return '1em'
 
+      if (typeof radius === 'number') {
+        return radius / 16 + 'em'
+      }
+
       const matched = /^(\d+(?:\.\d+)?)(%|px|em|rem|vh|wh)$/.exec(radius)
       if (!matched)
         throw new Error(`invalid radius expression: ${radius}`)
