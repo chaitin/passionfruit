@@ -14,12 +14,17 @@
             <span>Display</span>
             <b-icon icon="arrow_drop_down"></b-icon>
           </button>
-          <b-dropdown-item value="grid"><b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
-          <b-dropdown-item value="large"><b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
-          <b-dropdown-item value="small"><b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
+          <b-dropdown-item value="grid">
+            <b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
+          <b-dropdown-item value="large">
+            <b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
+          <b-dropdown-item value="small">
+            <b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
         </b-dropdown>
         <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-          <b-icon icon="camera"></b-icon> <span>Screenshot</span></a>
+          <b-icon icon="camera"></b-icon>
+          <span>Screenshot</span>
+        </a>
       </b-field>
 
       <div v-if="deviceDetail" class="device-detail">
@@ -27,8 +32,7 @@
           <div class="control">
             <div class="tags has-addons">
               <span class="tag is-dark">{{ deviceDetail.DeviceName }}</span>
-              <span class="tag">{{ deviceDetail.ProductName }}
-                {{ deviceDetail.ProductVersion }}</span>
+              <span class="tag">{{ deviceDetail.ProductName }} {{ deviceDetail.ProductVersion }}</span>
             </div>
           </div>
           <div class="control">
@@ -55,20 +59,15 @@
                 <h3 :class="{ 'is-success': app.pid }">{{ app.name }} </h3>
                 <p class="has-text-grey">{{ app.identifier }}</p>
                 <!-- <div class="tags has-addons" v-if="app.pid">
-                  <span class="tag is-success">pid</span>
-                  <span class="tag">{{ app.pid }}</span>
-                </div> -->
+                          <span class="tag is-success">pid</span>
+                          <span class="tag">{{ app.pid }}</span>
+                        </div> -->
               </div>
             </router-link>
           </li>
         </ul>
 
-        <b-table v-else
-          :data="apps"
-          :narrowed="isSmallIcon"
-          :hasDetails="false"
-          :loading="loadingApps"
-          default-sort="name">
+        <b-table v-else :data="apps" :narrowed="isSmallIcon" :hasDetails="false" :loading="loadingApps" default-sort="name">
 
           <template scope="props">
             <b-table-column field="smallIcon" width="16" label="" v-show="isSmallIcon">
@@ -183,7 +182,7 @@ export default {
       return true
     },
     home() {
-      this.$router.push({'name': 'welcome'})
+      this.$router.push({ 'name': 'welcome' })
     },
     select(devices) {
       let id = this.$route.params.device
@@ -212,7 +211,7 @@ export default {
   margin: 2em 0;
 
   li {
-  	display: block;
+    display: block;
     padding: 4px;
     overflow: hidden;
 

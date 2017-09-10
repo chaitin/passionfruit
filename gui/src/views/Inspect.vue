@@ -47,49 +47,11 @@
         </b-tab-item>
 
         <b-tab-item label="Modules">
-          <modules-view :loading="modules.loading" :list="modules" @reload:modules="loadModules" @expand:module="loadModuleInfo"></modules-view>
+          <modules-view :socket="socket"></modules-view>
         </b-tab-item>
 
         <b-tab-item label="Ranges">
-          <b-field grouped group-multiline class="column">
-            <div class="control is-flex">
-              <b-switch v-model="ranges.filter.x">Executable</b-switch>
-            </div>
-            <div class="control is-flex">
-              <b-switch v-model="ranges.filter.r">Readable</b-switch>
-            </div>
-            <div class="control is-flex">
-              <b-switch v-model="ranges.filter.w">Writable</b-switch>
-            </div>
-            <div class="control is-flex">
-              <b-select v-model="ranges.paginator">
-                <option value="0">Don't paginate</option>
-                <option value="50">50 per page</option>
-                <option value="100">100 per page</option>
-                <option value="200">20 per page</option>
-              </b-select>
-            </div>
-          </b-field>
-          <b-table class="monospace ranges" :data="ranges.list" :narrowed="true" :hasDetails="false" :paginated="ranges.paginator > 0" :per-page="ranges.paginator" default-sort="name">
-
-            <template scope="props">
-              <b-table-column field="baseAddress" label="Base" sortable>
-                {{ props.row.baseAddress.value.toString(16) }}
-              </b-table-column>
-
-              <b-table-column field="size" label="Size" sortable>
-                {{ props.row.size }}
-              </b-table-column>
-
-              <b-table-column field="protection" label="Protection">
-                {{ props.row.protection }}
-              </b-table-column>
-            </template>
-
-            <div slot="empty" class="has-text-centered">
-              No matching range
-            </div>
-          </b-table>
+          <ranges-view :socket="socket"></ranges-view>
         </b-tab-item>
 
         <b-tab-item label="Classes">
@@ -111,6 +73,7 @@ import Icon from '~/components/Icon.vue'
 import ModulesView from '~/views/tabs/Modules.vue'
 import GeneralView from '~/views/tabs/General.vue'
 import ClassesView from '~/views/tabs/Classes.vue'
+import RangesView from '~/views/tabs/Ranges.vue'
 
 export default {
   components: {
@@ -118,6 +81,7 @@ export default {
     ModulesView,
     GeneralView,
     ClassesView,
+    RangesView,
   },
   watch: {
     // todo: detect device removal
@@ -125,47 +89,8 @@ export default {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
     },
-    'ranges.filter': {
-      handler() {
-        this.loadRanges()
-      },
-      deep: true
-    },
   },
   methods: {
-    loadModuleInfo(module) {
-      return
-
-      // todo: dialog
-      let { name } = module
-      this.loading.moduleInfo = true
-      this.socket.emit('exports', { module: name }, exports => {
-        this.loading.moduleInfo = false
-        //   selected.exports = exports
-      })
-    },
-    loadRanges() {
-      let protection = Object.keys(this.ranges.filter)
-        .filter(key => this.ranges.filter[key])
-        .join('')
-
-      this.ranges.loading = true
-      this.socket.emit('ranges', { protection: protection }, ranges => {
-        this.ranges.list = ranges
-        this.ranges.loading = false
-      })
-    },
-    loadModules() {
-      this.modules.loading = true
-      this.socket.emit('modules', {}, modules => {
-        this.modules = modules
-        this.modules.loading = false
-      })
-    },
-    paginateClasses(page, filtered, paginator) {
-      this.classes.slice = filtered.slice(
-        (page - 1) * paginator, page * paginator).sort()
-    },
     home() {
       this.$route.push({ name: 'welcome' })
     },
@@ -200,18 +125,15 @@ export default {
         .on('ready', () => {
           this.loading = false
           this.connected = true
-
-          this.loadModules()
-          this.loadRanges()
         })
         .on('err', err => {
           this.err = err
+          this.loading = false
         })
         .emit('attach', { device, bundle }, data => {
           if (data.status == 'error') {
             this.$toast.open(`failed to attach to ${bundle}`)
             this.err = data.message
-            this.modules.loading = this.ranges.loading = false
           }
         })
     }
@@ -225,27 +147,6 @@ export default {
       app: {},
       socket,
       device: {},
-
-      modules: [],
-
-      ranges: {
-        list: [],
-        filtered: [],
-        loading: true,
-        paginator: 100,
-        filter: {
-          x: true,
-          w: false,
-          r: true,
-        },
-      },
-
-
-      methods: {
-        clazz: '',
-        list: [],
-        loading: false,
-      }
     }
   },
   beforeDestroy() {
@@ -269,15 +170,6 @@ export default {
 
 .break-all {
   word-break: break-all;
-}
-
-ul.exports {
-  font-size: 0.875em;
-  padding: 10px;
-}
-
-.ranges {
-  max-width: 720px;
 }
 
 .search {

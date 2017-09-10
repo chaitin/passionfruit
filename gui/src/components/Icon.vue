@@ -1,5 +1,6 @@
 <template>
-  <canvas ref="icon" :width="w" :height="h"></canvas>
+  <canvas ref="icon" :width="w" :height="h">
+  </canvas>
 </template>
 
 <script>
@@ -22,7 +23,7 @@ export default {
       let imageData = ctx.createImageData(width, height)
       try {
         pixels = atob(pixels)
-      } catch(ex) {
+      } catch (ex) {
         return
       }
       let buf = Uint8ClampedArray.from(pixels, c => c.charCodeAt())
@@ -52,8 +53,8 @@ export default {
 </script>
 
 <style scoped>
-  canvas {
-    display: inline-block;
-    vertical-align: middle;
-  }
+canvas {
+  display: inline-block;
+  vertical-align: middle;
+}
 </style>

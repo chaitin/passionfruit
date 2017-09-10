@@ -1,8 +1,7 @@
 <template>
   <div>
     <b-field class="column">
-      <b-input icon="search" v-model="filter" type="search"
-        placeholder="Filter modules..." expanded></b-input>
+      <b-input icon="search" v-model="filter" type="search" placeholder="Filter modules..." expanded></b-input>
       <b-select v-model="paginator">
         <option value="0">Don't paginate</option>
         <option value="50">50 per page</option>
@@ -11,16 +10,7 @@
       </b-select>
     </b-field>
 
-    <b-table
-      class="column"
-      :data="filtered"
-      narrowed
-      :loading="loading"
-      :paginated="paginator > 0"
-      :per-page="paginator"
-      :selected.sync="selected"
-      default-sort="name">
-
+    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" :selected.sync="selected" default-sort="name">
       <template scope="props">
         <b-table-column field="name" label="Name" sortable>
           {{ props.row.name }}
@@ -51,17 +41,26 @@
 import { AsyncSearch, debounce } from '~/lib/utils'
 
 export default {
-  props: ['list', 'loading'],
+  props: ['socket'],
   methods: {
     load() {
-      this.$emit('reload:modules')
+      this.loading = true
+      this.socket.emit('modules', {}, modules => {
+        this.modules = modules
+        this.loading = false
+      })
     },
-    selectModule(module) {
-      this.$emit('expand:module', module)
+    select(module) {
+      let { name } = module
+      this.loading = true
+      this.socket.emit('exports', { module: name }, exports => {
+        this.loading = false
+        this.exports = exports
+      })
     },
   },
   watch: {
-    list(val, old) {
+    modules(val, old) {
       this.filter = ''
       this.filtered = val
       this.matcher.update(val)
@@ -69,24 +68,26 @@ export default {
     filter: debounce(function(val, old) {
       this.matcher.search(val)
     }),
-    ['selected.item'](val, old) {
+    selected(val, old) {
       if (val && val.name)
-        this.selectModule(val)
+        this.select(val)
     },
   },
   data() {
-    let matcher = new AsyncSearch([], 'name')
-      .onMatch(result => this.filtered = result)
-
     return {
+      loading: true,
       filter: '',
       filtered: [],
-      matcher,
+      matcher: null,
+      modules: [],
       selected: {},
+      exports: [],
       paginator: 100,
     }
   },
   mounted() {
+    this.matcher = new AsyncSearch([], 'name')
+      .onMatch(result => this.filtered = result)
     this.load()
   }
 }

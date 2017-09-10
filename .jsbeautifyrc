@@ -1,4 +1,11 @@
 {
-  "brace_style": "collapse,preserve-inline",
-  "indent_size": 2
+  "html": {
+    "wrap_line_length": 80,
+    "brace_style": "collapse",
+    "wrap_attributes": "force-aligned"
+  },
+  "js": {
+    "brace_style": "collapse,preserve-inline",
+    "indent_size": 2
+  }
 }
