@@ -4,7 +4,7 @@
 
     <div v-else>
       <b-field class="column">
-        <b-input icon="search" v-model="filter" type="search" placeholder="Filter .." expanded></b-input>
+        <b-input icon="search" v-model="filter" type="search" placeholder="Filter..." expanded></b-input>
         <b-select v-model="paginator">
           <option value="50">50 per page</option>
           <option value="100">100 per page</option>

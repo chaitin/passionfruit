@@ -60,8 +60,10 @@
       <b-panel collapsible v-if="info.json">
         <span slot="header">Info.plist</span>
         <div class="content">
+          <a class="button" @click="expandAll">Expand all</a>
+          <a class="button" @click="closeAll">Close all</a>
           <ul>
-            <tree-view :model="{ name: 'root', val: info.json }" class="info-plist"></tree-view>
+            <tree-view :model="{ name: 'root', val: info.json }" class="info-plist" ref="tree"></tree-view>
           </ul>
         </div>
       </b-panel>
@@ -92,6 +94,12 @@ export default {
         this.sec = sec
       })
     },
+    expandAll() {
+      this.$refs.tree.toggleAll(true)
+    },
+    closeAll() {
+      this.$refs.tree.toggleAll(false)
+    }
   },
   mounted() {
     this.load()

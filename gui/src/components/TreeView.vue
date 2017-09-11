@@ -1,9 +1,8 @@
 <template>
   <li class="treeview">
     <div :class="{bold: isFolder}" @click="toggle" v-if="model">
-      <span v-if="isFolder">
-        <b-icon icon="expand_less" v-if="open"></b-icon>
-        <b-icon icon="expand_more" v-else></b-icon>
+      <span class="toggle" :class="{ open }" v-if="isFolder">
+        <b-icon icon="expand_more"></b-icon>
       </span>
       <span v-else>
         <b-icon icon="bubble_chart"></b-icon>
@@ -12,7 +11,7 @@
       <code class="value" v-if="!isFolder">{{ model.val }}</code>
     </div>
     <ul v-show="open" v-if="isFolder">
-      <tree class="item" v-for="child in children" :key="child.name" :model="child">
+      <tree class="item" v-for="child in children" :ref="'child_' + child.name" :key="child.name" :model="child">
       </tree>
     </ul>
 
@@ -61,6 +60,18 @@ export default {
       if (this.isFolder) {
         this.open = !this.open
       }
+    },
+    toggleAll(status) {
+      this.open = status
+      if (this.isFolder) {
+        this.children.forEach(child => {
+          let list = this.$refs[`child_` + child.name]
+          if (list && list.length) {
+            let [vm, ] = list
+            vm.toggleAll(status)
+          }
+        })
+      }
     }
   }
 }
@@ -76,8 +87,19 @@ export default {
   }
   .bold {
     font-weight: bold;
-    .key {
+    .key,
+    .toggle {
       cursor: pointer;
+    }
+
+    .toggle {
+      .icon {
+        transform: rotate(-90deg);
+        transition: transform 0.2s ease-in-out;
+      }
+      &.open .icon {
+        transform: rotate(0);
+      }
     }
   }
   ul {
