@@ -1,11 +1,11 @@
+
 function toJSON(value) {
   if (value === null)
     return value
 
-  let clazz = value.class().toString()
-  if (clazz === '__NSCFArray')
+  if (value.isKindOfClass_(ObjC.classes.NSArray))
     return arrayFromNSArray(value)
-  else if (clazz === '__NSCFDictionary')
+  else if (value.isKindOfClass_(ObjC.classes.NSDictionary))
     return dictFromNSDictionary(value)
   else
     return value.toString()
