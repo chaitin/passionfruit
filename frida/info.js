@@ -12,6 +12,7 @@ module.exports = function() {
     name: 'CFBundleDisplayName',
     version: 'CFBundleVersion',
     semVer: 'CFBundleShortVersionString',
+    minOS: 'MinimumOSVersion',
   }
 
   let result = {
@@ -33,7 +34,7 @@ module.exports = function() {
   }
 
   for (let key in map) {
-    result[key] = json[key] || 'N/A'
+    result[key] = json[map[key]] || 'N/A'
   }
 
   return result
