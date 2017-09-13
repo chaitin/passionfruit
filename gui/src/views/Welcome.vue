@@ -5,7 +5,7 @@
         <h1 class="title has-text-grey-darker">ipaspect</h1>
         <aside class="menu">
           <p class="menu-label">
-            Devices
+            Devices <loading v-if="loadingDevices" class="is-pulled-right"></loading>
           </p>
           <ul class="menu-list">
             <li v-for="dev in devices" :key="dev.id">
@@ -36,16 +36,19 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { GET_DEVICES, LOAD_DEVICES } from '~/vuex/types'
+import { GET_DEVICES, LOAD_DEVICES, DEVICES_LOADING } from '~/vuex/types'
 import Icon from '~/components/Icon.vue'
+import Loading from '~/components/Loading.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
+    Loading,
   },
   computed: {
     ...mapGetters({
-      devices: GET_DEVICES
+      devices: GET_DEVICES,
+      loadingDevices: DEVICES_LOADING,
     })
   },
   methods: {

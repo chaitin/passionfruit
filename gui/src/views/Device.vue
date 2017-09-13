@@ -168,7 +168,6 @@ export default {
       deviceDetailErr: DEVICE_DETAIL_ERROR,
       apps: GET_APPS,
       appsLoadErr: APPS_ERROR,
-      loadingDevices: DEVICES_LOADING,
       loadingDetail: DEVICE_DETAIL_LOADING,
       loadingApps: APPS_LOADING,
     })

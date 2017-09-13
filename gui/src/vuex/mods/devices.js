@@ -43,6 +43,9 @@ export const mutations = {
     }
     state.list = state.list.filter(dev => dev.id !== device.id)
   },
+  [types.DEVICES_LOADING]: (state, loading) => {
+    state.loading = loading
+  },
   [types.UPDATE_DEVICES]: (state, list) => {
     state.list = list
   },
@@ -88,8 +91,10 @@ export const actions = {
     if (state.list.length)
       return
 
+    commit(types.DEVICES_LOADING, true)
     axios.get('/devices')
       .then(({ data }) => commit(types.UPDATE_DEVICES, data))
+      .finally(() => commit(types.DEVICES_LOADING, false))
   },
   [types.LOAD_DEVICE_DETAIL]({ commit, state }) {
     if (!state.selected.id)
