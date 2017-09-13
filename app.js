@@ -14,13 +14,7 @@ const Router = require('koa-router')
 
 const { FridaUtil, serializeDevice } = require('./lib/utils')
 const io = require('./lib/channels.js')
-const {
-  DeviceNotFoundError,
-  DeviceNotReadyError,
-  ProcessNotFoundError,
-  AppNotFoundError,
-  InvalidDeviceError,
-} = require('./lib/error')
+const { KnownError } = require('./lib/error')
 
 
 const app = new Koa()
@@ -80,8 +74,7 @@ app
     try {
       await next()
     } catch (e) {
-      if ([AppNotFoundError, DeviceNotFoundError, ProcessNotFoundError, InvalidDeviceError]
-        .some(clz => e instanceof clz)) {
+      if (e instanceof KnownError) {
         ctx.throw(404, e.message)
       }
 

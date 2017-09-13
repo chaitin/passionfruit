@@ -1,54 +1,62 @@
 <template>
   <div>
+    <b-message type="is-danger" has-icon v-if="deviceDetailErr">
+      {{ deviceDetailErr }}
+    </b-message>
+
     <b-message type="is-danger" has-icon v-if="appsLoadErr">
       {{ appsLoadErr }}
     </b-message>
 
     <div v-else>
-      <b-field class="is-pulled-right">
-        <b-dropdown v-model="view" is-align="right">
-          <button class="button is-light" slot="trigger">
-            <b-icon v-if="isGrid" icon="view_comfy"></b-icon>
-            <b-icon v-if="isLargeIcon" icon="hdr_strong"></b-icon>
-            <b-icon v-if="isSmallIcon" icon="hdr_weak"></b-icon>
-            <span>Display</span>
-            <b-icon icon="arrow_drop_down"></b-icon>
-          </button>
-          <b-dropdown-item value="grid">
-            <b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
-          <b-dropdown-item value="large">
-            <b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
-          <b-dropdown-item value="small">
-            <b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
-        </b-dropdown>
-        <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-          <b-icon icon="camera"></b-icon>
-          <span>Screenshot</span>
-        </a>
-      </b-field>
+      <header class="level">
+        <div v-if="deviceDetailLoading" class="level-left"><loading></loading></div>
 
-      <div v-if="deviceDetail" class="device-detail">
-        <div class="field is-grouped is-grouped-multiline">
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">{{ deviceDetail.DeviceName }}</span>
-              <span class="tag">{{ deviceDetail.ProductName }} {{ deviceDetail.ProductVersion }}</span>
+        <div v-if="deviceDetail" class="device-detail level-left">
+          <div class="field is-grouped is-grouped-multiline">
+            <div class="control">
+              <div class="tags has-addons">
+                <span class="tag is-dark">{{ deviceDetail.DeviceName }}</span>
+                <span class="tag">{{ deviceDetail.ProductName }} {{ deviceDetail.ProductVersion }}</span>
+              </div>
             </div>
-          </div>
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">Hardware</span>
-              <span class="tag">{{ deviceDetail.HardwareModel }}</span>
+            <div class="control">
+              <div class="tags has-addons">
+                <span class="tag is-dark">Hardware</span>
+                <span class="tag">{{ deviceDetail.HardwareModel }}</span>
+              </div>
             </div>
-          </div>
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">Serial</span>
-              <span class="tag">{{ deviceDetail.SerialNumber }}</span>
+            <div class="control">
+              <div class="tags has-addons">
+                <span class="tag is-dark">Serial</span>
+                <span class="tag">{{ deviceDetail.SerialNumber }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <b-field class="level-right">
+          <b-dropdown v-model="view" is-align="right">
+            <button class="button is-light" slot="trigger">
+              <b-icon v-if="isGrid" icon="view_comfy"></b-icon>
+              <b-icon v-if="isLargeIcon" icon="hdr_strong"></b-icon>
+              <b-icon v-if="isSmallIcon" icon="hdr_weak"></b-icon>
+              <span>Display</span>
+              <b-icon icon="arrow_drop_down"></b-icon>
+            </button>
+            <b-dropdown-item value="grid">
+              <b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
+            <b-dropdown-item value="large">
+              <b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
+            <b-dropdown-item value="small">
+              <b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
+          </b-dropdown>
+          <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
+            <b-icon icon="camera"></b-icon>
+            <span>Screenshot</span>
+          </a>
+        </b-field>
+      </header>
 
       <div class="is-clearfix">
         <ul v-if="isGrid" class="app-list">
@@ -59,9 +67,9 @@
                 <h3 :class="{ 'is-success': app.pid }">{{ app.name }} </h3>
                 <p class="has-text-grey">{{ app.identifier }}</p>
                 <!-- <div class="tags has-addons" v-if="app.pid">
-                          <span class="tag is-success">pid</span>
-                          <span class="tag">{{ app.pid }}</span>
-                        </div> -->
+                            <span class="tag is-success">pid</span>
+                            <span class="tag">{{ app.pid }}</span>
+                          </div> -->
               </div>
             </router-link>
           </li>
@@ -112,17 +120,20 @@ import {
   APPS_ERROR,
   LOAD_DEVICE_DETAIL,
   DEVICE_DETAIL_LOADING,
+  DEVICE_DETAIL_ERROR,
   APPS_LOADING,
   DEVICES_LOADING,
   GET_DEVICE_DETAIL,
   GET_APPS,
-  DEVICE_ERROR
+  DEVICE_ERROR,
 } from '~/vuex/types'
 import Icon from '~/components/Icon.vue'
+import Loading from '~/components/Loading.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
+    Loading,
   },
   watch: {
     $route() {
@@ -153,6 +164,8 @@ export default {
       deviceErr: DEVICE_ERROR,
       devices: GET_DEVICES,
       deviceDetail: GET_DEVICE_DETAIL,
+      deviceDetailLoading: DEVICE_DETAIL_LOADING,
+      deviceDetailErr: DEVICE_DETAIL_ERROR,
       apps: GET_APPS,
       appsLoadErr: APPS_ERROR,
       loadingDevices: DEVICES_LOADING,

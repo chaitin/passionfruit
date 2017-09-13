@@ -10,7 +10,7 @@ export const state = {
 
   device: {
     selected: {},
-    detail: {},
+    detail: null,
     loading: false,
     error: '',
 
@@ -29,6 +29,7 @@ export const getters = {
   [types.GET_APPS]: state => state.device.apps.list,
   [types.APPS_LOADING]: state => state.device.apps.loading,
   [types.GET_DEVICE_DETAIL]: state => state.device.detail,
+  [types.DEVICE_DETAIL_ERROR]: state => state.device.error,
   [types.DEVICE_DETAIL_LOADING]: state => state.device.loading,
   [types.APPS_ERROR]: state => state.device.apps.error,
 }
@@ -59,6 +60,12 @@ export const mutations = {
   [types.DEVICE_DETAIL]: (state, info) => {
     state.device.detail = info
   },
+  [types.DEVICE_DETAIL_ERROR]: (state, err) => {
+    state.device.error = err
+  },
+  [types.DEVICE_DETAIL_LOADING]: (state, loading) => {
+    state.device.loading = loading
+  },
   [types.DEVICE_ERROR]: (state, err) => {
     state.device.error = err
   },
@@ -88,8 +95,11 @@ export const actions = {
     if (!state.selected.id)
       return
 
+    commit(types.DEVICE_DETAIL_LOADING, true)
     axios.get(`/device/${state.selected.id}/info`)
       .then(({ data }) => commit(types.DEVICE_DETAIL, data))
+      .catch(({ response }) => commit(types.DEVICE_DETAIL_ERROR, response.data))
+      .finally(() => commit(types.DEVICE_DETAIL_LOADING, false))
   },
   [types.LOAD_APPS]({ commit, state }) {
     if (!state.selected.id)
@@ -98,7 +108,7 @@ export const actions = {
     commit(types.LOADING_APPS, true)
     axios.get(`/device/${state.selected.id}/apps/`)
       .then(({ data }) => commit(types.UPDATE_APPS, data))
-      .catch(err => commit(types.APPS_ERROR, err))
+      .catch(({ response }) => commit(types.APPS_ERROR, response.data))
       .finally(() => commit(types.LOADING_APPS, false))
   }
 }
