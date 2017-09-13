@@ -43,12 +43,8 @@ export const mutations = {
     }
     state.list = state.list.filter(dev => dev.id !== device.id)
   },
-  [types.DEVICES_LOADING]: (state, loading) => {
-    state.loading = loading
-  },
-  [types.UPDATE_DEVICES]: (state, list) => {
-    state.list = list
-  },
+  [types.DEVICES_LOADING]: (state, loading) => state.loading = loading,
+  [types.UPDATE_DEVICES]: (state, list) => state.list = list,
   [types.SELECT_DEVICE]: (state, id) => {
     let dev = state.list.find(dev => dev.id == id)
     if (dev) {
@@ -60,30 +56,18 @@ export const mutations = {
     }
     return Boolean(dev)
   },
-  [types.DEVICE_DETAIL]: (state, info) => {
-    state.device.detail = info
-  },
-  [types.DEVICE_DETAIL_ERROR]: (state, err) => {
-    state.device.error = err
-  },
-  [types.DEVICE_DETAIL_LOADING]: (state, loading) => {
-    state.device.loading = loading
-  },
-  [types.DEVICE_ERROR]: (state, err) => {
-    state.device.error = err
-  },
+  [types.DEVICE_DETAIL]: (state, info) => state.device.detail = info,
+  [types.DEVICE_DETAIL_ERROR]: (state, err) => state.device.error = err,
+  [types.DEVICE_DETAIL_LOADING]: (state, loading) => state.device.loading = loading,
+  [types.DEVICE_ERROR]: (state, err) => state.device.error = err,
   [types.LOADING_APPS]: (state, loading) => {
     let { apps } = state.device
     apps.loading = loading
     if (loading)
       apps.list = []
   },
-  [types.UPDATE_APPS]: (state, list) => {
-    state.device.apps.list = list
-  },
-  [types.APPS_ERROR]: (state, err) => {
-    state.device.apps.error = error
-  }
+  [types.UPDATE_APPS]: (state, list) => state.device.apps.list = list,
+  [types.APPS_ERROR]: (state, err) => state.device.apps.error = error,
 }
 
 export const actions = {

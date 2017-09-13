@@ -45,19 +45,19 @@
     <div v-if="connected">
       <b-tabs position="is-centered" :expanded="true" :animated="false">
         <b-tab-item label="General">
-          <general-view :socket="socket"></general-view>
+          <general-view></general-view>
         </b-tab-item>
 
         <b-tab-item label="Modules">
-          <modules-view :socket="socket"></modules-view>
+          <modules-view></modules-view>
         </b-tab-item>
 
         <b-tab-item label="Ranges">
-          <ranges-view :socket="socket"></ranges-view>
+          <ranges-view></ranges-view>
         </b-tab-item>
 
         <b-tab-item label="Classes">
-          <classes-view :socket="socket"></classes-view>
+          <classes-view></classes-view>
         </b-tab-item>
       </b-tabs>
     </div>
@@ -69,6 +69,7 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
+import { GET_SOCKET, STORE_SOCKET } from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
 
@@ -91,6 +92,11 @@ export default {
       if (val.name)
         document.title = `ipaspect: ${val.name}`
     },
+  },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
   },
   methods: {
     home() {
@@ -139,21 +145,27 @@ export default {
             this.loading = false
           }
         })
-    }
+    },
+    ...mapMutations({
+      storeSocket: STORE_SOCKET,
+    })
   },
   data() {
-    const socket = this.createSocket()
     return {
       err: '',
       loading: true,
       connected: false,
       app: {},
-      socket,
       device: {},
     }
   },
+  mounted() {
+    const socket = this.createSocket()
+    this.storeSocket(socket)
+  },
   beforeDestroy() {
-    this.socket.emit('detach')
+    if (this.socket)
+      this.socket.emit('detach')
   },
 }
 </script>

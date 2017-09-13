@@ -44,11 +44,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { GET_SOCKET } from '~/vuex/types'
+
 import LoadingTab from '~/components/LoadingTab.vue'
 
 export default {
   components: { LoadingTab },
-  props: ['socket'],
   data() {
     return {
       list: [],
@@ -62,29 +64,37 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
+  },
   watch: {
+    socket(val, old) {
+      this.load(socket)
+    },
     filter: {
       handler() {
         this.load()
       },
       deep: true
-    }
+    },
   },
   methods: {
-    load() {
+    load(socket) {
       let protection = Object.keys(this.filter)
         .filter(key => this.filter[key])
         .join('')
 
       this.loading = true
-      this.socket.emit('ranges', { protection: protection }, ranges => {
+      socket.emit('ranges', { protection: protection }, ranges => {
         this.list = ranges
         this.loading = false
       })
     },
   },
   mounted() {
-    this.load()
+    this.load(this.socket)
   }
 }
 </script>

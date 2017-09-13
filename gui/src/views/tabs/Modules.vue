@@ -38,14 +38,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 
 export default {
-  props: ['socket'],
   methods: {
-    load() {
+    load(socket) {
+      if (!socket)
+        return
+
       this.loading = true
-      this.socket.emit('modules', {}, modules => {
+      socket.emit('modules', {}, modules => {
         this.modules = modules
         this.loading = false
       })
@@ -59,7 +63,15 @@ export default {
       })
     },
   },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
+  },
   watch: {
+    socket(val, old) {
+      this.load(val)
+    },
     modules(val, old) {
       this.filter = ''
       this.filtered = val
@@ -88,7 +100,7 @@ export default {
   mounted() {
     this.matcher = new AsyncSearch([], 'name')
       .onMatch(result => this.filtered = result)
-    this.load()
+    this.load(this.socket)
   }
 }
 </script>

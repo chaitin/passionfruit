@@ -72,12 +72,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { GET_SOCKET } from '~/vuex/types'
 import LoadingTab from '~/components/LoadingTab.vue'
 import TreeView from '~/components/TreeView.vue'
 
 export default {
   components: { LoadingTab, TreeView },
-  props: ['socket'],
   data() {
     return {
       loading: true,
@@ -85,10 +86,26 @@ export default {
       sec: {}
     }
   },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
+  },
+  watch: {
+    socket(val, old) {
+      this.load(val)
+    },
+  },
+  mounted() {
+    this.load(this.socket)
+  },
   methods: {
-    load() {
+    load(socket) {
+      if (!socket)
+        return // todo: error message
+
       this.loading = true
-      this.socket.emit('info', {}, ({ info, sec }) => {
+      socket.emit('info', {}, ({ info, sec }) => {
         this.loading = false
         this.info = info
         this.sec = sec
@@ -100,9 +117,6 @@ export default {
     closeAll() {
       this.$refs.tree.toggleAll(false)
     }
-  },
-  mounted() {
-    this.load()
   }
 }
 </script>

@@ -24,15 +24,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import LoadingTab from '~/components/LoadingTab.vue'
+import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 
+
 export default {
-  props: ['socket'],
   components: { LoadingTab },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
+  },
   data() {
     return {
-      loading: true,
+      loading: false,
       list: [],
       filtered: [],
       slice: [],
@@ -43,6 +50,9 @@ export default {
     }
   },
   watch: {
+    socket(val, old) {
+      this.load(val)
+    },
     filter: debounce(function(val, old) {
       this.matcher.search(val)
     }),
@@ -63,9 +73,12 @@ export default {
     }
   },
   methods: {
-    load() {
+    load(socket) {
+      if (!socket)
+        return
+
       this.loading = true
-      this.socket.emit('classes', {}, classes => {
+      socket.emit('classes', {}, classes => {
         this.list = classes
         this.loading = false
       })
@@ -78,7 +91,7 @@ export default {
     this.matcher = new AsyncSearch().onMatch(result => {
       this.filtered = result
     })
-    this.load()
+    this.load(this.socket)
   },
 }
 </script>
