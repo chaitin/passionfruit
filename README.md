@@ -40,7 +40,7 @@ yarn
 npm run dev
 ```
 
-Not open localhost:8080 in browser.
+Now open localhost:8080 in browser.
 
 ## LICENCE
 
