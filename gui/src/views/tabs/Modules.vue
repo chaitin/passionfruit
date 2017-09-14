@@ -10,7 +10,7 @@
       </b-select>
     </b-field>
 
-    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" :selected.sync="selected" default-sort="name">
+    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" :selected.sync="selected" default-sort="name" detailed @details-open="openDetail">
       <template scope="props">
         <b-table-column field="name" label="Name" sortable>
           {{ props.row.name }}
@@ -29,6 +29,22 @@
         </b-table-column>
       </template>
 
+      <template slot="detail" scope="props">
+        <loading-tab v-if="props.row.loading"></loading-tab>
+        <article v-else class="content">
+          <h4 class="title">Exported Symbols</h4>
+          <ul class="exports" v-if="props.row.exports.length">
+            <li v-for="symbol in props.row.exports" :key="symbol.name">
+              <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
+              <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
+              {{ symbol.name }}
+            </li>
+          </ul>
+
+          <b-message v-else>This module has no exported symbol</b-message>
+        </article>
+      </template>
+
       <div slot="empty" class="has-text-centered">
         <div v-if="!loading">No matching module found</div>
       </div>
@@ -41,8 +57,12 @@
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
+import LoadingTab from '~/components/LoadingTab.vue'
 
 export default {
+  components: {
+    LoadingTab,
+  },
   methods: {
     load(socket) {
       if (!socket)
@@ -50,16 +70,23 @@ export default {
 
       this.loading = true
       socket.emit('modules', {}, modules => {
-        this.modules = modules
+        this.modules = modules.map(mod =>
+          Object.assign({
+            loading: false, exports: []
+          }, mod))
         this.loading = false
       })
     },
-    select(module) {
-      let { name } = module
-      this.loading = true
-      this.socket.emit('exports', { module: name }, exports => {
-        this.loading = false
-        this.exports = exports
+    openDetail(mod) {
+      if (mod.detailed)
+        return
+
+      mod.loading = true
+      mod.exports = []
+      mod.detailed = true
+      this.socket.emit('exports', { module: mod.name }, list => {
+        mod.loading = false
+        mod.exports = list
       })
     },
   },
@@ -80,10 +107,6 @@ export default {
     filter: debounce(function(val, old) {
       this.matcher.search(val)
     }),
-    selected(val, old) {
-      if (val && val.name)
-        this.select(val)
-    },
   },
   data() {
     return {
@@ -92,8 +115,7 @@ export default {
       filtered: [],
       matcher: null,
       modules: [],
-      selected: {},
-      exports: [],
+      selected: {}, // currently ignore it
       paginator: 100,
     }
   },
@@ -106,5 +128,29 @@ export default {
 </script>
 
 <style lang="scss">
+ul.exports {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
 
+  li {
+    display: block;
+    overflow: hidden;
+    padding: 0 4px;
+
+    @for $i from 1 through 4 {
+      @media screen and (min-width: $i * 360px) {
+        width: round(percentage(1 / $i))
+      }
+    }
+
+    .icon {
+      word-break: initial;
+      color: #b3b3b3;
+    }
+
+    word-break: break-all;
+  }
+}
 </style>
