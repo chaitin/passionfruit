@@ -52,12 +52,12 @@
           <modules-view></modules-view>
         </b-tab-item>
 
-        <b-tab-item label="Ranges">
-          <ranges-view></ranges-view>
-        </b-tab-item>
-
         <b-tab-item label="Classes">
           <classes-view></classes-view>
+        </b-tab-item>
+
+        <b-tab-item label="Ranges">
+          <ranges-view></ranges-view>
         </b-tab-item>
       </b-tabs>
     </div>

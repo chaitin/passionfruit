@@ -10,14 +10,14 @@
       </b-select>
     </b-field>
 
-    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" :selected.sync="selected" default-sort="name" detailed @details-open="openDetail">
+    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
       <template scope="props">
         <b-table-column field="name" label="Name" sortable>
           {{ props.row.name }}
         </b-table-column>
 
         <b-table-column field="baseAddress" label="Base" class="monospace" sortable>
-          {{ props.row.baseAddress.value.toString(16) }}
+          0x{{ props.row.baseAddress.value.toString(16) }}
         </b-table-column>
 
         <b-table-column field="size" label="Size" class="monospace" sortable>
@@ -34,7 +34,8 @@
         <article v-else class="content">
           <h4 class="title">Exported Symbols</h4>
           <ul class="exports" v-if="props.row.exports.length">
-            <li v-for="symbol in props.row.exports" :key="symbol.name">
+            <li v-for="symbol in props.row.exports" :key="symbol.name"
+                @click="openSymbolDetail(props.row, symbol)">
               <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
               <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
               {{ symbol.name }}
@@ -50,6 +51,24 @@
       </div>
     </b-table>
 
+    <b-modal :active.sync="symbolDialogActive" :width="640">
+      <div class="card" v-if="symbol.symbol">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+              <p class="title is-4">{{ symbol.mod.name }}!{{ symbol.symbol.name }}</p>
+              <p class="subtitle is-6">Address: 0x{{ symbol.symbol.address.value.toString(16) }}</p>
+
+              <p>Todo: Set argument types</p>
+              <p>
+                <a class="button"><b-icon icon="add"></b-icon> <span>Add to Interceptor</span></a>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -76,6 +95,10 @@ export default {
           }, mod))
         this.loading = false
       })
+    },
+    openSymbolDetail(mod, symbol) {
+      this.symbolDialogActive = true
+      this.symbol = { mod, symbol }
     },
     openDetail(mod) {
       if (mod.detailed)
@@ -115,8 +138,11 @@ export default {
       filtered: [],
       matcher: null,
       modules: [],
-      selected: {}, // currently ignore it
       paginator: 100,
+
+      // selected symbol
+      symbolDialogActive: false,
+      symbol: {},
     }
   },
   mounted() {
@@ -136,8 +162,9 @@ ul.exports {
 
   li {
     display: block;
-    overflow: hidden;
+    word-break: break-all;
     padding: 0 4px;
+    cursor: pointer;
 
     @for $i from 1 through 4 {
       @media screen and (min-width: $i * 360px) {
@@ -149,8 +176,6 @@ ul.exports {
       word-break: initial;
       color: #b3b3b3;
     }
-
-    word-break: break-all;
   }
 }
 </style>
