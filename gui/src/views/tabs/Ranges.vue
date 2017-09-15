@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ranges">
     <b-field grouped group-multiline class="column">
       <div class="control is-flex">
         <b-switch v-model="filter.x">Executable</b-switch>
@@ -20,7 +20,7 @@
       </div>
     </b-field>
 
-    <b-table class="monospace ranges" :data="list" :narrowed="true" :hasDetails="false" :paginated="paginator > 0" :per-page="paginator" :loading="loading" default-sort="name">
+    <b-table class="monospace" :data="list" :narrowed="true" :hasDetails="false" :paginated="paginator > 0" :per-page="paginator" :loading="loading" default-sort="name">
       <template scope="props">
         <b-table-column field="baseAddress" label="Base" sortable>
           {{ props.row.baseAddress.value.toString(16) }}
@@ -102,5 +102,6 @@ export default {
 <style lang="scss">
 .ranges {
   max-width: 720px;
+  margin: auto;
 }
 </style>
