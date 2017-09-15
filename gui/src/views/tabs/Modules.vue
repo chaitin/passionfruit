@@ -34,11 +34,10 @@
         <article v-else class="content">
           <h4 class="title">Exported Symbols</h4>
           <ul class="exports" v-if="props.row.exports.length">
-            <li v-for="symbol in props.row.exports" :key="symbol.name"
-                @click="openSymbolDetail(props.row, symbol)">
+            <li v-for="symbol in props.row.exports" :key="symbol.name">
               <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
               <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
-              {{ symbol.name }}
+              <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
             </li>
           </ul>
 
@@ -162,9 +161,10 @@ ul.exports {
 
   li {
     display: block;
-    word-break: break-all;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
     padding: 0 4px;
-    cursor: pointer;
 
     @for $i from 1 through 4 {
       @media screen and (min-width: $i * 360px) {
@@ -175,6 +175,11 @@ ul.exports {
     .icon {
       word-break: initial;
       color: #b3b3b3;
+    }
+
+    .name {
+      font-family: monospace;
+      cursor: pointer;
     }
   }
 }
