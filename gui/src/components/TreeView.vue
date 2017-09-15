@@ -1,6 +1,6 @@
 <template>
   <li class="treeview">
-    <div :class="{bold: isFolder}" @click="toggle" v-if="model">
+    <div :class="{ bold: isFolder }" @click="toggle" v-if="model">
       <span class="toggle" :class="{ open }" v-if="isFolder">
         <b-icon icon="expand_more"></b-icon>
       </span>
@@ -11,7 +11,8 @@
       <code class="value" v-if="!isFolder">{{ model.val }}</code>
     </div>
     <ul v-show="open" v-if="isFolder">
-      <tree class="item" v-for="child in children" :ref="'child_' + child.name" :key="child.name" :model="child">
+      <tree class="item" v-for="child in model.children"
+        :ref="id(child)" :key="child.name" :model="child">
       </tree>
     </ul>
 
@@ -19,43 +20,25 @@
 </template>
 
 <script>
-
 export default {
   name: 'tree',
-  props: ['model'],
+  props: {
+    model: Object,
+  },
   data() {
     return {
-      open: false
+      open: this.model.open,
     }
   },
   computed: {
-    name() {
-      if (model)
-        return model.name || 'root'
-    },
-    children() {
-      if (!this.model)
-        return this.model
-
-      let val = this.model.val
-      if (/^string|number$/.exec(typeof val)) {
-        return null
-      }
-
-      if (Array.isArray(val) || typeof val === 'object') {
-        return Object.keys(val).map(key => ({
-          name: key,
-          val: val[key]
-        }))
-      } else {
-        throw new Error(`unknown type: ${val}`)
-      }
-    },
     isFolder() {
-      return this.children && this.children.length
-    }
+      return this.model.children && this.model.children.length
+    },
   },
   methods: {
+    id(node) {
+      return 'child_' + node.name
+    },
     toggle() {
       if (this.isFolder) {
         this.open = !this.open
@@ -72,7 +55,7 @@ export default {
           }
         })
       }
-    }
+    },
   }
 }
 </script>
