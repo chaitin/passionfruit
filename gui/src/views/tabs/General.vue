@@ -65,10 +65,15 @@
         <span slot="header">Metainfo</span>
         <div class="content">
           <b-field class="column">
-            <a class="button" @click="expandAll"><b-icon icon="add"></b-icon><span>Expand all</span></a>
-            <a class="button" @click="closeAll"><b-icon icon="remove"></b-icon><span>Close all</span></a>
-            <b-input icon="search" v-model="filter" type="search"
-              placeholder="Search metainfo..." expanded></b-input>
+            <a class="button" @click="expandAll">
+              <b-icon icon="add"></b-icon>
+              <span>Expand all</span>
+            </a>
+            <a class="button" @click="closeAll">
+              <b-icon icon="remove"></b-icon>
+              <span>Close all</span>
+            </a>
+            <b-input icon="search" v-model="filter" type="search" placeholder="Search metainfo..." expanded></b-input>
           </b-field>
 
           <ul class="is-marginless">
@@ -108,33 +113,72 @@ export default {
       this.load(val)
     },
     filter: debounce(function(val, old) {
-      // todo
-
+      this.updateTree(this.info.json, val)
     }),
   },
   mounted() {
     this.load(this.socket)
   },
   methods: {
-    toTree(root) {
-      const expand = node => {
-        if (Array.isArray(node) || typeof node === 'object') {
-          return Object.keys(node).map(name => {
-            let val = node[name]
-            let result = { name }
-            if (/^string|number$/.exec(typeof val))
-              result.val = val
-            else
-              result.children = expand(val)
+    updateTree(root, filter) {
+      let isMatch, needle
+      if (filter && filter.length) {
+        needle = filter.toLowerCase()
+        isMatch = haystack => {
+          if (!haystack) return false
+          haystack = haystack.toLowerCase()
 
-            return result
-          })
+          let j = -1
+          for (let i = 0; i < needle.length; i++) {
+            let ch = needle.charAt(i)
+            if (!ch || ch.match(/\s/)) continue
+
+            j = haystack.indexOf(ch, j + 1)
+            if (j === -1)
+              return false
+          }
+          return true
+        }
+      }
+
+      const expand = (node, preserve) => {
+        if (Array.isArray(node) || typeof node === 'object') {
+          let array = []
+
+          for (let name in node) {
+            if (node.hasOwnProperty(name)) {
+              let val = node[name]
+              let item = { name }
+              let add = true
+
+              switch(typeof val) {
+              case 'string':
+                if (!preserve && needle) add = isMatch(val)
+                // THERE IS NO BREAK ON PURPOSE
+              case 'number':
+                item.val = val
+                break
+              default:
+                // force not skipping first level children
+                let nameMatches = needle && isMatch(name)
+                item.children = expand(val, nameMatches)
+                if (needle) {
+                  item.open = true
+                  add = preserve || item.children.length || nameMatches
+                }
+              }
+              if (add)
+                array.push(item)
+            }
+          }
+
+          return array
         }
         console.warn('argument not supported', node)
       }
 
       let children = expand(root)
-      return { name: 'Info.plist', children }
+      this.tree = { name: 'Info.plist', children, open: true }
     },
     load(socket) {
       if (!socket)
@@ -145,10 +189,8 @@ export default {
         this.loading = false
         this.info = info
         this.filter = ''
-        this.tree = this.toTree(info.json)
+        this.updateTree(info.json)
         this.sec = sec
-
-        console.log(this.tree)
       })
     },
     expandAll() {

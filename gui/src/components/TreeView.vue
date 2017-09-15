@@ -47,7 +47,7 @@ export default {
     toggleAll(status) {
       this.open = status
       if (this.isFolder) {
-        this.children.forEach(child => {
+        this.model.children.forEach(child => {
           let list = this.$refs[`child_` + child.name]
           if (list && list.length) {
             let [vm, ] = list
