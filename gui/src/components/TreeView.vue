@@ -1,13 +1,13 @@
 <template>
   <li class="treeview">
-    <div :class="{ bold: isFolder }" @click="toggle" v-if="model">
-      <span class="toggle" :class="{ open }" v-if="isFolder">
+    <div :class="{ bold: isFolder }" v-if="model">
+      <span v-if="isFolder" class="toggle" :class="{ open }" @click="toggle">
         <b-icon icon="expand_more"></b-icon>
       </span>
-      <span v-else>
+      <span v-else @click="toggle">
         <b-icon icon="bubble_chart"></b-icon>
       </span>
-      <span class="key">{{ model.name }}</span>
+      <span class="key" @click="toggle">{{ model.name }}</span>
       <code class="value" v-if="!isFolder">{{ model.val }}</code>
     </div>
     <ul v-show="open" v-if="isFolder">

@@ -67,11 +67,11 @@
           <b-field class="column">
             <a class="button" @click="expandAll">
               <b-icon icon="add"></b-icon>
-              <span>Expand all</span>
+              <span>Expand All</span>
             </a>
             <a class="button" @click="closeAll">
               <b-icon icon="remove"></b-icon>
-              <span>Close all</span>
+              <span>Collapse All</span>
             </a>
             <b-input icon="search" v-model="filter" type="search" placeholder="Search metainfo..." expanded></b-input>
           </b-field>
