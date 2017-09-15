@@ -46,9 +46,39 @@ class Database {
     }
     return statement
   }
+
+  close() {
+    return this.db.close()
+  }
+}
+
+
+function queryTable(filename, table) {
+  let db = new Database(filename)
+  let result = {
+    header: db.columns(),
+    data: db.query()
+  }
+  db.close()
+}
+
+function query(filename, sql) {
+  let db = new Database(filename)
+  let statement = db.prepare(sql)
+  let result = db.all(statement)
+  db.close()
+  return result
+}
+
+function tables(filename) {
+  let db = new Database(filename)
+  let tables = db.tables()
+  db.close()
+  return tables
 }
 
 module.exports = {
   // todo: design the api?
   Database,
+  queryTable
 }
