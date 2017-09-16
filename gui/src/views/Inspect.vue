@@ -125,7 +125,7 @@ export default {
         .on('attached', console.info.bind(console))
         .on('close', console.warn.bind(console))
         .on('disconnect', () => {
-          this.err = 'Application connection is closed'
+          this.err = 'Application disconnected'
           this.connected = false
         })
         .on('device', dev => this.device = dev)
