@@ -37,11 +37,14 @@
             </b-taglist>
           </div>
         </b-field>
-        <b-field label="Path">
-          <p>{{ info.binary }}</p>
+        <b-field label="Identifier">
+          <p>{{ info.id }}</p>
         </b-field>
         <b-field label="Bundle">
           <p>{{ info.bundle }}</p>
+        </b-field>
+        <b-field label="Path">
+          <p>{{ info.binary }}</p>
         </b-field>
         <b-field label="Data Directory">
           <p>{{ info.data }}</p>
@@ -49,6 +52,8 @@
         <b-field label="Version">
           <p>{{ info.semVer }}</p>
         </b-field>
+
+        <hr>
 
         <div v-if="info.urls">
           <h3>URL Scheme</h3>
@@ -61,26 +66,24 @@
         </div>
       </div>
 
-      <b-panel class="column" collapsible v-if="tree">
-        <span slot="header">Metainfo</span>
-        <div class="content">
-          <b-field class="column">
-            <a class="button" @click="expandAll">
-              <b-icon icon="add"></b-icon>
-              <span>Expand All</span>
-            </a>
-            <a class="button" @click="closeAll">
-              <b-icon icon="remove"></b-icon>
-              <span>Collapse All</span>
-            </a>
-            <b-input icon="search" v-model="filter" type="search" placeholder="Search metainfo..." expanded></b-input>
-          </b-field>
+      <div class="column content" v-if="tree">
+        <h3 class="title">Metainfo</h3>
+        <b-field class="column">
+          <a class="button" @click="expandAll">
+            <b-icon icon="add"></b-icon>
+            <span>Expand All</span>
+          </a>
+          <a class="button" @click="closeAll">
+            <b-icon icon="remove"></b-icon>
+            <span>Collapse All</span>
+          </a>
+          <b-input icon="search" v-model="filter" type="search" placeholder="Search metainfo..." expanded></b-input>
+        </b-field>
 
-          <ul class="is-marginless">
-            <tree-view :model="tree" class="info-plist" ref="tree"></tree-view>
-          </ul>
-        </div>
-      </b-panel>
+        <ul class="is-marginless">
+          <tree-view :model="tree" class="info-plist" ref="tree"></tree-view>
+        </ul>
+      </div>
     </section>
   </div>
 </template>
@@ -151,21 +154,21 @@ export default {
               let item = { name }
               let add = true
 
-              switch(typeof val) {
-              case 'string':
-                if (!preserve && needle) add = isMatch(val)
+              switch (typeof val) {
+                case 'string':
+                  if (!preserve && needle) add = isMatch(val)
                 // THERE IS NO BREAK ON PURPOSE
-              case 'number':
-                item.val = val
-                break
-              default:
-                // force not skipping first level children
-                let nameMatches = needle && isMatch(name)
-                item.children = expand(val, nameMatches)
-                if (needle) {
-                  item.open = true
-                  add = preserve || item.children.length || nameMatches
-                }
+                case 'number':
+                  item.val = val
+                  break
+                default:
+                  // force not skipping first level children
+                  let nameMatches = needle && isMatch(name)
+                  item.children = expand(val, nameMatches)
+                  if (needle) {
+                    item.open = true
+                    add = preserve || item.children.length || nameMatches
+                  }
               }
               if (add)
                 array.push(item)

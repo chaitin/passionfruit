@@ -12,15 +12,15 @@
 
     <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
       <template scope="props">
-        <b-table-column field="name" label="Name" sortable>
+        <b-table-column field="name" label="Name" sortable width="320">
           {{ props.row.name }}
         </b-table-column>
 
-        <b-table-column field="baseAddress" label="Base" class="monospace" sortable>
+        <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
           0x{{ props.row.baseAddress.value.toString(16) }}
         </b-table-column>
 
-        <b-table-column field="size" label="Size" class="monospace" sortable>
+        <b-table-column field="size" label="Size" class="monospace" sortable width="120">
           {{ props.row.size }}
         </b-table-column>
 
@@ -31,18 +31,27 @@
 
       <template slot="detail" scope="props">
         <loading-tab v-if="props.row.loading"></loading-tab>
-        <article v-else class="content">
-          <h4 class="title">Exported Symbols</h4>
-          <ul class="exports" v-if="props.row.exports.length">
-            <li v-for="symbol in props.row.exports" :key="symbol.name">
-              <b-icon icon="functions" v-show="symbol.type == 'function'"></b-icon>
-              <b-icon icon="title" v-show="symbol.type == 'symbol'"></b-icon>
+        <b-panel collapsible v-if="props.index == 0">
+          <span slot="header">Imports</span>
+          <ul class="imports content">
+            <li v-for="symbol in imports" :key="symbol.name">
+              <b-icon icon="functions"></b-icon>
               <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
             </li>
           </ul>
+        </b-panel>
 
-          <b-message v-else>This module has no exported symbol</b-message>
-        </article>
+        <b-panel collapsible v-if="props.row.exports.length">
+          <span slot="header">Exports</span>
+          <ul class="exports">
+            <li v-for="symbol in props.row.exports" :key="symbol.name">
+              <b-icon icon="functions"></b-icon>
+              <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
+            </li>
+          </ul>
+        </b-panel>
+        <b-message v-else>This module has no exported symbol</b-message>
+
       </template>
 
       <div slot="empty" class="has-text-centered">
@@ -56,11 +65,17 @@
           <div class="media">
             <div class="media-content">
               <p class="title is-4">{{ symbol.mod.name }}!{{ symbol.symbol.name }}</p>
-              <p class="subtitle is-6">Address: 0x{{ symbol.symbol.address.value.toString(16) }}</p>
+              <p class="subtitle is-6">
+                <span v-if="symbol.symbol.address.value">
+                  0x{{ symbol.symbol.address.value.toString(16) }}</span>
+                <span v-else>{{ symbol.symbol.address }}</span></p>
 
               <p>Todo: Set argument types</p>
               <p>
-                <a class="button"><b-icon icon="add"></b-icon> <span>Add to Interceptor</span></a>
+                <a class="button">
+                  <b-icon icon="add"></b-icon>
+                  <span>Add to Interceptor</span>
+                </a>
               </p>
             </div>
           </div>
@@ -87,28 +102,31 @@ export default {
         return
 
       this.loading = true
-      socket.emit('modules', {}, modules => {
-        this.modules = modules.map(mod =>
-          Object.assign({
-            loading: false, exports: []
-          }, mod))
-        this.loading = false
+      socket.emit('imports', {}, list => {
+        this.imports = list.filter(imp => imp.type === 'function')
+        socket.emit('modules', {}, modules => {
+          this.modules = modules.map((mod, index) =>
+            Object.assign({
+              loading: false,
+              exports: [],
+            }, mod))
+          this.loading = false
+        })
       })
     },
     openSymbolDetail(mod, symbol) {
       this.symbolDialogActive = true
       this.symbol = { mod, symbol }
     },
-    openDetail(mod) {
+    openDetail(mod, index) {
       if (mod.detailed)
         return
 
       mod.loading = true
-      mod.exports = []
       mod.detailed = true
       this.socket.emit('exports', { module: mod.name }, list => {
         mod.loading = false
-        mod.exports = list
+        mod.exports = list.filter(exp => exp.type === 'function')
       })
     },
   },
@@ -138,6 +156,7 @@ export default {
       matcher: null,
       modules: [],
       paginator: 100,
+      imports: [],
 
       // selected symbol
       symbolDialogActive: false,
@@ -153,16 +172,21 @@ export default {
 </script>
 
 <style lang="scss">
-ul.exports {
+.monospace {
+  font-family: monospace;
+}
+
+ul.exports, ul.imports {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
   margin: 0;
+  width: 100%;
 
   li {
     display: block;
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 4px;
 

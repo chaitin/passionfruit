@@ -41,4 +41,8 @@ $link-focus-border: $primary;
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
+// table issue
+.table {
+  table-layout: fixed;
+}
 </style>
