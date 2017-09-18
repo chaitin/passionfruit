@@ -2,7 +2,7 @@ const frida = require('frida')
 const fridaLoad = require('frida-load')
 const { sleep, FridaUtil } = require('./lib/utils')
 
-async function main(methodName) {
+async function main(methodName, args) {
   let dev = await frida.getUsbDevice()
   let apps = await dev.enumerateApplications()
 
@@ -18,13 +18,21 @@ async function main(methodName) {
   let script = await session.createScript(source)
 
   await script.load()
+
   let api = await script.getExports()
   let hr = '--'.repeat(10)
+  let parsedArgs = args.map(arg => {
+    try {
+      return JSON.parse(arg)
+    } catch(e) {
+      return arg + ''
+    }
+  })
 
   let callMethod = async (name) => {
     try {
       console.log(hr, name, hr)
-      let result = await api[name]()
+      let result = await api[name].apply(null, parsedArgs)
       console.log(result)
     } catch(e) {
       console.error(`unable to execute script`)
@@ -52,4 +60,4 @@ process.on('unhandledRejection', error => {
   console.error(error)
 })
 
-main(process.argv[2] || 'info')
+main(process.argv[2] || 'info', process.argv.slice(3))
