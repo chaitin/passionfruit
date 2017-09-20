@@ -1,10 +1,8 @@
-import io from 'socket.io-client'
-
 import * as types from '~/vuex/types'
 
 
 export const state = {
-  socket: null
+  socket: null,
 }
 
 

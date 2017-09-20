@@ -2,8 +2,7 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 
 import * as devices from './mods/devices'
-import * as connection from './mods/connection'
-// import modules from './mods/modules'
+import * as inspector from './mods/inspector'
 
 
 Vue.use(Vuex)
@@ -12,8 +11,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   modules: {
     devices,
-    connection,
-    // modules,
+    inspector,
   }
 })
 

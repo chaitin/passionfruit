@@ -31,25 +31,26 @@
 
       <template slot="detail" scope="props">
         <loading-tab v-if="props.row.loading"></loading-tab>
-        <b-panel collapsible v-if="props.index == 0">
-          <span slot="header">Imports</span>
+        <!-- TODO: paginate -->
+        <div class="content" v-if="props.index == 0">
+          <h4 class="title">Imports</h4>
           <ul class="imports content">
             <li v-for="symbol in imports" :key="symbol.name">
               <b-icon icon="functions"></b-icon>
               <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
             </li>
           </ul>
-        </b-panel>
+        </div>
 
-        <b-panel collapsible v-if="props.row.exports.length">
-          <span slot="header">Exports</span>
+        <div class="content" v-if="props.row.exports.length">
+          <h4 class="title">Exports</h4>
           <ul class="exports">
             <li v-for="symbol in props.row.exports" :key="symbol.name">
               <b-icon icon="functions"></b-icon>
               <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
             </li>
           </ul>
-        </b-panel>
+        </div>
         <b-message v-else>This module has no exported symbol</b-message>
 
       </template>

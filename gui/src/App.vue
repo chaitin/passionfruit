@@ -45,4 +45,9 @@ $link-focus-border: $primary;
 .table {
   table-layout: fixed;
 }
+
+.tabs li a.is-active {
+  border-bottom-color: $primary;
+  color: $primary;
+}
 </style>

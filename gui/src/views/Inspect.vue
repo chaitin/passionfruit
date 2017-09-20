@@ -43,23 +43,16 @@
     <b-loading :active="loading" :canCancel="true" @cancel="home"></b-loading>
 
     <div v-if="connected">
-      <b-tabs position="is-centered" :expanded="true" :animated="false">
-        <b-tab-item label="General">
-          <general-view></general-view>
-        </b-tab-item>
+      <nav class="tabs is-centered is-fullwidth">
+        <ul>
+          <li><router-link :to="{ name: 'general' }">General</router-link></li>
+          <li><router-link :to="{ name: 'modules' }">Modules</router-link></li>
+          <li><router-link :to="{ name: 'classes' }">Classes</router-link></li>
+          <li><router-link :to="{ name: 'ranges' }">Ranges</router-link></li>
+        </ul>
+      </nav>
 
-        <b-tab-item label="Modules">
-          <modules-view></modules-view>
-        </b-tab-item>
-
-        <b-tab-item label="Classes">
-          <classes-view></classes-view>
-        </b-tab-item>
-
-        <b-tab-item label="Ranges">
-          <ranges-view></ranges-view>
-        </b-tab-item>
-      </b-tabs>
+      <section class="tab-content"><router-view class="tab-item"></router-view></section>
     </div>
   </div>
 </template>
@@ -73,19 +66,8 @@ import { GET_SOCKET, STORE_SOCKET } from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
 
-import ModulesView from '~/views/tabs/Modules.vue'
-import GeneralView from '~/views/tabs/General.vue'
-import ClassesView from '~/views/tabs/Classes.vue'
-import RangesView from '~/views/tabs/Ranges.vue'
-
 export default {
-  components: {
-    Icon,
-    ModulesView,
-    GeneralView,
-    ClassesView,
-    RangesView,
-  },
+  components: { Icon },
   watch: {
     // todo: detect device removal
     app(val, old) {
@@ -190,4 +172,5 @@ export default {
 .search {
   margin-top: 0;
 }
+
 </style>
