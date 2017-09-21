@@ -1,4 +1,3 @@
-
 function toJSON(value) {
   if (value === null)
     return value

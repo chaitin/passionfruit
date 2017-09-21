@@ -1,10 +1,11 @@
 import checksec from './checksec'
-import info from './info'
+import plist from './plist'
 import lsof from './lsof'
 import imports from './imports'
+
+import { info } from './info'
 import { classes, methods } from './classdump'
 import { ls, home } from './finder'
-import plist from './plist'
 
 
 rpc.exports = {

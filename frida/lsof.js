@@ -14,5 +14,5 @@ module.exports = function() {
     throw new Error('lsof plugin returns non zero status, check console for detail')
   }
 
-  return Memory.readUtf8String(d); // deserialize later
+  return Memory.readUtf8String(pBuf); // deserialize later
 }
