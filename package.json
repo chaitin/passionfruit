@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development npm start",
-    "start": "node app.js",
+    "start": "nodemon .",
     "report": "open coverage/lcov-report/index.html",
     "postinstall": "cd gui && npm install"
   },
@@ -36,6 +36,7 @@
     "koa-router": "^7.2.1",
     "koa-socket": "^4.4.0",
     "mz": "^2.6.0",
+    "nodemon": "^1.12.1",
     "objection": "^0.8.7",
     "plist": "^2.1.0",
     "promise.prototype.finally": "^3.0.0",
