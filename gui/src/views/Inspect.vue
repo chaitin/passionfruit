@@ -104,12 +104,14 @@ export default {
     },
     createSocket() {
       let { device, bundle } = this.$route.params
-      return io('/session', { path: '/msg' })
+      return io('/session', { path: '/msg', query: { device, bundle } })
         .on('attached', console.info.bind(console))
         .on('close', console.warn.bind(console))
         .on('disconnect', () => {
+          this.$toast.open(`failed to connect to ${bundle}`)
           this.err = 'Application disconnected'
           this.connected = false
+          this.loading = false
         })
         .on('device', dev => this.device = dev)
         .on('app', app => this.app = app)
@@ -120,13 +122,6 @@ export default {
         .on('err', err => {
           this.err = err
           this.loading = false
-        })
-        .emit('attach', { device, bundle }, data => {
-          if (data.status == 'error') {
-            this.$toast.open(`failed to attach to ${bundle}`)
-            this.err = data.message
-            this.loading = false
-          }
         })
     },
     ...mapMutations({

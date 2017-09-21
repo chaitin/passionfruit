@@ -94,19 +94,11 @@ export default {
       socket: GET_SOCKET,
     })
   },
-  watch: {
-    socket(val, old) {
-      this.load(val)
-    },
-  },
   mounted() {
     this.load(this.socket)
   },
   methods: {
     load(socket) {
-      if (!socket)
-        return // todo: error message
-
       this.loading = true
       socket.emit('info', {}, ({ info, sec }) => {
         this.loading = false

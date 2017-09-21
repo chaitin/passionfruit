@@ -50,9 +50,6 @@ export default {
     }
   },
   watch: {
-    socket(val, old) {
-      this.load(val)
-    },
     filter: debounce(function(val, old) {
       this.matcher.search(val)
     }),
@@ -74,9 +71,6 @@ export default {
   },
   methods: {
     load(socket) {
-      if (!socket)
-        return
-
       this.loading = true
       socket.emit('classes', {}, classes => {
         this.list = classes

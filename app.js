@@ -1,6 +1,7 @@
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
+const http = require('http')
 
 const frida = require('frida')
 const fridaLoad = require('frida-load')
@@ -13,14 +14,12 @@ const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 
 const { FridaUtil, serializeDevice } = require('./lib/utils')
-const io = require('./lib/channels.js')
+const channels = require('./lib/channels.js')
 const { KnownError } = require('./lib/error')
 
 
 const app = new Koa()
 const router = new Router({ prefix: '/api' })
-
-io.attach(app)
 
 // hack: convert buffer to base64 string
 Buffer.prototype.toJSON = function() {
@@ -88,6 +87,7 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
+
 if (process.env.NODE_ENV == 'development') {
   app.use(json({
     pretty: false,
@@ -99,7 +99,10 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 console.info(`listening on http://localhost:${port}`)
-app.listen(port)
+let server = http.createServer(app.callback())
+channels.attach(server)
+server.listen(port)
+
 
 process.on('unhandledRejection', (err, p) => {
   console.error('An unhandledRejection occurred: ');

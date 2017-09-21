@@ -34,12 +34,12 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
-    "koa-socket": "^4.4.0",
     "mz": "^2.6.0",
     "nodemon": "^1.12.1",
     "objection": "^0.8.7",
     "plist": "^2.1.0",
     "promise.prototype.finally": "^3.0.0",
+    "socket.io": "^2.0.3",
     "sqlite3": "^3.1.9",
     "ssh2": "^0.5.5"
   },

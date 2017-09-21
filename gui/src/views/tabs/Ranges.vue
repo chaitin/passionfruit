@@ -70,9 +70,6 @@ export default {
     })
   },
   watch: {
-    socket(val, old) {
-      this.load(socket)
-    },
     filter: {
       handler() {
         this.load()

@@ -137,9 +137,6 @@ export default {
     })
   },
   watch: {
-    socket(val, old) {
-      this.load(val)
-    },
     modules(val, old) {
       this.filter = ''
       this.filtered = val
