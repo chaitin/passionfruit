@@ -16,6 +16,7 @@ function getDataAttrForPath(path) {
     type: 'NSFileType',
     group: 'NSFileGroupOwnerAccountName',
     modification: 'NSFileModificationDate',
+    protection: 'NSFileProtectionKey',
   }
   let result = {}
   for (let key in lookup)

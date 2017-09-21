@@ -13,12 +13,16 @@ axios.defaults.baseURL = '/api'
 import App from '~/App.vue'
 import router from '~/router'
 import store from '~/vuex'
+import { humanFileSize } from '~/lib/utils.js'
+
 
 import "material-design-icons/iconfont/material-icons.css"
 
 import { ADD_DEVICE, REMOVE_DEVICE } from '~/vuex/types'
 
 Vue.use(Buefy)
+Vue.filter('filesize', humanFileSize)
+
 
 const v = new Vue({
   el: '#app',
