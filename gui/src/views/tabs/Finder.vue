@@ -36,12 +36,12 @@
         <h3 class="title">{{ selected.name }}</h3>
         <p class="break-all"><small>{{ selected.path }}</small></p>
         <b-field>
-          <b-tooltip label="SQLite Editor"><a class="button"><b-icon icon="storage"></b-icon></a></b-tooltip>
-          <b-tooltip label="Text Viewer"><a class="button"><b-icon icon="mode_edit"></b-icon></a></b-tooltip>
-          <b-tooltip label="Image Viewer"><a class="button"><b-icon icon="image"></b-icon></a></b-tooltip>
-          <b-tooltip label="PList Viewer"><a class="button"><b-icon icon="settings_applications"></b-icon></a></b-tooltip>
+          <b-tooltip v-for="(arr, type) in typesMapping" :key="type" :label="arr[0]">
+            <a class="button" @click="view(type)"><b-icon :icon="arr[1]"></b-icon></a>
+          </b-tooltip>
         </b-field>
-        <ul class="break-all">
+        <file-viewer :type="type" :file="selected" :open.sync="viewerOpen"></file-viewer>
+        <ul class="break-all" v-if="selected.type != 'directory'">
           <li>Group: {{ selected.attribute.group }}</li>
           <li>Owner: {{ selected.attribute.owner }}</li>
           <li>Created: {{ selected.attribute.creation }}</li>
@@ -55,9 +55,21 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { GET_SOCKET, FINDER_ROOT } from '~/vuex/types'
+import FileViewer from '~/views/FileViewer.vue'
+
+
+const FILE_TYPE_MAPPING = {
+  sql: ['SQLite Editor', 'storage'],
+  text: ['Text Viewer', 'mode_edit'],
+  image: ['Image Viewer', 'image'],
+  plist: ['PList Viewer', 'settings_applications'],
+}
 
 
 export default {
+  components: {
+    FileViewer,
+  },
   computed: {
     ...mapGetters({
       socket: GET_SOCKET,
@@ -71,12 +83,19 @@ export default {
       components: [],
       list: [],
       selected: null,
+      typesMapping: FILE_TYPE_MAPPING,
+      type: null,
+      viewerOpen: false,
     }
   },
   mounted() {
     this.home()
   },
   methods: {
+    view(type) {
+      this.type = type
+      this.viewerOpen = true
+    },
     home() {
       this.components = []
       this.load(this.root)

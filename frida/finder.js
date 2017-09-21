@@ -1,4 +1,4 @@
-import { arrayFromNSArray, dictFromNSDictionary } from './NSDictUtil'
+import { arrayFromNSArray, dictFromNSDictionary } from './lib/nsdict'
 
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
 

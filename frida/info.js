@@ -1,10 +1,10 @@
-const NSDictUtil = require('./NSDictUtil')
+import { toJSON } from './lib/nsdict'
 
 
-module.exports = function() {
+function info() {
   const mainBundle = ObjC.classes.NSBundle.mainBundle()
   const info = mainBundle.infoDictionary()
-  const json = NSDictUtil.toJSON(info)
+  const json = toJSON(info)
   const data = ObjC.classes.NSProcessInfo.processInfo()
     .environment().objectForKey_('HOME') + ''
 
@@ -38,4 +38,16 @@ module.exports = function() {
   }
 
   return result
+}
+
+
+function userDefaults() {
+  const NSUserDefaults = ObjC.classes.NSUserDefaults
+  return NSUserDefaults.alloc().init().dictionaryRepresentation().toString()
+}
+
+
+module.exports = {
+  info,
+  userDefaults,
 }

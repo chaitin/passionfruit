@@ -1,8 +1,8 @@
-const FLAG_ENCRYPTED = 0x1;
-const FLAG_PIE = 0x2;
-const FLAG_CANARY = 0x4;
-const FLAG_ARC = 0x8;
-const FLAG_RESTRICT = 0x10;
+const FLAG_ENCRYPTED = 0x1
+const FLAG_PIE = 0x2
+const FLAG_CANARY = 0x4
+const FLAG_ARC = 0x8
+const FLAG_RESTRICT = 0x10
 
 
 module.exports = function() {
