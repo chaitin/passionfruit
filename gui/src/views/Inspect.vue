@@ -46,6 +46,7 @@
       <nav class="tabs is-centered is-fullwidth">
         <ul>
           <li><router-link :to="{ name: 'general' }">General</router-link></li>
+          <li><router-link :to="{ name: 'files' }">Files</router-link></li>
           <li><router-link :to="{ name: 'modules' }">Modules</router-link></li>
           <li><router-link :to="{ name: 'classes' }">Classes</router-link></li>
           <li><router-link :to="{ name: 'ranges' }">Ranges</router-link></li>

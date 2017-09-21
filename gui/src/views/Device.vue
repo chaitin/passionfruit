@@ -61,7 +61,7 @@
       <div class="is-clearfix">
         <ul v-if="isGrid" class="app-list">
           <li v-for="app in apps" :key="app.identifier" :class="{'is-success': app.pid }">
-            <router-link :to="{ name: 'inspect', params: { device: device.id, bundle: app.identifier } }">
+            <router-link :to="{ name: 'general', params: { device: device.id, bundle: app.identifier } }">
               <icon :icon="app.largeIcon" class="icon"></icon>
               <div class="content">
                 <h3 :class="{ 'is-success': app.pid }">{{ app.name }} </h3>

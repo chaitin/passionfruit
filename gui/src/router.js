@@ -9,6 +9,8 @@ import ModulesView from '~/views/tabs/Modules.vue'
 import GeneralView from '~/views/tabs/General.vue'
 import ClassesView from '~/views/tabs/Classes.vue'
 import RangesView from '~/views/tabs/Ranges.vue'
+import FinderView from '~/views/tabs/Finder.vue'
+
 
 Vue.use(VueRouter)
 
@@ -43,6 +45,11 @@ const router = new VueRouter({
         path: 'classes',
         component: ClassesView,
         name: 'classes',
+      }, {
+        path: 'files',
+        component: FinderView,
+        name: 'files',
+        // todo: sqlite viewer, nsdefaults viewer, image viewer?
       }, {
         path: 'ranges',
         component: RangesView,

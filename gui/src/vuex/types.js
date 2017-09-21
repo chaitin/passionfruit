@@ -28,3 +28,4 @@ export const LOAD_APPS = 'LOAD_APPS'
 export const GET_SOCKET = 'GET_SOCKET'
 export const STORE_SOCKET = 'STORE_SOCKET'
 
+export const FINDER_ROOT = 'FINDER_ROOT'
