@@ -19,8 +19,8 @@
             General
           </p>
           <ul class="menu-list">
-            <li><a>Preference</a></li>
-            <li><a>Github</a></li>
+            <li><a><b-icon icon="settings"></b-icon> <span>Preference</span></a></li>
+            <li><a target="_blank" href="http://github.com/chichou/ipaspect"><b-icon icon="open_in_browser"></b-icon> <span>Github</span></a></li>
           </ul>
         </aside>
       </div>

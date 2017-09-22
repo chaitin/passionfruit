@@ -19,7 +19,7 @@ const router = new VueRouter({
   mode: 'history',
   linkActiveClass: 'is-active',
   routes: [{
-      path: '/welcome',
+      path: '/',
       component: WelcomeView,
       meta: { title: 'Select an App to inspect' },
       name: 'welcome',
@@ -49,14 +49,12 @@ const router = new VueRouter({
         path: 'files',
         component: FinderView,
         name: 'files',
-        // todo: sqlite viewer, nsdefaults viewer, image viewer?
       }, {
         path: 'ranges',
         component: RangesView,
         name: 'ranges',
       }]
-    },
-    { path: '/', redirect: '/welcome' }
+    }
   ]
 })
 
