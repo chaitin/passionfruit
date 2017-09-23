@@ -96,7 +96,7 @@ export default {
       this.symbol = symbol
     },
     paginate(page, filtered, paginator) {
-      this.slice = filtered.slice((page - 1) * paginator, page * paginator).sort()
+      this.slice = filtered.slice((page - 1) * paginator, page * paginator)
     },
   },
   mounted() {
