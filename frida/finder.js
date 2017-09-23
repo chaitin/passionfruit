@@ -56,7 +56,7 @@ function plist(path) {
   try {
     let info = ObjC.classes.NSDictionary.dictionaryWithContentsOfFile_(path)
     return toJSON(info)
-  } catch(ex) {
+  } catch (ex) {
     console.debug('agent internal error')
     console.error(ex)
     throw new Error(`unable to parse file ${path} as plist,
@@ -64,8 +64,28 @@ function plist(path) {
   }
 }
 
+function text(path) {
+  const name = Memory.allocUtf8String(path)
+  const size = 1024 // max read size: 1k
+
+  let pOpen = Module.findExportByName(null, 'open')
+  if (!pOpen)
+    throw new Error('unable to resolve syscalls')
+
+  const open = new NativeFunction(pOpen, 'int', ['pointer', 'int', 'int'])
+  return new Promise((resolve, reject) => {
+    let fd = open(name, 0, 0)
+    if (fd == -1)
+      reject(new Error(`unable to open file ${path}`))
+
+    let stream = new UnixInputStream(fd, { autoClose: true })
+    stream.read(size).then(resolve).catch(reject)
+  })
+}
+
 module.exports = {
   ls,
   home,
   plist,
+  text,
 }

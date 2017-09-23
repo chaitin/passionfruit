@@ -118,3 +118,9 @@ export default {
   }
 }
 </script>
+
+<style>
+code {
+  word-break: break-all;
+}
+</style>

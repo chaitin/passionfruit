@@ -4,7 +4,7 @@ import imports from './imports'
 
 import { info } from './info'
 import { classes, methods } from './classdump'
-import { ls, home, plist } from './finder'
+import { ls, home, plist, text } from './finder'
 
 
 rpc.exports = {
@@ -19,4 +19,5 @@ rpc.exports = {
   ls,
   home,
   plist,
+  text,
 }
