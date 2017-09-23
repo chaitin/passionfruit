@@ -31,25 +31,15 @@
 
       <template slot="detail" scope="props">
         <loading-tab v-if="props.row.loading"></loading-tab>
-        <!-- TODO: paginate -->
+
         <div class="content" v-if="props.index == 0">
           <h4 class="title">Imports</h4>
-          <ul class="imports content">
-            <li v-for="symbol in imports" :key="symbol.name">
-              <b-icon icon="functions"></b-icon>
-              <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
-            </li>
-          </ul>
+          <functions :list="imports" :loading="loading" :module="props.row.name"></functions>
         </div>
 
         <div class="content" v-if="props.row.exports.length">
           <h4 class="title">Exports</h4>
-          <ul class="exports">
-            <li v-for="symbol in props.row.exports" :key="symbol.name">
-              <b-icon icon="functions"></b-icon>
-              <span class="name" @click="openSymbolDetail(props.row, symbol)">{{ symbol.name }}</span>
-            </li>
-          </ul>
+          <functions :list="props.row.exports" :loading="props.row.loading" :module="props.row.name"></functions>
         </div>
         <b-message v-else>This module has no exported symbol</b-message>
 
@@ -60,30 +50,6 @@
       </div>
     </b-table>
 
-    <b-modal :active.sync="symbolDialogActive" :width="640">
-      <div class="card" v-if="symbol.symbol">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-content">
-              <p class="title is-4">{{ symbol.mod.name }}!{{ symbol.symbol.name }}</p>
-              <p class="subtitle is-6">
-                <span v-if="symbol.symbol.address.value">
-                  0x{{ symbol.symbol.address.value.toString(16) }}</span>
-                <span v-else>{{ symbol.symbol.address }}</span></p>
-
-              <p>Todo: Set argument types</p>
-              <p>
-                <a class="button">
-                  <b-icon icon="add"></b-icon>
-                  <span>Add to Interceptor</span>
-                </a>
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </b-modal>
   </div>
 </template>
 
@@ -92,11 +58,10 @@ import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 import LoadingTab from '~/components/LoadingTab.vue'
+import Functions from '~/components/Functions.vue'
 
 export default {
-  components: {
-    LoadingTab,
-  },
+  components: { LoadingTab, Functions },
   methods: {
     load() {
       this.loading = true
@@ -111,10 +76,6 @@ export default {
           this.loading = false
         })
       })
-    },
-    openSymbolDetail(mod, symbol) {
-      this.symbolDialogActive = true
-      this.symbol = { mod, symbol }
     },
     openDetail(mod, index) {
       if (mod.detailed)
@@ -152,10 +113,6 @@ export default {
       modules: [],
       paginator: 100,
       imports: [],
-
-      // selected symbol
-      symbolDialogActive: false,
-      symbol: {},
     }
   },
   mounted() {
@@ -169,37 +126,5 @@ export default {
 <style lang="scss">
 .monospace {
   font-family: monospace;
-}
-
-ul.exports, ul.imports {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-
-  li {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 4px;
-
-    @for $i from 1 through 4 {
-      @media screen and (min-width: $i * 360px) {
-        width: round(percentage(1 / $i))
-      }
-    }
-
-    .icon {
-      word-break: initial;
-      color: #b3b3b3;
-    }
-
-    .name {
-      font-family: monospace;
-      cursor: pointer;
-    }
-  }
 }
 </style>
