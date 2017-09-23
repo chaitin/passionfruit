@@ -17,7 +17,6 @@ export const mutations = {
       return new Promise((resolve, reject) => {
         let ok = false
         this.emit(event, data, response => {
-          console.log(response)
           if (response.status === 'ok') {
             ok = true
             resolve(response.data)

@@ -1,4 +1,4 @@
-import { arrayFromNSArray, dictFromNSDictionary } from './lib/nsdict'
+import { arrayFromNSArray, dictFromNSDictionary, toJSON } from './lib/nsdict'
 
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
 
@@ -57,7 +57,9 @@ function plist(path) {
     let info = ObjC.classes.NSDictionary.dictionaryWithContentsOfFile_(path)
     return toJSON(info)
   } catch(ex) {
-    throw new Error(`unable to parse ${path} as plist,
+    console.debug('agent internal error')
+    console.error(ex)
+    throw new Error(`unable to parse file ${path} as plist,
       please make sure it does exist and is in valid format`)
   }
 }

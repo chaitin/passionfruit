@@ -35,7 +35,7 @@
       <div v-if="selected" class="column is-one-quarter content">
         <h3 class="title">{{ selected.name }}</h3>
         <p class="break-all"><small>{{ selected.path }}</small></p>
-        <b-field>
+        <b-field v-show="selected.type != 'directory'">
           <b-tooltip v-for="(arr, type) in typesMapping" :key="type" :label="arr[0]">
             <a class="button" @click="view(type)"><b-icon :icon="arr[1]"></b-icon></a>
           </b-tooltip>
@@ -123,8 +123,6 @@ export default {
         this.loading = false
         this.list = list
         this.selected = null
-      }).catch(err => {
-        console.error(err)
       })
     },
   }

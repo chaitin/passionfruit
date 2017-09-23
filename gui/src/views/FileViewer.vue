@@ -1,15 +1,17 @@
 <template>
   <div>
     <b-modal :active.sync="active" has-model-card>
-      <article class="content">
-        <h1>{{ type }}</h1>
-        <loading-tab v-if="loading"></loading-tab>
-        <div v-else class="card">
-          <div class="card-content">
-            <plist v-if="type == 'plist'" title="Plist Reader" :content="content" :rootName="file.name"></plist>
+      <loading-tab v-if="loading"></loading-tab>
+      <div v-else>
+        <b-message type="is-danger" v-if="error">{{ error }}</b-message>
+        <article class="content">
+          <div class="card">
+            <div class="card-content">
+              <plist v-if="type == 'plist'" title="Plist Reader" :content="content" :rootName="file.name"></plist>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
     </b-modal>
 
   </div>
@@ -45,11 +47,16 @@ export default {
     return {
       content: {},
       loading: false,
+      error: null,
     }
   },
   watch: {
+    open(val, old) {
+      if (!old && val && this.file)
+        this.view(this.file.path)
+    },
     file(val, old) {
-      if (val) {
+      if (val && this.open) {
         this.view(val.path)
       }
     }
@@ -60,11 +67,15 @@ export default {
   },
   methods: {
     view(path) {
+      this.error = ''
       if (this.type === 'plist') {
         this.loading = true
         this.socket.call('plist', path).then(content => {
           this.content = content
           this.loading = false
+        }).catch(err => {
+          this.loading = false
+          this.error = err
         })
       }
     }
