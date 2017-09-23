@@ -98,14 +98,11 @@ export default {
     LoadingTab,
   },
   methods: {
-    load(socket) {
-      if (!socket)
-        return
-
+    load() {
       this.loading = true
-      socket.emit('imports', {}, list => {
+      this.socket.call('imports').then(list => {
         this.imports = list.filter(imp => imp.type === 'function')
-        socket.emit('modules', {}, modules => {
+        this.socket.call('modules').then(modules => {
           this.modules = modules.map((mod, index) =>
             Object.assign({
               loading: false,
@@ -125,7 +122,7 @@ export default {
 
       mod.loading = true
       mod.detailed = true
-      this.socket.emit('exports', { module: mod.name }, list => {
+      this.socket.call('exports', { module: mod.name }).then(list => {
         mod.loading = false
         mod.exports = list.filter(exp => exp.type === 'function')
       })
@@ -164,7 +161,7 @@ export default {
   mounted() {
     this.matcher = new AsyncSearch([], 'name')
       .onMatch(result => this.filtered = result)
-    this.load(this.socket)
+    this.load()
   }
 }
 </script>

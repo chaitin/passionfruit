@@ -94,7 +94,7 @@ export default {
         hasIcon: true,
         onConfirm: () => {
           this.$router.push({ name: 'apps', params: this.$route.params })
-          this.socket.emit('kill', {}, result => {
+          this.socket.call('kill').then(result => {
             if (result) {
               this.$toast.open(`${bundle} has been terminiated`)
             }
@@ -124,6 +124,14 @@ export default {
           this.loading = false
         })
     },
+    rejectionHandler(event) {
+      event.preventDefault()
+      this.$toast.open({
+        duration: 10 * 1000,
+        message: event.reason,
+        type: 'is-danger',
+      })
+    },
     ...mapMutations({
       storeSocket: STORE_SOCKET,
     })
@@ -140,10 +148,12 @@ export default {
   mounted() {
     const socket = this.createSocket()
     this.storeSocket(socket)
+    window.addEventListener('unhandledrejection', this.rejectionHandler)
   },
   beforeDestroy() {
     if (this.socket)
-      this.socket.emit('detach')
+      this.socket.call('detach')
+    window.removeEventListener('unhandledrejection', this.rejectionHandler)
   },
 }
 </script>

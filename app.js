@@ -105,8 +105,8 @@ server.listen(port)
 
 
 process.on('unhandledRejection', (err, p) => {
-  console.error('An unhandledRejection occurred: ');
-  console.error(`Rejection: ${err}`);
+  console.error('An unhandledRejection occurred: ')
+  console.error(`Rejection: ${err}`)
   console.error(err.stack)
 })
 

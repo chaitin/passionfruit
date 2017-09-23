@@ -115,7 +115,7 @@ export default {
     },
     load(directory) {
       this.loading = true
-      this.socket.emit('ls', directory, ({ path, list }) => {
+      this.socket.call('ls', directory).then(({ path, list }) => {
         if (!directory) {
           this.root = path
         }
@@ -123,6 +123,8 @@ export default {
         this.loading = false
         this.list = list
         this.selected = null
+      }).catch(err => {
+        console.error(err)
       })
     },
   }

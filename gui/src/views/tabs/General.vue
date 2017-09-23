@@ -100,7 +100,7 @@ export default {
   methods: {
     load(socket) {
       this.loading = true
-      socket.emit('info', {}, ({ info, sec }) => {
+      socket.call('info').then(({ info, sec }) => {
         this.loading = false
         this.info = info
         this.metainfo = info.json

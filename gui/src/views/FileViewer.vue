@@ -62,7 +62,7 @@ export default {
     view(path) {
       if (this.type === 'plist') {
         this.loading = true
-        this.socket.emit('plist', path, content => {
+        this.socket.call('plist', path).then(content => {
           this.content = content
           this.loading = false
         })

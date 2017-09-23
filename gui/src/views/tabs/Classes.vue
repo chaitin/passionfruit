@@ -72,7 +72,7 @@ export default {
   methods: {
     load(socket) {
       this.loading = true
-      socket.emit('classes', {}, classes => {
+      socket.call('classes').then(classes => {
         this.list = classes
         this.loading = false
       })

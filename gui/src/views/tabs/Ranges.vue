@@ -84,14 +84,14 @@ export default {
         .join('')
 
       this.loading = true
-      socket.emit('ranges', { protection: protection }, ranges => {
+      this.socket.call('ranges', { protection: protection }).then(ranges => {
         this.list = ranges
         this.loading = false
       })
     },
   },
   mounted() {
-    this.load(this.socket)
+    this.load()
   }
 }
 </script>
