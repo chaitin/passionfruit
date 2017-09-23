@@ -14,7 +14,7 @@
             <b-table-column field="name" label="Name" sortable>
               <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
               <b-icon icon="insert_drive_file" v-else></b-icon>
-              <span>{{ props.row.name }}</span>
+              <span class="break-all">{{ props.row.name }}</span>
             </b-table-column>
 
             <b-table-column field="owner" label="Owner" sortable width="120">

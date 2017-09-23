@@ -51,7 +51,19 @@ function home() {
   return ls(path)
 }
 
+
+function plist(path) {
+  try {
+    let info = ObjC.classes.NSDictionary.dictionaryWithContentsOfFile_(path)
+    return toJSON(info)
+  } catch(ex) {
+    throw new Error(`unable to parse ${path} as plist,
+      please make sure it does exist and is in valid format`)
+  }
+}
+
 module.exports = {
   ls,
   home,
+  plist,
 }
