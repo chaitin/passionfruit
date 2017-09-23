@@ -2,8 +2,17 @@
   <div>
     <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
       <ul class="level-item">
-        <li><a @click="home"><b-icon icon="home"></b-icon></a></li>
-        <li v-for="(name, index) in components" :key="name"><a @click="up(index)"><b-icon icon="folder"></b-icon><span>{{ name }}</span></a></li>
+        <li>
+          <a @click="home">
+            <b-icon icon="home"></b-icon>
+          </a>
+        </li>
+        <li v-for="(name, index) in components" :key="name">
+          <a @click="up(index)">
+            <b-icon icon="folder"></b-icon>
+            <span>{{ name }}</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -34,10 +43,14 @@
 
       <div v-if="selected" class="column is-one-quarter content">
         <h3 class="title">{{ selected.name }}</h3>
-        <p class="break-all"><small>{{ selected.path }}</small></p>
+        <p class="break-all">
+          <small>{{ selected.path }}</small>
+        </p>
         <b-field v-show="selected.type != 'directory'">
           <b-tooltip v-for="(arr, type) in typesMapping" :key="type" :label="arr[0]">
-            <a class="button" @click="view(type)"><b-icon :icon="arr[1]"></b-icon></a>
+            <a class="button" @click="view(type)">
+              <b-icon :icon="arr[1]"></b-icon>
+            </a>
           </b-tooltip>
         </b-field>
         <file-viewer :type="type" :file="selected" :open.sync="viewerOpen"></file-viewer>
@@ -59,8 +72,8 @@ import FileViewer from '~/views/FileViewer.vue'
 
 
 const FILE_TYPE_MAPPING = {
+  text: ['Text Viewer', 'mode_edit'],  
   sql: ['SQLite Editor', 'storage'],
-  text: ['Text Viewer', 'mode_edit'],
   image: ['Image Viewer', 'image'],
   plist: ['PList Viewer', 'settings_applications'],
 }
@@ -111,6 +124,8 @@ export default {
       if (item.type === 'directory') {
         this.components.push(item.name)
         this.load(item.path)
+      } else {
+        this.view('text')
       }
     },
     load(directory) {
