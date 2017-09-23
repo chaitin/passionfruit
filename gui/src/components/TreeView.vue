@@ -1,7 +1,7 @@
 <template>
   <li class="treeview">
     <div :class="{ bold: isFolder }" v-if="model">
-      <span v-if="isFolder" class="toggle" :class="{ open }" @click="toggle">
+      <span v-if="isFolder" class="toggle" :class="{ expanded }" @click="toggle">
         <b-icon icon="expand_more"></b-icon>
       </span>
       <span v-else @click="toggle">
@@ -10,7 +10,7 @@
       <span class="key" @click="toggle">{{ model.name }}</span>
       <code class="value" v-if="!isFolder">{{ model.val }}</code>
     </div>
-    <ul v-show="open" v-if="isFolder">
+    <ul v-show="expanded" v-if="isFolder">
       <tree class="item" v-for="child in model.children"
         :ref="id(child)" :key="child.name" :model="child">
       </tree>
@@ -24,11 +24,10 @@ export default {
   name: 'tree',
   props: {
     model: Object,
+    open: Boolean,
   },
   data() {
-    return {
-      open: this.model.open,
-    }
+    return { expanded: this.open }
   },
   computed: {
     isFolder() {
@@ -41,11 +40,11 @@ export default {
     },
     toggle() {
       if (this.isFolder) {
-        this.open = !this.open
+        this.expanded = !this.expanded
       }
     },
     toggleAll(status) {
-      this.open = status
+      this.expanded = status
       if (this.isFolder) {
         this.model.children.forEach(child => {
           let list = this.$refs[`child_` + child.name]

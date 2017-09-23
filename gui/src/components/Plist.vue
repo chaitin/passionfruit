@@ -14,7 +14,7 @@
     </b-field>
 
     <ul class="is-marginless">
-      <tree-view :model="tree" class="info-plist" ref="tree"></tree-view>
+      <tree-view :model="tree" :open="true" class="info-plist" ref="tree"></tree-view>
     </ul>
   </div>
 </template>
@@ -107,7 +107,7 @@ export default {
       }
 
       let children = expand(root)
-      this.tree = { name: this.rootName, children, open: true }
+      this.tree = { name: this.rootName, children }
     },
     expandAll() {
       this.$refs.tree.toggleAll(true)
