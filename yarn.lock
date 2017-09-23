@@ -1489,9 +1489,9 @@ frida-load@^1.0.0:
     concat-stream "^1.5.0"
     mold-source-map "^0.4.0"
 
-frida@^10.3.14:
-  version "10.3.14"
-  resolved "http://registry.npm.taobao.org/frida/download/frida-10.3.14.tgz#95537b28826f2a8edfc684622e8382fae3006e8c"
+frida@^10.6.3:
+  version "10.6.3"
+  resolved "https://registry.npmjs.org/frida/-/frida-10.6.3.tgz#4fe33795c2a69dbcf5fc71b1ca2929f4ccc5a56f"
   dependencies:
     big-integer "^1.6.16"
     bindings "^1.2.1"
