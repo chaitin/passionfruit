@@ -47,7 +47,7 @@
           <p>{{ info.binary }}</p>
         </b-field>
         <b-field label="Data Directory">
-          <p>{{ info.data }}</p>
+          <p><router-link :to="{ name: 'files' }" class="is-info button">{{ info.data }}</router-link></p>
         </b-field>
         <b-field label="Version">
           <p>{{ info.semVer }}</p>

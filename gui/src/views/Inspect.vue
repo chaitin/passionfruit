@@ -32,7 +32,7 @@
           </b-tooltip>
           <b-tooltip label="Kill Process" position="is-left">
             <button class="button is-danger" @click="kill">
-              <b-icon icon="exit_to_app"></b-icon>
+              <b-icon icon="power_settings_new"></b-icon>
             </button>
           </b-tooltip>
         </nav>
@@ -45,11 +45,11 @@
     <div v-if="connected">
       <nav class="tabs is-centered is-fullwidth">
         <ul>
-          <li><router-link :to="{ name: 'general' }">General</router-link></li>
-          <li><router-link :to="{ name: 'files' }">Files</router-link></li>
-          <li><router-link :to="{ name: 'modules' }">Modules</router-link></li>
-          <li><router-link :to="{ name: 'classes' }">Classes</router-link></li>
-          <li><router-link :to="{ name: 'ranges' }">Ranges</router-link></li>
+          <li><router-link :to="{ name: 'general' }"><b-icon icon="grade"></b-icon>General</router-link></li>
+          <li><router-link :to="{ name: 'files' }"><b-icon icon="folder_special"></b-icon>Files</router-link></li>
+          <li><router-link :to="{ name: 'modules' }"><b-icon icon="view_module"></b-icon>Modules</router-link></li>
+          <li><router-link :to="{ name: 'classes' }"><b-icon icon="gavel"></b-icon>Classes</router-link></li>
+          <li><router-link :to="{ name: 'ranges' }"><b-icon icon="memory"></b-icon>Ranges</router-link></li>
         </ul>
       </nav>
 
@@ -108,7 +108,7 @@ export default {
         .on('attached', console.info.bind(console))
         .on('close', console.warn.bind(console))
         .on('disconnect', () => {
-          this.$toast.open(`failed to connect to ${bundle}`)
+          this.$toast.open(`disconnected from ${bundle}`)
           this.err = 'Application disconnected'
           this.connected = false
           this.loading = false
