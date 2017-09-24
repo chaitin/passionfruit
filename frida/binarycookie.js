@@ -25,8 +25,8 @@ module.exports = function() {
       path: cookie.path().toString(),
       isSecure: str(cookie.isSecure(), 'false')
     }
-    cookies.push(item);
+    cookies.push(item)
   }
 
-  return cookies;
+  return cookies
 }
