@@ -14,8 +14,27 @@
       </b-field>
 
       <ul class="oc-classes">
-        <li v-for="clz in slice" :key="clz">{{ clz }}</li>
+        <li v-for="clz in slice" :key="clz" :title="clz" @click="expand(clz)">{{ clz }}</li>
       </ul>
+
+      <!-- todo: search -->
+      <b-modal :active.sync="showDialog">
+        <div class="card">
+          <div class="card-content">
+            <loading-tab v-if="loadingMethods"></loading-tab>
+
+            <div v-else>
+              <h4 class="title">{{ selected }}</h4>
+              <ul class="oc-methods">
+                <li v-for="(method, index) in methods" :key="index">
+                  <a class="button">Hook</a>
+                  {{ method }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </b-modal>
 
       <b-pagination :total="filtered.length" :current.sync="page" order="is-centered" :per-page="paginator">
       </b-pagination>
@@ -47,6 +66,12 @@ export default {
       filter: '',
       paginator: 100,
       matcher: null,
+
+      showDialog: false,
+      loadingMethods: false,
+      selected: null,
+      methods: [],
+
     }
   },
   watch: {
@@ -70,22 +95,27 @@ export default {
     }
   },
   methods: {
-    load(socket) {
+    load() {
       this.loading = true
-      socket.call('classes').then(classes => {
-        this.list = classes
-        this.loading = false
-      })
+      this.socket.call('classes')
+        .then(classes => this.list = classes)
+        .finally(() => this.loading = false)
     },
     paginate(page, filtered, paginator) {
       this.slice = filtered.slice((page - 1) * paginator, page * paginator).sort()
     },
+    expand(clz) {
+      this.showDialog = true
+      this.selected = clz
+      this.loadingMethods = true
+      this.socket.call('methods', { clz })
+        .then(methods => this.methods = methods)
+        .finally(() => this.loadingMethods = false)
+    }
   },
   mounted() {
-    this.matcher = new AsyncSearch().onMatch(result => {
-      this.filtered = result
-    })
-    this.load(this.socket)
+    this.matcher = new AsyncSearch().onMatch(result => this.filtered = result)
+    this.load()
   },
 }
 </script>
@@ -95,17 +125,28 @@ ul.oc-classes {
   display: flex;
   flex-wrap: wrap;
   padding: 0 1em;
+  cursor: pointer;
 
   li {
     display: block;
     padding: 4px;
     overflow: hidden;
+    text-overflow: ellipsis;
 
     @for $i from 1 through 3 {
       @media screen and (min-width: $i * 360px) {
         width: round(percentage(1 / $i))
       }
     }
+  }
+}
+
+ul.oc-methods {
+  li {
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 4px;
   }
 }
 

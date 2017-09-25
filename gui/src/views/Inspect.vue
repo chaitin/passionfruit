@@ -113,6 +113,7 @@ export default {
           this.connected = false
           this.loading = false
         })
+        .on('connect', () => this.err = null)
         .on('device', dev => this.device = dev)
         .on('app', app => this.app = app)
         .on('ready', () => {
