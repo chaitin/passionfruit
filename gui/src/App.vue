@@ -42,7 +42,7 @@ $link-focus-border: $primary;
 @import "~buefy/src/scss/buefy";
 
 // table issue
-.table.fixed {
+.fixed table {
   table-layout: fixed;
 }
 
