@@ -18,20 +18,20 @@
 
     <div class="columns">
       <div class="column is-three-quarter">
-        <b-table class="column" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
+        <b-table class="fixed" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
           <template scope="props">
-            <b-table-column field="name" label="Name" sortable>
+            <b-table-column field="name" label="Name" sortable class="ellipsis">
               <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
               <b-icon icon="insert_drive_file" v-else></b-icon>
-              <span class="break-all">{{ props.row.name }}</span>
+              <span> {{ props.row.name }}</span>
             </b-table-column>
 
             <b-table-column field="owner" label="Owner" sortable width="120">
               {{ props.row.attribute.owner }}
             </b-table-column>
 
-            <b-table-column field="protection" label="Protection" sortable width="240" class="break-all">
-              {{ props.row.attribute.protection }}
+            <b-table-column field="protection" label="Protection" sortable width="240" class="ellipsis">
+              <span :title="props.row.attribute.protection">{{ props.row.attribute.protection }}</span>
             </b-table-column>
 
             <b-table-column field="size" label="Size" class="monospace" sortable width="120">
@@ -54,7 +54,7 @@
           </b-tooltip>
         </b-field>
         <file-viewer :type="type" :file="selected" :open.sync="viewerOpen"></file-viewer>
-        <ul class="break-all" v-if="selected.type != 'directory'">
+        <ul class="break-all " v-if="selected.type != 'directory'">
           <li>Group: {{ selected.attribute.group }}</li>
           <li>Owner: {{ selected.attribute.owner }}</li>
           <li>Created: {{ selected.attribute.creation }}</li>
@@ -72,7 +72,7 @@ import FileViewer from '~/views/FileViewer.vue'
 
 
 const FILE_TYPE_MAPPING = {
-  text: ['Text Viewer', 'mode_edit'],  
+  text: ['Text Viewer', 'mode_edit'],
   sql: ['SQLite Editor', 'storage'],
   image: ['Image Viewer', 'image'],
   plist: ['PList Viewer', 'settings_applications'],
@@ -147,5 +147,11 @@ export default {
 <style lang="scss" scoped>
 .break-all {
   word-break: break-all;
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
