@@ -167,14 +167,6 @@ export default {
   }
 }
 
-.monospace {
-  font-family: monospace;
-}
-
-.break-all {
-  word-break: break-all;
-}
-
 .search {
   margin-top: 0;
 }

@@ -42,7 +42,7 @@ $link-focus-border: $primary;
 @import "~buefy/src/scss/buefy";
 
 // table issue
-.table {
+.table.fixed {
   table-layout: fixed;
 }
 
@@ -50,4 +50,13 @@ $link-focus-border: $primary;
   border-bottom-color: $primary;
   color: $primary;
 }
+
+.break-all {
+  word-break: break-all;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
 </style>

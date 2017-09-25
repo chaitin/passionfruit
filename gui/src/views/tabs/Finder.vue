@@ -68,21 +68,19 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { GET_SOCKET, FINDER_ROOT } from '~/vuex/types'
-import FileViewer from '~/views/FileViewer.vue'
+import FileViewer from '~/components/FileViewer.vue'
 
 
 const FILE_TYPE_MAPPING = {
   text: ['Text Viewer', 'mode_edit'],
-  sql: ['SQLite Editor', 'storage'],
+  sql: ['SQLite Viewer', 'storage'],
   image: ['Image Viewer', 'image'],
   plist: ['PList Viewer', 'settings_applications'],
 }
 
 
 export default {
-  components: {
-    FileViewer,
-  },
+  components: { FileViewer },
   computed: {
     ...mapGetters({
       socket: GET_SOCKET,
@@ -125,7 +123,13 @@ export default {
         this.components.push(item.name)
         this.load(item.path)
       } else {
-        this.view('text')
+        let ext = item.name.split('.').slice(-1).pop()
+        const mapping = {
+          'db': 'sql',
+          'sqlite': 'sql',
+          'plist': 'plist',
+        }
+        this.view(mapping[ext] || 'text')
       }
     },
     load(directory) {
@@ -135,10 +139,9 @@ export default {
           this.root = path
         }
         this.path = path
-        this.loading = false
         this.list = list
         this.selected = null
-      })
+      }).finally(() => this.loading = false)
     },
   }
 }

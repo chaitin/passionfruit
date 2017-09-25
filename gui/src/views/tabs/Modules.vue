@@ -10,7 +10,7 @@
       </b-select>
     </b-field>
 
-    <b-table class="column" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
+    <b-table class="column fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
       <template scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           {{ props.row.name }}

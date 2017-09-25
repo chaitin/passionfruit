@@ -3,13 +3,14 @@
     <b-modal :active.sync="active" :width="1200">
       <section class="dialog section">
         <loading-tab v-if="loading"></loading-tab>
-        <div v-else>
+        <template v-else>
           <b-message type="is-danger" v-if="error">{{ error }}</b-message>
           <article class="content" v-if="content">
             <plist v-if="type == 'plist'" title="Plist Reader" :content="content" :rootName="file.name"></plist>
             <hex-view v-if="type == 'text'" :raw="content"></hex-view>
+            <database v-if="type == 'sql'" :file="file" :content="content"></database>
           </article>
-        </div>
+        </template>
       </section>
     </b-modal>
 
@@ -22,10 +23,11 @@ import { GET_SOCKET } from '~/vuex/types'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
 import HexView from '~/components/HexView.vue'
+import Database from '~/components/Database.vue'
 
 
 export default {
-  components: { LoadingTab, Plist, HexView },
+  components: { LoadingTab, Plist, HexView, Database },
   props: {
     type: String,
     open: Boolean,
@@ -69,15 +71,15 @@ export default {
   methods: {
     view(path) {
       this.error = ''
-      if (this.type === 'plist' || this.type == 'text') {
+      if (this.type === 'plist' || this.type === 'text') {
         this.loading = true
-        this.socket.call(this.type, path).then(content => {
-          this.content = content
-          this.loading = false
-        }).catch(err => {
-          this.loading = false
-          this.error = err
-        })
+        this.socket.call(this.type, path)
+          .then(content => this.content = content)
+          .catch(err => this.error = err)
+          .finally(() => this.loading = false)
+      } else if (this.type === 'sql') {
+        // hack: force component to load
+        this.$nextTick(() => this.content = this.file.path)
       }
     }
   }
@@ -85,7 +87,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 section.dialog {
   background: #fff;
   min-height: 50vh;

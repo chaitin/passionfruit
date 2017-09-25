@@ -1,24 +1,25 @@
-
 class Database {
   constructor(filename) {
     this.db = SqliteDatabase.open(filename)
   }
 
   tables() {
-    let statement = this.prepare('SELECT tbl_name FROM sqlite_master WHERE type="table"')
-    return this.all(statement)
+    let statement = this.prepare(
+      'SELECT tbl_name FROM sqlite_master WHERE type="table" and tbl_name <> "sqlite_sequence"')
+    return this.all(statement).map(row => row[0])
   }
 
   columns(table) {
     // I know it's an injection, but since this tool allows you query arbitary sql,
     // leave this alone or help me commit some code to escape the table name
-    console.log(`PRAGMA table_info({table})`)
+
     let statement = this.prepare(`PRAGMA table_info(${table})`)
     return this.all(statement)
   }
 
   all(statement) {
-    let result = [], row
+    let result = [],
+      row
     while ((row = statement.step()) !== null) {
       result.push(row)
     }
@@ -53,25 +54,27 @@ class Database {
 }
 
 
-function queryTable(filename, table) {
-  let db = new Database(filename)
+function data({ path, table }) {
+  let db = new Database(path)
+  let sql = `select * from ${table} limit 500`
   let result = {
-    header: db.columns(),
-    data: db.query()
+    header: db.columns(table),
+    data: db.all(db.prepare(sql))
   }
   db.close()
+  return result
 }
 
-function query(filename, sql) {
-  let db = new Database(filename)
+function query({ path, sql }) {
+  let db = new Database(path)
   let statement = db.prepare(sql)
   let result = db.all(statement)
   db.close()
   return result
 }
 
-function tables(filename) {
-  let db = new Database(filename)
+function tables(path) {
+  let db = new Database(path)
   let tables = db.tables()
   db.close()
   return tables
@@ -79,6 +82,9 @@ function tables(filename) {
 
 module.exports = {
   // todo: design the api?
+  tables,
+  query,
+
   Database,
-  queryTable
+  data
 }
