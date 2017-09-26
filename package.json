@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development npm start",
     "start": "nodemon .",
     "report": "open coverage/lcov-report/index.html",
-    "postinstall": "cd gui && npm install"
+    "postinstall": "cd gui && (yarn || npm install)"
   },
   "repository": {
     "type": "git",
