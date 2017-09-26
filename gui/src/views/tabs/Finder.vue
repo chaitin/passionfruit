@@ -144,6 +144,10 @@ export default {
         const mapping = {
           'db': 'sql',
           'sqlite': 'sql',
+          'png': 'image',
+          'jpg': 'image',
+          'jpeg': 'image',
+          'gif': 'image', // gif is now supported by iOS
           'plist': 'plist',
         }
         this.view(mapping[ext] || 'text')

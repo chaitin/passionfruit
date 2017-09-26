@@ -9,6 +9,7 @@
             <plist v-if="type == 'plist'" title="Plist Reader" :content="content" :rootName="file.name"></plist>
             <hex-view v-if="type == 'text'" :raw="content"></hex-view>
             <database v-if="type == 'sql'" :file="file" :content="content"></database>
+            <p v-if="type == 'image'" class="image"><img :src="content"></p>
           </article>
         </template>
       </section>
@@ -20,6 +21,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
+import { download } from '~/lib/utils'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
 import HexView from '~/components/HexView.vue'
@@ -68,6 +70,10 @@ export default {
     if (this.file && this.file.path)
       this.view(this.file.path)
   },
+  beforeDestroy() {
+    if (this.type === 'image' && this.content)
+      URL.revokeObjectURL(this.content)
+  },
   methods: {
     view(path) {
       this.error = ''
@@ -80,6 +86,11 @@ export default {
       } else if (this.type === 'sql') {
         // hack: force component to load
         this.$nextTick(() => this.content = this.file.path)
+      } else if (this.type === 'image') {
+        this.loading = true
+        download(this.socket, this.file, 'image/*')
+          .then(url => this.content = url)
+          .finally(() => this.loading = false)
       }
     }
   }

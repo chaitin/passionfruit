@@ -54,8 +54,9 @@ export function humanFileSize(size) {
 }
 
 
-export function download(socket, file) {
+export function download(socket, file, mime) {
   let { name, path } = file
+  mime = mime || 'octet/stream'
 
   return socket.call('download', path).then(({ size, session }) => {
     const dest = socketStream.createStream()
@@ -66,7 +67,7 @@ export function download(socket, file) {
       dest.on('data', data => {
         parts.push(data)
       }).on('end', () => {
-        const blob = new Blob(parts, { type: "octet/stream" })
+        const blob = new Blob(parts, { type: mime })
         let url = URL.createObjectURL(blob)
         resolve(url)
       }).on('error', reject)
