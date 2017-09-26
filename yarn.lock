@@ -950,7 +950,7 @@ commondir@0.0.1:
   version "0.0.1"
   resolved "http://registry.npm.taobao.org/commondir/download/commondir-0.0.1.tgz#89f00fdcd51b519c578733fec563e6a6da7f5be2"
 
-component-bind@1.0.0:
+component-bind@1.0.0, component-bind@~1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/component-bind/download/component-bind-1.0.0.tgz#00c608ab7dcd93897c0009651b1d3a8e1e73bbd1"
 
@@ -1140,6 +1140,12 @@ debug@*, debug@^2.1.1, debug@^2.2.0, debug@^2.6.8, debug@~2.6.4, debug@~2.6.6:
   resolved "http://registry.npm.taobao.org/debug/download/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
     ms "2.0.0"
+
+debug@~2.2.0:
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/debug/download/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
+  dependencies:
+    ms "0.7.1"
 
 deep-equal@~1.0.1:
   version "1.0.1"
@@ -2366,6 +2372,10 @@ mold-source-map@^0.4.0:
     convert-source-map "^1.1.0"
     through "~2.2.7"
 
+ms@0.7.1:
+  version "0.7.1"
+  resolved "http://registry.npm.taobao.org/ms/download/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/ms/download/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -3094,6 +3104,13 @@ socket.io-parser@~3.1.1:
     debug "~2.6.4"
     has-binary2 "~1.0.2"
     isarray "2.0.1"
+
+socket.io-stream@^0.9.1:
+  version "0.9.1"
+  resolved "http://registry.npm.taobao.org/socket.io-stream/download/socket.io-stream-0.9.1.tgz#421258316288b83ac693b0d43efd09d6d43aba97"
+  dependencies:
+    component-bind "~1.0.0"
+    debug "~2.2.0"
 
 socket.io@^2.0.3:
   version "2.0.3"
