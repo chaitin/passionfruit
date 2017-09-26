@@ -6,8 +6,9 @@ import urlOpen from './ipc'
 
 import { info } from './info'
 import { classes, methods } from './classdump'
-import { ls, home, plist, text } from './finder'
 import { tables, data, query } from './sqlite'
+import { ls, home, plist, text, download } from './finder'
+
 
 rpc.exports = {
   checksec,
@@ -22,6 +23,7 @@ rpc.exports = {
   home,
   plist,
   text,
+  download,
 
   cookies,
   urlOpen,

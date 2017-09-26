@@ -4,18 +4,33 @@ const { sleep, FridaUtil } = require('./lib/utils')
 
 async function main(methodName, args) {
   let dev = await frida.getUsbDevice()
-  let apps = await dev.enumerateApplications()
+  let targetApp = await dev.getFrontmostApplication()
+  let kill = false
+  let session = null
 
-  let targetApp = apps.find(app => app.pid == 0)
-  if (!targetApp) {
-    throw Error('failed to find a app to launch')
+  if (targetApp) {
+    session = await dev.attach(targetApp.name)
+  } else {
+    console.info('no front most app, try spawn a new one')
+    let apps = await dev.enumerateApplications()
+    targetApp = apps.find(app => app.pid == 0)
+    if (!targetApp) {
+      throw Error('failed to find a app to launch')
+    }
+    kill = true
+    session = await FridaUtil.spawn(dev, targetApp)
   }
+  
+  console.info(`attach to ${targetApp.identifier}`)
 
-  console.info(`spawn ${targetApp.identifier}`)
-
-  let session = await FridaUtil.spawn(dev, targetApp)
   let source = await fridaLoad(require.resolve('./frida/index'))
   let script = await session.createScript(source)
+
+  script.events.listen('message', (message, data) => {
+    console.log('on messsage')
+    console.log(message)
+    console.log(data)
+  })
 
   await script.load()
 
@@ -30,9 +45,13 @@ async function main(methodName, args) {
   })
 
   let callMethod = async (name) => {
+    let method = api[name]
+    if (!method)
+      return console.error(`method ${name} unavaliable`)
+
     try {
       console.log(hr, name, hr)
-      let result = await api[name].apply(null, parsedArgs)
+      let result = await method.apply(null, parsedArgs)
       console.log(result)
     } catch(e) {
       console.error(`unable to execute script`)
@@ -48,10 +67,15 @@ async function main(methodName, args) {
     }
   }
 
+  // wait for 10s to handle messages
+  await new Promise(resolve => setTimeout(resolve, 4 * 1000))
   console.log(hr, 'detach', hr)
   await session.detach()
-  console.log('kill process', session.pid)
-  await dev.kill(session.pid)
+
+  if (kill) {
+    console.log('kill process', session.pid)
+    await dev.kill(session.pid)
+  }
   console.log('bye')
 }
 

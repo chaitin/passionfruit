@@ -1,4 +1,10 @@
+'use strict'
+
+import * as fs from 'frida-fs'
+
 import { arrayFromNSArray, dictFromNSDictionary, toJSON } from './lib/nsdict'
+import uuidv4 from './lib/uuid'
+import libc from './lib/libc'
 
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
 
@@ -66,15 +72,10 @@ function plist(path) {
 
 function text(path) {
   const name = Memory.allocUtf8String(path)
-  const size = 1024 // max read size: 1k
+  const size = 10 * 1024 // max read size: 10k
 
-  let pOpen = Module.findExportByName(null, 'open')
-  if (!pOpen)
-    throw new Error('unable to resolve syscalls')
-
-  const open = new NativeFunction(pOpen, 'int', ['pointer', 'int', 'int'])
   return new Promise((resolve, reject) => {
-    let fd = open(name, 0, 0)
+    let fd = libc.open(name, 0, 0)
     if (fd == -1)
       reject(new Error(`unable to open file ${path}`))
 
@@ -83,9 +84,72 @@ function text(path) {
   })
 }
 
+function upload(path) {
+  let session = uuidv4()
+  let stream = fs.createWriteStream(path)
+  let handler = (message, data) => {
+    // todo
+    recv('upload_' + session, handler)
+  }
+}
+
+function download(path) {
+  const session = uuidv4()
+  const name = Memory.allocUtf8String(path)
+  const watermark = 4 * 1024
+  const subject = 'download'
+  const size = getDataAttrForPath(path).size
+
+  const fd = libc.open(name, 0, 0)
+  if (fd == -1)
+    throw new Error(`unable to open file ${path}`)
+
+  let stream = new UnixInputStream(fd, { autoClose: true })
+  let index = -1
+  let count = 0
+  let progress = 0
+  let read = () => {
+    index++
+    stream.read(watermark).then(buffer => {
+      count += buffer.byteLength
+      progress = count / size * 100
+
+      send({
+        subject,
+        event: 'data',
+        session,
+        progress,
+      }, buffer)
+
+      if (buffer.byteLength === watermark) {
+        setImmediate(read)
+      } else {
+        send({
+          subject,
+          event: 'end',
+          session,
+        })
+      }
+    }).catch(error => {
+      send({
+        subject,
+        event: 'error',
+        session,
+        error: error.message,
+      })
+    })
+  }
+  setImmediate(read)
+  return {
+    size,
+    session
+  }
+}
+
 module.exports = {
   ls,
   home,
   plist,
   text,
+  download,
 }
