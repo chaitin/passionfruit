@@ -139,6 +139,11 @@ function download(path) {
       })
     })
   }
+  send({
+    subject,
+    event: 'start',
+    session,
+  })
   setImmediate(read)
   return {
     size,

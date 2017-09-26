@@ -1,3 +1,5 @@
+import socketStream from 'socket.io-stream'
+
 const SearchWorker = require('worker-loader!./worker.js')
 
 export class AsyncSearch {
@@ -49,4 +51,25 @@ export function humanFileSize(size) {
   if (size == 0) return '0 kB'
   let i = Math.floor(Math.log(size) / Math.log(1024))
   return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['bytes', 'kB', 'MB', 'GB', 'TB'][i]
+}
+
+
+export function download(socket, file) {
+  let { name, path } = file
+
+  return socket.call('download', path).then(({ size, session }) => {
+    const dest = socketStream.createStream()
+    const parts = []
+    socketStream(socket).emit('download', dest, { session })
+
+    return new Promise((resolve, reject) => {
+      dest.on('data', data => {
+        parts.push(data)
+      }).on('end', () => {
+        const blob = new Blob(parts, { type: "octet/stream" })
+        let url = URL.createObjectURL(blob)
+        resolve(url)
+      }).on('error', reject)
+    })
+  })
 }
