@@ -59,4 +59,28 @@ $link-focus-border: $primary;
   font-family: monospace;
 }
 
+section.dialog {
+  background: #fff;
+  min-height: 50vh;
+}
+
+.modal-content,
+.modal-card {
+  margin: 0 20px;
+  max-height: calc(100vh - 160px);
+  overflow: auto;
+  position: relative;
+  width: 100%;
+}
+
+@media screen and (min-width: 960px),
+print {
+  .modal-content,
+  .modal-card {
+    margin: 0 auto;
+    max-height: calc(100vh - 40px);
+    min-width: 960px;
+  }
+}
+
 </style>

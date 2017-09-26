@@ -18,7 +18,7 @@
       </ul>
 
       <!-- todo: search -->
-      <b-modal :active.sync="showDialog">
+      <b-modal :active.sync="showDialog" :width="1200">
         <div class="card">
           <div class="card-content">
             <loading-tab v-if="loadingMethods"></loading-tab>
@@ -26,9 +26,9 @@
             <div v-else>
               <h4 class="title">{{ selected }}</h4>
               <ul class="oc-methods">
-                <li v-for="(method, index) in methods" :key="index">
-                  <a class="button">Hook</a>
-                  {{ method }}
+                <li v-for="(method, index) in methods" :key="index" @click="toggleHook(method)">
+                  <b-icon icon="fiber_manual_record" class="is-small" :class="{ 'has-text-danger': method.hooked }"></b-icon>
+                  <span class="break-all monospace">{{ method.name }}</span>
                 </li>
               </ul>
             </div>
@@ -45,7 +45,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import LoadingTab from '~/components/LoadingTab.vue'
-import { GET_SOCKET } from '~/vuex/types'
+import { GET_SOCKET, IS_OBJC_HOOKED, IS_SYMBOL_HOOKED } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 
 
@@ -53,6 +53,8 @@ export default {
   components: { LoadingTab },
   computed: {
     ...mapGetters({
+      isObjCHooked: IS_OBJC_HOOKED,
+      isSymbolHooked: IS_SYMBOL_HOOKED,
       socket: GET_SOCKET,
     })
   },
@@ -71,7 +73,6 @@ export default {
       loadingMethods: false,
       selected: null,
       methods: [],
-
     }
   },
   watch: {
@@ -104,12 +105,23 @@ export default {
     paginate(page, filtered, paginator) {
       this.slice = filtered.slice((page - 1) * paginator, page * paginator).sort()
     },
+    toggleHook(method) {
+      this.$toast.open(`TODO: hook ${this.selected} ${method.name}`)
+    },
     expand(clz) {
       this.showDialog = true
       this.selected = clz
       this.loadingMethods = true
       this.socket.call('methods', { clz })
-        .then(methods => this.methods = methods)
+        .then(methods => {
+          // todo: filter
+          this.methods = methods.map(name => {
+            return {
+              name,
+              hooked: this.isObjCHooked(clz, name)
+            }
+          })
+        })
         .finally(() => this.loadingMethods = false)
     }
   },
@@ -126,6 +138,7 @@ ul.oc-classes {
   flex-wrap: wrap;
   padding: 0 1em;
   cursor: pointer;
+  margin-bottom: 1rem;
 
   li {
     display: block;
@@ -133,7 +146,7 @@ ul.oc-classes {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    @for $i from 1 through 3 {
+    @for $i from 1 through 4 {
       @media screen and (min-width: $i * 360px) {
         width: round(percentage(1 / $i))
       }
@@ -147,6 +160,11 @@ ul.oc-methods {
     text-overflow: ellipsis;
     overflow: hidden;
     margin: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: #f7f7f7;
+    }
   }
 }
 

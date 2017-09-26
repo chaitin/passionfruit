@@ -29,3 +29,10 @@ export const GET_SOCKET = 'GET_SOCKET'
 export const STORE_SOCKET = 'STORE_SOCKET'
 
 export const FINDER_ROOT = 'FINDER_ROOT'
+
+export const HOOK_OBJC = 'HOOK_OBJC'
+export const UNHOOK_OBJC = 'UNHOOK_OBJC'
+export const IS_OBJC_HOOKED = 'IS_OBJC_HOOKED'
+export const HOOK_DYLIB = 'HOOK_DYLIC'
+export const UNHOOK_DYLIB = 'UNHOOK_DYLIC'
+export const IS_SYMBOL_HOOKED = 'IS_SYMBOL_HOOKED'
