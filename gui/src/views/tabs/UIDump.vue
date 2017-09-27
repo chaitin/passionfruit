@@ -1,12 +1,16 @@
 <template>
   <div>
-    <b-field>
+    <b-field class="level-left">
       <button class="button" @click="refresh" :class="{ 'is-loading': loading }">
         <b-icon icon="refresh"></b-icon>
         <span>Refresh</span>
       </button>
     </b-field>
+
     <pre class="uidump">{{ description }}</pre>
+
+    <p class="section is-size-7">
+      <a target="_blank" href="https://revealapp.com/">Reveal </a> or even Xcode is much more powerful for view debugging.</p>
   </div>
 </template>
 
