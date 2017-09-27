@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import WelcomeView from '~/views/Welcome.vue'
-import DeviceView from '~/views/Device.vue'
-import InspectView from '~/views/Inspect.vue'
+const WelcomeView = () => import(/* webpackChunkName: "first" */'~/views/Welcome.vue')
+const DeviceView = () => import(/* webpackChunkName: "first" */'~/views/Device.vue')
+const InspectView = () => import(/* webpackChunkName: "first" */'~/views/Inspect.vue')
 
-import ModulesView from '~/views/tabs/Modules.vue'
-import GeneralView from '~/views/tabs/General.vue'
-import ClassesView from '~/views/tabs/Classes.vue'
-import RangesView from '~/views/tabs/Ranges.vue'
-import FinderView from '~/views/tabs/Finder.vue'
-import UIDumpView from '~/views/tabs/UIDump.vue'
-import KeyChainView from '~/views/tabs/KeyChain.vue'
+const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/General.vue')
+const ModulesView = () => import('~/views/tabs/Modules.vue')
+const ClassesView = () => import('~/views/tabs/Classes.vue')
+const RangesView = () => import('~/views/tabs/Ranges.vue')
+const FinderView = () => import('~/views/tabs/Finder.vue')
+const UIDumpView = () => import('~/views/tabs/UIDump.vue')
+const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 
 
 Vue.use(VueRouter)
