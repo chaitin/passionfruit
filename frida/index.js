@@ -3,6 +3,8 @@ import lsof from './lsof'
 import imports from './imports'
 import cookies from './binarycookie'
 import urlOpen from './ipc'
+import keychain from './keychain'
+
 
 import { info } from './info'
 import { classes, methods } from './classdump'
@@ -34,4 +36,6 @@ rpc.exports = {
   query,
 
   dumpWindow,
+
+  listKeyChain: keychain.list,
 }

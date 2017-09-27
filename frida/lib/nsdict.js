@@ -1,11 +1,24 @@
+const {
+  NSMutableDictionary,
+  NSArray,
+  NSDictionary,
+  NSMutableArray,
+  NSNumber,
+  NSInteger,
+  NSString,
+  __NSCFBoolean,
+} = ObjC.classes
+
 function toJSON(value) {
-  if (value === null)
+  if (value === null || typeof value !== 'object')
     return value
 
-  if (value.isKindOfClass_(ObjC.classes.NSArray))
+  if (value.isKindOfClass_(NSArray))
     return arrayFromNSArray(value)
-  else if (value.isKindOfClass_(ObjC.classes.NSDictionary))
+  else if (value.isKindOfClass_(NSDictionary))
     return dictFromNSDictionary(value)
+  else if (value.isKindOfClass_(NSNumber))
+    return value.floatValue()
   else
     return value.toString()
 }
