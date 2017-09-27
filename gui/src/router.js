@@ -10,6 +10,7 @@ import GeneralView from '~/views/tabs/General.vue'
 import ClassesView from '~/views/tabs/Classes.vue'
 import RangesView from '~/views/tabs/Ranges.vue'
 import FinderView from '~/views/tabs/Finder.vue'
+import UIDumpView from '~/views/tabs/UIDump.vue'
 
 
 Vue.use(VueRouter)
@@ -53,6 +54,10 @@ const router = new VueRouter({
         path: 'ranges',
         component: RangesView,
         name: 'ranges',
+      }, {
+        path: 'uidump',
+        component: UIDumpView,
+        name: 'uidump',
       }]
     }
   ]

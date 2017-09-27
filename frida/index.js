@@ -8,6 +8,7 @@ import { info } from './info'
 import { classes, methods } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
+import { dumpWindow } from './ui'
 
 
 rpc.exports = {
@@ -31,4 +32,6 @@ rpc.exports = {
   tables,
   data,
   query,
+
+  dumpWindow,
 }
