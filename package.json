@@ -41,8 +41,7 @@
     "promise.prototype.finally": "^3.0.0",
     "socket.io": "^2.0.3",
     "socket.io-stream": "^0.9.1",
-    "sqlite3": "^3.1.9",
-    "ssh2": "^0.5.5"
+    "sqlite3": "^3.1.9"
   },
   "devDependencies": {
     "cross-env": "^5.0.5"
