@@ -43,11 +43,13 @@
         <b-field label="Bundle">
           <p>{{ info.bundle }}</p>
         </b-field>
-        <b-field label="Path">
+        <b-field label="Executable">
           <p>{{ info.binary }}</p>
         </b-field>
         <b-field label="Data Directory">
-          <p><router-link :to="{ name: 'files' }" class="is-info button">{{ info.data }}</router-link></p>
+          <p>
+            <router-link class="has-text-info" :to="{ name: 'files' }">{{ info.data }}</router-link>
+          </p>
         </b-field>
         <b-field label="Version">
           <p>{{ info.semVer }}</p>
@@ -59,9 +61,9 @@
           <h3>URL Scheme</h3>
           <b-panel collapsible v-for="url in info.urls" :key="url.name">
             <span slot="header">{{ url.name || '(empty name)' }}</span>
-            <ul>
-              <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li>
-            </ul>
+            <section class="section">
+              <url v-for="scheme in url.schemes" :key="scheme" :scheme="scheme" @open="open"></url>
+            </section>
           </b-panel>
         </div>
       </div>
@@ -78,9 +80,11 @@ import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
+import Url from '~/components/URLScheme.vue'
+
 
 export default {
-  components: { LoadingTab, Plist },
+  components: { LoadingTab, Plist, Url },
   data() {
     return {
       loading: true,
@@ -95,12 +99,17 @@ export default {
     })
   },
   mounted() {
-    this.load(this.socket)
+    this.load()
   },
   methods: {
+    open(url) {
+      this.socket.call('urlOpen', url)
+        .then(result => this.$toast.open(
+           result ? 'Successfully' : 'Failed to' + ' invoke scheme'))
+    },
     load(socket) {
       this.loading = true
-      socket.call('info').then(({ info, sec }) => {
+      this.socket.call('info').then(({ info, sec }) => {
         this.loading = false
         this.info = info
         this.metainfo = info.json
