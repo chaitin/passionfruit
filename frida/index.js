@@ -37,5 +37,5 @@ rpc.exports = {
 
   dumpWindow,
 
-  listKeyChain: keychain.list,
+  dumpKeyChain: keychain.list,
 }

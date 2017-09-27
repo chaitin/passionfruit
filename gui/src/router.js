@@ -11,6 +11,7 @@ import ClassesView from '~/views/tabs/Classes.vue'
 import RangesView from '~/views/tabs/Ranges.vue'
 import FinderView from '~/views/tabs/Finder.vue'
 import UIDumpView from '~/views/tabs/UIDump.vue'
+import KeyChainView from '~/views/tabs/KeyChain.vue'
 
 
 Vue.use(VueRouter)
@@ -54,6 +55,10 @@ const router = new VueRouter({
         path: 'ranges',
         component: RangesView,
         name: 'ranges',
+      }, {
+        path: 'keychain',
+        component: KeyChainView,
+        name: 'keychain',
       }, {
         path: 'uidump',
         component: UIDumpView,

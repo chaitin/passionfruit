@@ -50,6 +50,7 @@
           <li><router-link :to="{ name: 'modules' }"><b-icon icon="view_module"></b-icon>Modules</router-link></li>
           <li><router-link :to="{ name: 'classes' }"><b-icon icon="gavel"></b-icon>Classes</router-link></li>
           <li><router-link :to="{ name: 'uidump' }"><b-icon icon="visibility"></b-icon>UIDump</router-link></li>
+          <li><router-link :to="{ name: 'keychain' }"><b-icon icon="vpn_key"></b-icon>KeyChain</router-link></li>
           <li><router-link :to="{ name: 'ranges' }"><b-icon icon="memory"></b-icon>Ranges</router-link></li>
         </ul>
       </nav>
