@@ -79,7 +79,7 @@ export default {
         transform: rotate(-90deg);
         transition: transform 0.2s ease-in-out;
       }
-      &.open .icon {
+      &.expanded .icon {
         transform: rotate(0);
       }
     }
