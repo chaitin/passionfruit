@@ -73,10 +73,45 @@ function arrayFromNSArray(nsArray) {
 //   return null
 // }
 
+
+function toNSObject(obj) {
+  // not tested, may be buggy
+  if ('isKindOfClass_' in obj)
+    return obj
+
+  if (typeof obj === 'boolean')
+    return __NSCFBoolean.numberWithBool_(obj)
+
+  if (typeof obj === 'undefined' || obj === null)
+    return NSNull.null()
+
+  if (typeof obj === 'string')
+    return NSString.stringWithString_(obj)
+
+  if (Array.isArray(obj)) {
+    let mutableArray = NSMutableArray.alloc().init()
+    obj.forEach(item => mutableArray.addObject_(toNSObject(obj)))
+    return mutableArray
+  }
+
+  let known = {}
+  let mutableDict = NSMutableDictionary.alloc().init()
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      console.log(key, obj[key])
+      let val = toNSObject(obj[key])
+      mutableDict.setObject_forKey_(val, key)
+    }
+  }
+
+  return mutableDict
+}
+
 module.exports = {
   dictFromNSDictionary,
   arrayFromNSArray,
   // infoDictionary,
   // infoLookup,
   toJSON,
+  toNSObject,
 }
