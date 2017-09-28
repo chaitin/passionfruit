@@ -4,70 +4,42 @@ function dumpWindow() {
   return ObjC.classes.UIWindow.keyWindow().recursiveDescription().toString()
 }
 
-let resolver = new ApiResolver('objc')
-let LAContext_evaluatePolicy_localizedReason_reply = {}
-let touchIDHook = null
+let originalImplementation = null
 
-resolver.enumerateMatches('-[LAContext evaluatePolicy:localizedReason:reply:]', {
-  onMatch: function(match) {
-    LAContext_evaluatePolicy_localizedReason_reply.name = match.name
-    LAContext_evaluatePolicy_localizedReason_reply.address = match.address
-  },
-  onComplete: function() {}
-})
 
-function toggleTouchID(on) {
+function toggleTouchID(enable) {
   const subject = 'touchid'
-  if (!LAContext_evaluatePolicy_localizedReason_reply.address) {
+  const { LAContext } = ObjC.classes
+  if (!LAContext) {
     return {
       status: 'error',
       reason: 'Touch ID may not be supported by this device'
     }
   }
-  
-  if (touchIDHook && !on) {
-    touchIDHook.detach()
+
+  const method = LAContext['- evaluatePolicy:localizedReason:reply:']
+  if (originalImplementation && !enable) {
+    method.implementation = originalImplementation
+    originalImplementation = null
+
     return {
       status: 'ok',
-      reason: 'successfully detached touch id bypass'
+      reason: 'Successfully re-enabled touch id'
     }
-  } else if (!touchIDHook && on) {
-    touchIDHook = Interceptor.attach(LAContext_evaluatePolicy_localizedReason_reply.address, {
-      onEnter: function (args) {
-        let reason = new ObjC.Object(args[3])
-        send({
-          subject,
-          event: 'request',
-          reason,
-          // todo: backtrace
-        })
-
-        let originalBlock = new ObjC.Block(args[4])
-        let savedReplyBlock = originalBlock.implementation
-        originalBlock.implementation = function(success, error) {
-          send({
-            subject,
-            event: 'success',
-            response: success,
-            error,
-          })
-
-          if (!success) {
-            send({
-              subject,
-              event: 'bypass',
-            })
-          }
-
-          savedReplyBlock(true, error)
-        }
-      }
+  } else if (!originalTouchIdMethod && enable) {
+    originalImplementation = method.implementation
+    method.implementation = ObjC.implement(method, function(self, sel, policy, reason, reply) {
+      send({
+        subject,
+        event: 'request',
+        reason,
+        // todo: backtrace
+      })
+      
+      // dismiss the dialog
+      const callback = new ObjC.Block(ptr(reply))
+      callback.implementation(1, null)
     })
-
-    return {
-      status: 'ok',
-      reason: 'successfully set touch id bypass'
-    }
   } else {
     return {
       status: 'error',

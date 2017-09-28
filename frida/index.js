@@ -11,8 +11,10 @@ import { info } from './info'
 import { classes, methods } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
-import { dumpWindow } from './ui'
+import { dumpWindow, toggleTouchID } from './ui'
 
+
+toggleTouchID(false)
 
 rpc.exports = {
   checksec,
@@ -37,6 +39,7 @@ rpc.exports = {
   query,
 
   dumpWindow,
+  toggleTouchID,
 
   dumpKeyChain: keychain.list,
 
