@@ -45,7 +45,7 @@
     <div v-if="connected">
       <nav class="tabs is-centered is-fullwidth">
         <ul>
-          <li><router-link :to="{ name: 'general' }"><b-icon icon="grade"></b-icon>General</router-link></li>
+          <li><router-link :to="{ name: 'general' }"><b-icon icon="dashboard"></b-icon>General</router-link></li>
           <li><router-link :to="{ name: 'files' }"><b-icon icon="folder_special"></b-icon>Files</router-link></li>
           <li><router-link :to="{ name: 'modules' }"><b-icon icon="view_module"></b-icon>Modules</router-link></li>
           <li><router-link :to="{ name: 'classes' }"><b-icon icon="gavel"></b-icon>Classes</router-link></li>
