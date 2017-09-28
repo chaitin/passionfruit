@@ -4,6 +4,7 @@ import imports from './imports'
 import cookies from './binarycookie'
 import urlOpen from './ipc'
 import keychain from './keychain'
+import hook from './hook'
 
 
 import { info } from './info'
@@ -38,4 +39,6 @@ rpc.exports = {
   dumpWindow,
 
   dumpKeyChain: keychain.list,
+
+  hook,
 }
