@@ -26,7 +26,7 @@ function toggleTouchID(enable) {
       status: 'ok',
       reason: 'Successfully re-enabled touch id'
     }
-  } else if (!originalTouchIdMethod && enable) {
+  } else if (!originalImplementation && enable) {
     originalImplementation = method.implementation
     method.implementation = ObjC.implement(method, function(self, sel, policy, reason, reply) {
       let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
