@@ -29,13 +29,16 @@ function toggleTouchID(enable) {
   } else if (!originalTouchIdMethod && enable) {
     originalImplementation = method.implementation
     method.implementation = ObjC.implement(method, function(self, sel, policy, reason, reply) {
+      let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress)
+
       send({
         subject,
         event: 'request',
         reason,
-        // todo: backtrace
+        backtrace,
       })
-      
+
       // dismiss the dialog
       const callback = new ObjC.Block(ptr(reply))
       callback.implementation(1, null)
