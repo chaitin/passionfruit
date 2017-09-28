@@ -1,5 +1,5 @@
 /* 
- * commong hook
+ * common hook
  */
 
 'use strict'

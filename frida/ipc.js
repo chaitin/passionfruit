@@ -1,3 +1,5 @@
+// fixme: this private api only works in SpringBoard
+
 module.exports = function(url) {
   const { LSApplicationWorkspace, NSURL } = ObjC.classes
   let workspace = LSApplicationWorkspace.defaultWorkspace()
