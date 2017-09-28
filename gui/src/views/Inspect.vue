@@ -45,17 +45,46 @@
     <div v-if="connected">
       <nav class="tabs is-centered is-fullwidth">
         <ul>
-          <li><router-link :to="{ name: 'general' }"><b-icon icon="dashboard"></b-icon>General</router-link></li>
-          <li><router-link :to="{ name: 'files' }"><b-icon icon="folder_special"></b-icon>Files</router-link></li>
-          <li><router-link :to="{ name: 'modules' }"><b-icon icon="view_module"></b-icon>Modules</router-link></li>
-          <li><router-link :to="{ name: 'classes' }"><b-icon icon="gavel"></b-icon>Classes</router-link></li>
-          <li><router-link :to="{ name: 'uidump' }"><b-icon icon="visibility"></b-icon>UIDump</router-link></li>
-          <li><router-link :to="{ name: 'keychain' }"><b-icon icon="vpn_key"></b-icon>KeyChain</router-link></li>
-          <li><router-link :to="{ name: 'ranges' }"><b-icon icon="memory"></b-icon>Ranges</router-link></li>
+          <li>
+            <router-link :to="{ name: 'general' }">
+              <b-icon icon="dashboard"></b-icon>General</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'files' }">
+              <b-icon icon="folder_special"></b-icon>Files</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'modules' }">
+              <b-icon icon="view_module"></b-icon>Modules</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'classes' }">
+              <b-icon icon="gavel"></b-icon>Classes</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'console' }">
+              <b-icon icon="memory"></b-icon>Output
+              <b-tag rounded v-show="unreadMessage">{{ unreadMessage }}</b-tag>
+            </router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'uidump' }">
+              <b-icon icon="visibility"></b-icon>UIDump</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'keychain' }">
+              <b-icon icon="vpn_key"></b-icon>KeyChain</router-link>
+          </li>
+          <li>
+            <router-link :to="{ name: 'ranges' }">
+              <b-icon icon="memory"></b-icon>Ranges</router-link>
+          </li>
         </ul>
       </nav>
 
-      <section class="tab-content"><router-view class="tab-item"></router-view></section>
+      <section class="tab-content">
+        <router-view class="tab-item"></router-view>
+      </section>
     </div>
   </div>
 </template>
@@ -65,7 +94,7 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
-import { GET_SOCKET, STORE_SOCKET } from '~/vuex/types'
+import { GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD } from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
 
@@ -81,6 +110,7 @@ export default {
   computed: {
     ...mapGetters({
       socket: GET_SOCKET,
+      unreadMessage: CONSOLE_UNREAD,
     })
   },
   methods: {
@@ -173,5 +203,4 @@ export default {
 .search {
   margin-top: 0;
 }
-
 </style>

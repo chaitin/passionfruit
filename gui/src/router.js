@@ -12,6 +12,7 @@ const RangesView = () => import('~/views/tabs/Ranges.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
+const ConsoleView = () => import('~/views/tabs/Console.vue')
 
 
 Vue.use(VueRouter)
@@ -51,6 +52,10 @@ const router = new VueRouter({
         path: 'files',
         component: FinderView,
         name: 'files',
+      }, {
+        path: 'console',
+        component: ConsoleView,
+        name: 'console',
       }, {
         path: 'ranges',
         component: RangesView,
