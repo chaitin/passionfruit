@@ -205,12 +205,12 @@ function list() {
   kSecClasses.forEach(clazz => {
     query.setObject_forKey_(clazz, kSecClass)
 
-    let ptr = Memory.alloc(Process.pointerSize)
-    let status = SecItemCopyMatching(query, ptr)
+    let p = Memory.alloc(Process.pointerSize)
+    let status = SecItemCopyMatching(query, p)
     if (status != 0x00)
       return
 
-    let arr = new ObjC.Object(Memory.readPointer(ptr))
+    let arr = new ObjC.Object(Memory.readPointer(p))
     for (let i = 0, size = arr.count(); i < size; i++) {
       let item = arr.objectAtIndex_(i)
       result.push({
