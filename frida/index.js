@@ -4,14 +4,14 @@ import imports from './imports'
 import cookies from './binarycookie'
 import urlOpen from './ipc'
 import keychain from './keychain'
-import hook from './hook'
-
 
 import { info } from './info'
 import { classes, methods } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID } from './ui'
+
+import { hook, unhook, swizzle, unswizzle } from './hook'
 
 
 toggleTouchID(false)
@@ -44,4 +44,7 @@ rpc.exports = {
   dumpKeyChain: keychain.list,
 
   hook,
+  unhook,
+  swizzle,
+  unswizzle,
 }
