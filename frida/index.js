@@ -10,12 +10,12 @@ import { classes, methods } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID } from './ui'
-
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
 
 toggleTouchID(false)
 hook('/usr/lib/libSystem.B.dylib', 'open', { args: ['char *', 'int'], ret: 'int'})
+
 
 rpc.exports = {
   checksec,

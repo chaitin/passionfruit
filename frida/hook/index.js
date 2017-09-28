@@ -35,7 +35,7 @@ function hook(lib, func, signature) {
       }
 
       let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
-        .map(DebugSymbol.fromAddress)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
 
       this.backtrace = backtrace
 

@@ -30,7 +30,7 @@ function toggleTouchID(enable) {
     originalImplementation = method.implementation
     method.implementation = ObjC.implement(method, function(self, sel, policy, reason, reply) {
       let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
-        .map(DebugSymbol.fromAddress)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
 
       send({
         subject,
