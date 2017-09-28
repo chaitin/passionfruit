@@ -1,12 +1,12 @@
 {
-  "name": "syringe",
-  "version": "0.0.1",
+  "name": "ipaspect",
+  "version": "0.0.2",
   "description": "Inject to iOS App",
   "main": "app.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development npm start",
-    "start": "nodemon .",
-    "report": "open coverage/lcov-report/index.html",
+    "dev": "cross-env NODE_ENV=development nodemon .",
+    "start": "cross-env NODE_ENV=production node .",
+    "build": "pushd gui && npm run build && popd && pushd agent && make package install && popd",
     "postinstall": "cd gui && (yarn || npm install)"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
+    "koa-send": "^4.1.1",
     "mz": "^2.6.0",
     "nodemon": "^1.12.1",
     "objection": "^0.8.7",

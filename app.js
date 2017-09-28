@@ -11,6 +11,7 @@ const logger = require('koa-logger')
 const json = require('koa-json')
 const compress = require('koa-compress')
 const bodyParser = require('koa-bodyparser')
+const send = require('koa-send')
 const Router = require('koa-router')
 
 const { FridaUtil, serializeDevice } = require('./lib/utils')
@@ -77,7 +78,7 @@ app
         ctx.throw(404, e.message)
       }
 
-      if (process.env.NODE_ENV == 'development') {
+      if (process.env.NODE_ENV === 'development') {
         throw e
       } else {
         ctx.throw(500, e.message)
@@ -88,13 +89,22 @@ app
   .use(router.allowedMethods())
 
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   app.use(json({
     pretty: false,
     param: 'pretty'
   }))
 
 } else {
+  app.use(async (ctx, next) => {
+    const opt = { root: __dirname + '/gui' }
+    if (ctx.path.startsWith('/dist/'))
+      await send(ctx, ctx.path, opt)
+    else // SPA
+      await send(ctx, '/index.html', opt)
+
+    next()
+  })
   app.use(logger())
 }
 
