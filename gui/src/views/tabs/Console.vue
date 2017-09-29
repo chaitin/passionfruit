@@ -2,32 +2,38 @@
   <div>
     <ul class="console">
       <li v-for="(item, i) in list" :key="i">
-        <p>
-          <span>
-            <span v-if="item.event === 'call'">
-              <b-icon icon="subdirectory_arrow_right"></b-icon>
-              <span>Call</span>
-            </span>
-            <span v-if="item.event === 'return'">
-              <b-icon icon="subdirectory_arrow_left"></b-icon>
-              <span>Return</span>
-            </span>
-          </span>
-          <b-tag>{{ item.time | datetime }}</b-tag>
-          <code>{{ item.lib }}!{{ item.func }}</code>
-        </p>
+        <b-tag>{{ item.time | datetime }}</b-tag>
 
-        <ul class="args">
-          <li v-for="(arg, j) in item.args" :key="j">{{ arg }}</li>
-        </ul>
+        <span v-if="item.event === 'call'" class="event">
+          <b-icon icon="subdirectory_arrow_right"></b-icon>
+          <b-tag type="is-info">Call</b-tag>
+        </span>
+        <span v-if="item.event === 'return'" class="event">
+          <b-icon icon="subdirectory_arrow_left"></b-icon>
+          <b-tag type="is-success">Return</b-tag>
+        </span>
 
-        <ul class="backtrace">
-          <li v-for="(bt, j) in item.backtrace" :key="j">
-            <span>{{ bt.address }}</span>
-            <span>{{ bt.name }}</span>
-            <span>{{ bt.moduleName }}</span>
-          </li>
-        </ul>
+        <span class="expression">
+          <code>{{ item | expr }}</code>
+        </span>
+
+        <b-dropdown position="is-bottom-left">
+          <a slot="trigger">
+            <b-tooltip label="Traceback" position="is-left">
+              <b-icon icon="view_headline"></b-icon>
+            </b-tooltip>
+          </a>
+          <b-dropdown-item custom>
+            <div class="content">
+              <ul class="backtrace">
+                <li v-for="(bt, j) in item.backtrace" :key="j">
+                  <b-tag class="addr">{{ bt.address }}</b-tag>
+                  <span class="symbol">{{ bt.moduleName }}!{{ bt.name }}</span>
+                </li>
+              </ul>
+            </div>
+          </b-dropdown-item>
+        </b-dropdown>
       </li>
     </ul>
   </div>
@@ -50,6 +56,9 @@ export default {
     }
   },
   filters: {
+    expr: item => item.event === 'call' ?
+      `${item.lib}!${item.func}(${item.args.join(', ')})` :
+      `=${item.ret}`,
     datetime: ts => new Date(ts).toLocaleString('en-US', {
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
@@ -71,13 +80,39 @@ export default {
 }
 </script>
 
-<style>
-ul.backtrace {
-  font-family: monospace;
-  font-size: 14px;
-}
+<style lang="scss">
+ul.console {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 
-ul.args {
-  font-family: monospace;
+  li {
+    display: flex;
+    flex-direction: row;
+
+    .event {
+      display: inline-block;
+      width: 100px;
+      margin: 2px 2px 2px 10px;
+    }
+
+    .expression {
+      flex: 1;
+      margin: 2px 10px 2px 2px;
+      word-break: break-all;
+      word-wrap: none;
+      text-overflow: ellipsis;
+    }
+  }
+
+  ul.backtrace {
+    margin: 0;
+    font-family: monospace;
+    font-size: 14px;
+
+    .addr {
+      margin-right: 4px;
+    }
+  }
 }
 </style>

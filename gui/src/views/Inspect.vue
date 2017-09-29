@@ -63,8 +63,9 @@
           </li>
           <li>
             <router-link :to="{ name: 'console' }">
-              <b-icon icon="memory"></b-icon>Output
-              <b-tag rounded v-show="unreadMessage">{{ unreadMessage }}</b-tag>
+              <b-icon icon="announcement"></b-icon>
+              <span>Output</span>
+              <b-tag rounded v-show="unreadMessage" type="is-info">{{ unreadMessage }}</b-tag>
             </router-link>
           </li>
           <li>
