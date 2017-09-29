@@ -94,7 +94,7 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
-import { GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD } from '~/vuex/types'
+import { GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD, CONSOLE_APPEND } from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
 
@@ -145,6 +145,7 @@ export default {
           this.connected = false
           this.loading = false
         })
+        .on('console', this.consoleAppend)
         .on('connect', () => this.err = null)
         .on('device', dev => this.device = dev)
         .on('app', app => this.app = app)
@@ -167,6 +168,7 @@ export default {
     },
     ...mapMutations({
       storeSocket: STORE_SOCKET,
+      consoleAppend: CONSOLE_APPEND,
     })
   },
   data() {
