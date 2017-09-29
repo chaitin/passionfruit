@@ -1,6 +1,6 @@
 import * as types from '~/vuex/types'
 
-const LIMIT = 1000
+const LIMIT = 200
 
 export const state = {
   list: [],

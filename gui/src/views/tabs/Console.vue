@@ -5,11 +5,11 @@
         <b-tag>{{ item.time | datetime }}</b-tag>
 
         <span v-if="item.event === 'call'" class="event">
-          <b-icon icon="subdirectory_arrow_right"></b-icon>
+          <b-icon size="is-small" icon="subdirectory_arrow_right"></b-icon>
           <b-tag type="is-info">Call</b-tag>
         </span>
         <span v-if="item.event === 'return'" class="event">
-          <b-icon icon="subdirectory_arrow_left"></b-icon>
+          <b-icon size="is-small" icon="subdirectory_arrow_left"></b-icon>
           <b-tag type="is-success">Return</b-tag>
         </span>
 
