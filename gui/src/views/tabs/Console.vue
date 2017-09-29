@@ -109,6 +109,7 @@ ul.console {
     margin: 0;
     font-family: monospace;
     font-size: 14px;
+    max-width: 80vw;
 
     .addr {
       margin-right: 4px;
