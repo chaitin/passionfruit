@@ -10,9 +10,9 @@ export const state = {
 
 export const mutations = {
   [types.CONSOLE_APPEND](state, item) {
-    state.list.push(item)
+    state.list.unshift(item)
     if (state.list.length > LIMIT)
-      state.list.shift()
+      state.list.pop()
 
     if (!state.active)
       state.unread++
