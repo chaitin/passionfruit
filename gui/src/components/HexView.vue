@@ -1,7 +1,9 @@
 <template>
   <div class="hexview">
     <h2 class="title">TextViewer</h2>
-    <b-field><b-switch v-model="hex">Hex View</b-switch></b-field>
+    <b-field>
+      <b-switch v-model="hex">Hex View</b-switch>
+    </b-field>
     <pre class="hexdump">{{ content }}</pre>
     <p class="is-size-7">File large than 1kb will be truncated</p>
   </div>
@@ -19,11 +21,14 @@ export default {
   },
   computed: {
     content() {
-      return this.hex ? this.hexdump : new TextDecoder('utf8').decode(this.raw)
+      if (this.raw && this.raw.byteLength)
+        return this.hex ? this.hexdump : new TextDecoder('utf8').decode(this.raw)
+      else
+        return '(empty)'
     },
     hexdump() {
-      let view = new DataView(this.raw)
       let dump = '      0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F 0123456789ABCDEF'
+      let view = new DataView(this.raw)
 
       for (let i = 0; i < this.raw.byteLength; i += 16) {
         dump += `\n${('0000' + i.toString(16).toUpperCase()).slice(-4)} `
