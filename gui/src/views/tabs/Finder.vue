@@ -41,9 +41,9 @@
         </b-table>
 
         <p class="section is-size-7">For full featured filesystem management, try
-          <a href="http://pro.itools.cn/mac/english">iTools</a>,
-          <a href="http://www.i-funbox.com/">iFunbox</a> or
-          <a href="https://github.com/libimobiledevice/ifuse/wiki">iFuse</a> instead.</p>
+          <a class="has-text-info" href="http://pro.itools.cn/mac/english">iTools</a>,
+          <a class="has-text-info" href="http://www.i-funbox.com/">iFunbox</a> or
+          <a class="has-text-info" href="https://github.com/libimobiledevice/ifuse/wiki">iFuse</a> instead.</p>
       </div>
 
       <div v-if="selected" class="column is-one-quarter content">

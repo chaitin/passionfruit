@@ -2,14 +2,18 @@
   <div class="plist-viewer">
     <h3 class="title">{{ title }}</h3>
     <b-field class="column">
-      <a class="button" @click="expandAll">
-        <b-icon icon="add"></b-icon>
-        <span>Expand All</span>
-      </a>
-      <a class="button" @click="closeAll">
-        <b-icon icon="remove"></b-icon>
-        <span>Collapse All</span>
-      </a>
+      <p class="control">
+        <a class="button" @click="expandAll">
+          <b-icon icon="add"></b-icon>
+          <span>Expand All</span>
+        </a>
+      </p>
+      <p class="control">
+        <a class="button" @click="closeAll">
+          <b-icon icon="remove"></b-icon>
+          <span>Collapse All</span>
+        </a>
+      </p>
       <b-input icon="search" v-model="filter" type="search" placeholder="Search keys and values..." expanded></b-input>
     </b-field>
 

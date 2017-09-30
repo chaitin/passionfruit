@@ -10,7 +10,7 @@
     <pre class="uidump">{{ description }}</pre>
 
     <p class="section is-size-7">
-      <a target="_blank" href="https://revealapp.com/">Reveal </a> or even Xcode is much more powerful for view debugging.</p>
+      <a target="_blank" href="https://revealapp.com/" class="has-text-info">Reveal</a> or even Xcode is much more powerful for view debugging.</p>
   </div>
 </template>
 
