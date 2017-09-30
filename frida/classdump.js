@@ -3,6 +3,6 @@ exports.classes = function() {
 }
 
 exports.methods = function(clazz) {
-  return ObjC.classes[clazz].$methods
+  return ObjC.classes[clazz].$ownMethods
 }
 
