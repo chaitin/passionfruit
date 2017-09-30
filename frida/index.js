@@ -14,7 +14,8 @@ import { hook, unhook, swizzle, unswizzle } from './hook'
 
 
 toggleTouchID(false)
-hook('/usr/lib/libSystem.B.dylib', 'open', { args: ['char *', 'int'], ret: 'int'})
+// hook('/usr/lib/libSystem.B.dylib', 'open', { args: ['char *', 'int'], ret: 'int'})
+swizzle('NSURL', 'URLWithString_')
 
 
 rpc.exports = {

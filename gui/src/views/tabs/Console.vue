@@ -13,11 +13,20 @@
           <b-tag type="is-success">Return</b-tag>
         </span>
 
+        <span v-if="item.event === 'objc-call'" class="event">
+          <b-icon size="is-small" icon="subdirectory_arrow_right"></b-icon>
+          <b-tag type="is-info">ObjC Call</b-tag>
+        </span>
+        <span v-if="item.event === 'objc-return'" class="event">
+          <b-icon size="is-small" icon="subdirectory_arrow_left"></b-icon>
+          <b-tag type="is-success">ObjC Return</b-tag>
+        </span>
+
         <span class="expression">
           <code>{{ item | expr }}</code>
         </span>
 
-        <b-dropdown position="is-bottom-left">
+        <b-dropdown position="is-bottom-left" v-if="item.backtrace">
           <a slot="trigger">
             <b-tooltip label="Traceback" position="is-left">
               <b-icon icon="view_headline"></b-icon>
@@ -56,9 +65,18 @@ export default {
     }
   },
   filters: {
-    expr: item => item.event === 'call' ?
-      `${item.lib}!${item.func}(${item.args.join(', ')})` :
-      `=${item.ret}`,
+    expr(item) {
+      let router = {
+        'objc-call': () => `${item.clazz}!${item.sel}(${item.args.join(', ')})`,
+        'objc-return': () => `=${item.ret}`,
+        'call': () => `${item.lib}!${item.func}(${item.args.join(', ')})`,
+        'return': () => `=${item.ret}`,
+      }
+      if (router.hasOwnProperty(item.event))
+        return router[item.event].call(null)
+      else
+        return '!ERR: Unknown type: ' + item.event
+    },
     datetime: ts => new Date(ts).toLocaleString('en-US', {
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
@@ -92,7 +110,7 @@ ul.console {
 
     .event {
       display: inline-block;
-      width: 100px;
+      width: 120px;
       margin: 2px 2px 2px 10px;
     }
 

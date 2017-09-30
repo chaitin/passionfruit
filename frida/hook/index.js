@@ -94,44 +94,56 @@ function swizzle(clazz, sel) {
     throw new Error(`method ${sel} not found in ${clazz}`)
 
   let method = ObjC.classes[clazz][sel]
-  let original = method.implementation
-
   if (!swizzled[clazz])
-    swizzled[clazz] = { sel: original }
+    swizzled[clazz] = { sel: true }
   else
-    swizzled[clazz][sel] = original
+    swizzled[clazz][sel] = true
 
-  method.implementation = ObjC.implement(method, function(self, selector, ...args) {
-    let time = now()
-    let readable = args.map((arg, index) => {
-      if (method.argumentTypes[index] === 'pointer')
-        return ObjC.Object(arg).toString()
-      else
-        return arg
-    })
+  Interceptor.attach(method.implementation, {
+    onEnter(args) {
+      let time = now()
+      let readable = []
+      for (let i = 2; i < method.argumentTypes.length; i++) {
+        if (method.argumentTypes[i] === 'pointer') {
+          try {
+            let obj = ObjC.Object(args[i]).toString()
+            readable.push(obj)
+          } catch (ex) {
+            readable.push(args[i])
+          }
+        } else {
+          readable.push(args[i])
+        }
+      }
 
-    send({
-      subject,
-      event: 'objc-call',
-      args: readable,
-      clazz,
-      sel,
-      backtrace,
-      time,
-    })
+      // Objective C's backtrace does not contain valuable information,
+      // so I removed it
 
-    let ret = original.apply(null, [self, selector, ...args])
-    time = now()
-    send({
-      subject,
-      event: 'objc-return',
-      clazz,
-      sel,
-      ret,
-      backtrace,
-      time,
-    })
-    return ret
+      send({
+        subject,
+        event: 'objc-call',
+        args: readable,
+        clazz,
+        sel,
+        time,
+      })
+    },
+    onLeave(retVal) {
+      let time = now()
+      let { backtrace } = this
+      let ret = retVal
+      try {
+        ret = new ObjC.Object(ret).toString()
+      } catch (_) {}
+      send({
+        subject,
+        event: 'objc-return',
+        clazz,
+        sel,
+        ret,
+        time,
+      })
+    }
   })
 
 }
