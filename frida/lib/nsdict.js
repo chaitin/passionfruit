@@ -46,34 +46,6 @@ function arrayFromNSArray(nsArray) {
   return arr
 }
 
-// todo: refactor me
-//
-// function infoDictionary() {
-//   if (ObjC.available && 'NSBundle' in ObjC.classes) {
-//     let info = ObjC.classes.NSBundle.mainBundle().infoDictionary()
-//     return dictFromNSDictionary(info)
-//   }
-//   return null
-// }
-
-// function infoLookup(key) {
-//   if (ObjC.available && 'NSBundle' in ObjC.classes) {
-//     let info = ObjC.classes.NSBundle.mainBundle().infoDictionary()
-//     let value = info.objectForKey_(key)
-//     if (value === null) {
-//       return value
-//     } else if (value.class().toString() === '__NSCFArray') {
-//       return arrayFromNSArray(value)
-//     } else if (value.class().toString() === '__NSCFDictionary') {
-//       return dictFromNSDictionary(value)
-//     } else {
-//       return value.toString()
-//     }
-//   }
-//   return null
-// }
-
-
 function toNSObject(obj) {
   // not tested, may be buggy
   if ('isKindOfClass_' in obj)
@@ -110,8 +82,6 @@ function toNSObject(obj) {
 module.exports = {
   dictFromNSDictionary,
   arrayFromNSArray,
-  // infoDictionary,
-  // infoLookup,
   toJSON,
   toNSObject,
 }
