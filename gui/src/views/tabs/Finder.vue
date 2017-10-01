@@ -18,7 +18,7 @@
 
     <div class="columns">
       <div class="column is-three-quarter">
-        <b-table class="fixed" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
+        <b-table class="fixed finder" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
           <template scope="props">
             <b-table-column field="name" label="Name" sortable class="ellipsis">
               <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
@@ -168,14 +168,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.break-all {
-  word-break: break-all;
-}
-
-.ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+<style lang="scss">
+.finder {
+  user-select: none;
+  span {
+    cursor: default;
+  }
 }
 </style>

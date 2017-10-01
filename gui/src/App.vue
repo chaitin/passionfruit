@@ -55,6 +55,12 @@ $link-focus-border: $primary;
   word-break: break-all;
 }
 
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .monospace {
   font-family: monospace;
 }
