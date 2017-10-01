@@ -10,6 +10,7 @@ const hooked = {}
 const swizzled = {}
 
 const now = () => (new Date()).getTime()
+const readable = (type, arg) => type === 'char *' ? Memory.readUtf8String(arg) : arg
 
 
 function hook(lib, func, signature) {
@@ -28,10 +29,10 @@ function hook(lib, func, signature) {
   let intercept = Interceptor.attach(funcPtr, {
     onEnter(args) {
       let time = now()
-      let readable = []
+      let pretty = []
       for (let i = 0; i < signature.args.length; i++) {
         let arg = ptr(args[i])
-        readable[i] = signature.args[i] === 'char *' ? Memory.readUtf8String(arg) : arg;
+        pretty[i] = readable(signature.args[i], arg)
       }
 
       let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
@@ -42,7 +43,7 @@ function hook(lib, func, signature) {
       send({
         subject,
         event: 'call',
-        args: readable,
+        args: pretty,
         lib,
         func,
         backtrace,
@@ -50,7 +51,11 @@ function hook(lib, func, signature) {
       })
     },
     onLeave(retVal) {
+      if (!signature.ret)
+        return
+
       let time = now()
+      let ret = pretty(signature.ret, retVal)
 
       send({
         subject,
@@ -59,7 +64,7 @@ function hook(lib, func, signature) {
         func,
         time,
         backtrace: this.backtrace,
-        ret: retVal,
+        ret,
       })
     },
   })
