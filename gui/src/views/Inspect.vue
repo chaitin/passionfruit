@@ -95,7 +95,10 @@
 import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
-import { GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD, CONSOLE_APPEND } from '~/vuex/types'
+import {
+  GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD, CONSOLE_APPEND,
+  CONSOLE_CLEAR
+} from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
 
@@ -170,6 +173,7 @@ export default {
     ...mapMutations({
       storeSocket: STORE_SOCKET,
       consoleAppend: CONSOLE_APPEND,
+      consoleClear: CONSOLE_CLEAR,
     })
   },
   data() {
@@ -185,6 +189,7 @@ export default {
     const socket = this.createSocket()
     this.storeSocket(socket)
     window.addEventListener('unhandledrejection', this.rejectionHandler)
+    this.consoleClear()
   },
   beforeDestroy() {
     if (this.socket)

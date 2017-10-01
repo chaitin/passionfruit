@@ -22,7 +22,11 @@ export const mutations = {
     if (active) {
       state.unread = 0
     }
-  }
+  },
+  [types.CONSOLE_CLEAR](state) {
+    state.unread = 0
+    state.list.length = 0
+  },
 }
 
 export const getters = {
