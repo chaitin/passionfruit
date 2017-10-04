@@ -22,8 +22,8 @@ function getGlobalClasses(sort) {
   return sort ? classes.sort() : classes
 }
 
-const ownClasses = null
-const globalClasses = null
+let ownClasses = null
+let globalClasses = null
 
 exports.ownClasses = function() {
   if (!ownClasses)
