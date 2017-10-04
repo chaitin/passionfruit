@@ -13,7 +13,7 @@ class Database {
     // I know it's an injection, but since this tool allows you query arbitary sql,
     // leave this alone or help me commit some code to escape the table name
 
-    let statement = this.prepare(`PRAGMA table_info(${table})`)
+    let statement = this.prepare(`PRAGMA table_info(${quote(table)})`)
     return this.all(statement)
   }
 
@@ -53,10 +53,14 @@ class Database {
   }
 }
 
+function quote(table) {
+  table = table.replace(/\"/g, '')
+  return `"${table}"`
+}
 
 function data({ path, table }) {
   let db = new Database(path)
-  let sql = `select * from ${table} limit 500`
+  let sql = `select * from ${quote(table)} limit 500`
   let result = {
     header: db.columns(table),
     data: db.all(db.prepare(sql))
