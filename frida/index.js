@@ -14,7 +14,8 @@ import { hook, unhook, swizzle, unswizzle } from './hook'
 
 
 toggleTouchID(false)
-hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})
+// hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})
+
 hook('libsqlite3.dylib', 'sqlite3_open', { args: ['char *', 'int'], ret: 'int' })
 hook('libsqlite3.dylib', 'sqlite3_prepare_v2', { args: ['pointer', 'char *', 'int', 'pointer', 'pointer'] })
 hook('libsqlite3.dylib', 'sqlite3_bind_int', { args: ['pointer', 'int', 'int'] })

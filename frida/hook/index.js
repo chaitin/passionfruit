@@ -4,6 +4,8 @@
 
 'use strict'
 
+require('./cccrypt')
+
 const subject = 'hook'
 
 const hooked = {}
