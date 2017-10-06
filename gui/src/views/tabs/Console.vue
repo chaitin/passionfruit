@@ -1,5 +1,7 @@
 <template>
   <div>
+    <b-field><b-switch v-model="logging">Logging</b-switch>
+    </b-field>
     <ul class="console">
       <li v-for="(item, i) in list" :key="i">
         <b-tag>{{ item.time | datetime }}</b-tag>
@@ -50,10 +52,18 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { CONSOLE_ACTIVE, CONSOLE_LIST, CONSOLE_UNREAD } from '~/vuex/types'
+import { CONSOLE_ACTIVE, CONSOLE_LIST, CONSOLE_UNREAD, CONSOLE_RUNNING } from '~/vuex/types'
 
 export default {
   computed: {
+    logging: {
+      get() {
+        return this.$store.state.output.logging
+      },
+      set(val) {
+        this.$store.commit(CONSOLE_RUNNING, val)
+      }
+    },
     ...mapGetters({
       list: CONSOLE_LIST,
       unread: CONSOLE_UNREAD,
