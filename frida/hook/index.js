@@ -57,7 +57,7 @@ function hook(lib, func, signature) {
         return
 
       let time = now()
-      let ret = pretty(signature.ret, retVal)
+      let ret = readable(signature.ret, retVal)
 
       send({
         subject,
