@@ -8,7 +8,6 @@ const InspectView = () => import(/* webpackChunkName: "first" */'~/views/Inspect
 const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/General.vue')
 const ModulesView = () => import('~/views/tabs/Modules.vue')
 const ClassesView = () => import('~/views/tabs/Classes.vue')
-const RangesView = () => import('~/views/tabs/Ranges.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
@@ -56,10 +55,6 @@ const router = new VueRouter({
         path: 'console',
         component: ConsoleView,
         name: 'console',
-      }, {
-        path: 'ranges',
-        component: RangesView,
-        name: 'ranges',
       }, {
         path: 'keychain',
         component: KeyChainView,

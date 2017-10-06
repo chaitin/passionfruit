@@ -76,10 +76,6 @@
             <router-link :to="{ name: 'keychain' }">
               <b-icon icon="vpn_key"></b-icon>KeyChain</router-link>
           </li>
-          <li>
-            <router-link :to="{ name: 'ranges' }">
-              <b-icon icon="memory"></b-icon>Ranges</router-link>
-          </li>
         </ul>
       </nav>
 
