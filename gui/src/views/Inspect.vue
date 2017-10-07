@@ -88,6 +88,12 @@
               <span>KeyChain</span>
             </router-link>
           </li>
+          <li>
+            <router-link :to="{ name: 'binarycookie' }">
+              <b-icon icon="work"></b-icon>
+              <span>Cookies</span>
+            </router-link>
+          </li>
         </ul>
       </nav>
 

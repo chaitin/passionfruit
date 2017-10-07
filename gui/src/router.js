@@ -12,6 +12,7 @@ const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
+const BinaryCookieView = () => import('~/views/tabs/BinaryCookieView.vue')
 
 
 Vue.use(VueRouter)
@@ -63,6 +64,10 @@ const router = new VueRouter({
         path: 'uidump',
         component: UIDumpView,
         name: 'uidump',
+      }, {
+        path: 'binarycookie',
+        component: BinaryCookieView,
+        name: 'binarycookie',
       }]
     }
   ]
