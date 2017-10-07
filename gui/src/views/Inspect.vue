@@ -47,19 +47,27 @@
         <ul>
           <li>
             <router-link :to="{ name: 'general' }">
-              <b-icon icon="dashboard"></b-icon>General</router-link>
+              <b-icon icon="dashboard"></b-icon>
+              <span>General</span>
+            </router-link>
           </li>
           <li>
             <router-link :to="{ name: 'files' }">
-              <b-icon icon="folder_special"></b-icon>Files</router-link>
+              <b-icon icon="folder_special"></b-icon>
+              <span>Files</span>
+            </router-link>
           </li>
           <li>
             <router-link :to="{ name: 'modules' }">
-              <b-icon icon="view_module"></b-icon>Modules</router-link>
+              <b-icon icon="view_module"></b-icon>
+              <span>Modules</span>
+            </router-link>
           </li>
           <li>
             <router-link :to="{ name: 'classes' }">
-              <b-icon icon="gavel"></b-icon>Classes</router-link>
+              <b-icon icon="gavel"></b-icon>
+              <span>Classes</span>
+            </router-link>
           </li>
           <li>
             <router-link :to="{ name: 'console' }">
@@ -70,11 +78,15 @@
           </li>
           <li>
             <router-link :to="{ name: 'uidump' }">
-              <b-icon icon="visibility"></b-icon>UIDump</router-link>
+              <b-icon icon="visibility"></b-icon>
+              <span>UIDump</span>
+            </router-link>
           </li>
           <li>
             <router-link :to="{ name: 'keychain' }">
-              <b-icon icon="vpn_key"></b-icon>KeyChain</router-link>
+              <b-icon icon="vpn_key"></b-icon>
+              <span>KeyChain</span>
+            </router-link>
           </li>
         </ul>
       </nav>
