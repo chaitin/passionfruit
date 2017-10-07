@@ -34,7 +34,7 @@ exports.ownClasses = function() {
 exports.classes = function() {
   if (!globalClasses)
     globalClasses = getGlobalClasses(true)
-  
+
   return globalClasses
 }
 

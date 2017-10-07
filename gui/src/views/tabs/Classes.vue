@@ -98,7 +98,7 @@ export default {
   methods: {
     load() {
       this.loading = true
-      this.socket.call('classes')
+      this.socket.call('ownClasses')
         .then(classes => this.list = classes)
         .finally(() => this.loading = false)
     },
