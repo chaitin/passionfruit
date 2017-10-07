@@ -61,9 +61,9 @@
           <h3>URL Scheme</h3>
           <b-panel collapsible v-for="url in info.urls" :key="url.name">
             <span slot="header">{{ url.name || '(empty name)' }}</span>
-            <section class="section">
-              <url v-for="scheme in url.schemes" :key="scheme" :scheme="scheme" @open="open"></url>
-            </section>
+            <ul>
+              <li v-for="scheme in url.schemes">{{ scheme }}://</li>
+            </ul>
           </b-panel>
         </div>
       </div>
@@ -102,11 +102,6 @@ export default {
     this.load()
   },
   methods: {
-    open(url) {
-      this.socket.call('urlOpen', url)
-        .then(result => this.$toast.open(
-           result ? 'Successfully' : 'Failed to' + ' invoke scheme'))
-    },
     load(socket) {
       this.loading = true
       this.socket.call('info').then(({ info, sec }) => {
