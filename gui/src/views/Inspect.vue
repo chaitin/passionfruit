@@ -24,17 +24,21 @@
       </nav>
 
       <div class="level-right">
-        <nav class="level-item">
-          <b-tooltip label="Screenshot" position="is-left">
-            <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-              <b-icon icon="camera"></b-icon>
-            </a>
-          </b-tooltip>
-          <b-tooltip label="Kill Process" position="is-left">
-            <button class="button is-danger" @click="kill">
-              <b-icon icon="power_settings_new"></b-icon>
-            </button>
-          </b-tooltip>
+        <nav class="level-item field has-addons">
+          <p class="control">
+            <b-tooltip label="Screenshot" position="is-left">
+              <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
+                <b-icon icon="camera"></b-icon>
+              </a>
+            </b-tooltip>
+          </p>
+          <p class="control">
+            <b-tooltip label="Kill Process" position="is-left">
+              <button class="button is-danger" @click="kill">
+                <b-icon icon="power_settings_new"></b-icon>
+              </button>
+            </b-tooltip>
+          </p>
         </nav>
       </div>
     </header>

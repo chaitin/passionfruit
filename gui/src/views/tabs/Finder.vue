@@ -52,11 +52,13 @@
           <small>{{ selected.path }}</small>
         </p>
         <b-field v-show="selected.type != 'directory'">
-          <b-tooltip v-for="(arr, type) in typesMapping" :key="type" :label="arr[0]">
-            <a class="button" @click="view(type)">
-              <b-icon :icon="arr[1]"></b-icon>
-            </a>
-          </b-tooltip>
+          <p class="control" v-for="(arr, type) in typesMapping" :key="type">
+            <b-tooltip :label="arr[0]">
+              <a class="button is-primary" @click="view(type)">
+                <b-icon :icon="arr[1]"></b-icon>
+              </a>
+            </b-tooltip>
+          </p>
         </b-field>
         <file-viewer :type="type" :file="selected" :open.sync="viewerOpen"></file-viewer>
         <ul class="break-all " v-if="selected.type != 'directory'">
