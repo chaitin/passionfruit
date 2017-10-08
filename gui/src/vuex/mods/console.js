@@ -32,7 +32,7 @@ export const mutations = {
   },
   [types.CONSOLE_CLEAR](state) {
     state.unread = 0
-    state.list.length = 0
+    state.list = []
   },
 }
 

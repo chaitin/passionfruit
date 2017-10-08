@@ -1,7 +1,15 @@
 <template>
   <div>
-    <b-field>
-      <b-switch v-model="logging">Live</b-switch>
+    <b-field grouped group-multiline>
+      <p class="control">
+        <b-switch v-model="logging">Live</b-switch>
+      </p>
+      <p class="control">
+        <button class="button" @click="clear">
+          <b-icon icon="clear"></b-icon>
+          <span>Clear</span>
+        </button>
+      </p>
     </b-field>
     <ul class="console">
       <li v-for="(item, i) in list" :key="i">
@@ -39,7 +47,10 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { CONSOLE_ACTIVE, CONSOLE_LIST, CONSOLE_UNREAD, CONSOLE_RUNNING } from '~/vuex/types'
+import {
+  CONSOLE_ACTIVE, CONSOLE_CLEAR,
+  CONSOLE_LIST, CONSOLE_UNREAD, CONSOLE_RUNNING
+} from '~/vuex/types'
 
 export default {
   computed: {
@@ -83,6 +94,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      clear: CONSOLE_CLEAR,
       setActive: CONSOLE_ACTIVE,
     })
   },

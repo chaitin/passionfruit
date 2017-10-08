@@ -49,6 +49,7 @@ Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
       func: 'CCCryptorCreate',
       event: operation,
       arguments: {
+        operation,
         algorithm: CCAlgorithm[alg].name,
         key: strKey,
         iv: strIV,
@@ -107,6 +108,7 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
       subject,
       event: operation,
       arguments: {
+        operation,
         algorithm: CCAlgorithm[alg].name,
         key: strKey,
         iv: strIV,
