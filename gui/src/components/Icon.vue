@@ -29,7 +29,8 @@ export default {
       let buf = Uint8ClampedArray.from(pixels, c => c.charCodeAt())
       imageData.data.set(buf)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.putImageData(imageData, 0, 0)
+      ctx.putImageData(imageData, (canvas.width - width) / 2, (canvas.height - height) / 2)
+      ctx.scale(canvas.width / width, canvas.height / height)
     }
   },
   watch: {
@@ -39,10 +40,10 @@ export default {
   },
   computed: {
     w() {
-      return (this.icon ? this.icon.width : this.width) || 32
+      return (this.width > 0 ? this.width : (this.icon && this.icon.width)) || 32
     },
     h() {
-      return (this.icon ? this.icon.height : this.height) || 32
+      return (this.height > 0 ? this.height : (this.icon && this.icon.height)) || 32
     }
   },
   mounted() {

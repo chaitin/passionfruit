@@ -10,7 +10,7 @@
           <ul class="menu-list">
             <li v-for="dev in devices" :key="dev.id">
               <router-link :to="{ name: 'apps', params: { device: dev.id } }">
-                <icon :icon="dev.icon"></icon> {{ dev.name }}
+                <icon :icon="dev.icon" :width="24" :height="24"></icon> {{ dev.name }}
               </router-link>
             </li>
             <li v-if="!devices.length"><b-icon icon="error"></b-icon> No device found</li>
