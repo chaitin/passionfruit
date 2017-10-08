@@ -3,13 +3,17 @@
     <loading-tab v-if="loading"></loading-tab>
 
     <div v-else>
-      <b-field class="column">
+      <b-field>
         <b-input icon="search" v-model="filter" type="search" placeholder="Filter..." expanded></b-input>
         <b-select v-model="paginator">
           <option value="50">50 per page</option>
           <option value="100">100 per page</option>
           <option value="200">200 per page</option>
         </b-select>
+      </b-field>
+
+      <b-field>
+        <b-checkbox v-model="includeAll">Include system frameworks</b-checkbox>
         <p class="search-stat">{{ filtered.length }} / {{ list.length }}</p>
       </b-field>
 
@@ -17,7 +21,6 @@
         <li v-for="clz in slice" :key="clz" :title="clz" @click="expand(clz)">{{ clz }}</li>
       </ul>
 
-      <!-- todo: search -->
       <b-modal :active.sync="showDialog" :width="1200">
         <div class="card">
           <div class="card-content">
@@ -62,6 +65,7 @@ export default {
     return {
       loading: false,
       list: [],
+      includeAll: false,
       filtered: [],
       slice: [],
       page: 1,
@@ -76,6 +80,9 @@ export default {
     }
   },
   watch: {
+    includeAll(val, old) {
+      this.load()
+    },
     filter: debounce(function(val, old) {
       this.matcher.search(val)
     }),
@@ -98,7 +105,7 @@ export default {
   methods: {
     load() {
       this.loading = true
-      this.socket.call('ownClasses')
+      this.socket.call(this.includeAll ? 'classes' : 'ownClasses')
         .then(classes => this.list = classes)
         .finally(() => this.loading = false)
     },
@@ -114,7 +121,6 @@ export default {
       this.loadingMethods = true
       this.socket.call('methods', { clz })
         .then(methods => {
-          // todo: filter
           this.methods = methods.map(name => {
             return {
               name,
