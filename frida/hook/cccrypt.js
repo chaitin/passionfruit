@@ -1,4 +1,4 @@
-import { fromByteArray } from 'base64-js'
+import base64ArrayBuffer from '../lib/base64'
 
 
 const CCOperation = ['kCCEncrypt', 'kCCDecrypt']
@@ -28,8 +28,8 @@ Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
     let keyLength = args[4].toInt32()
     let iv = args[5]
 
-    let strKey = fromByteArray(Memory.readByteArray(key, keyLength))
-    let strIV = iv === 0 ? 'null' : fromByteArray(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+    let strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+    let strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
     let time = now()
     let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
@@ -48,9 +48,11 @@ Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
       subject,
       func: 'CCCryptorCreate',
       event: operation,
-      algorithm: CCAlgorithm[alg].name,
-      key: strKey,
-      iv: strIV,
+      arguments: {
+        algorithm: CCAlgorithm[alg].name,
+        key: strKey,
+        iv: strIV,
+      },
       time,
       backtrace,
     })
@@ -82,10 +84,10 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
     this.dataOutAvailable = dataOutAvailable
     this.dataOutMoved = dataOutMoved
 
-    let strKey = fromByteArray(Memory.readByteArray(key, keyLength))
-    let strIV = iv === 0 ? 'null' : fromByteArray(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+    let strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+    let strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-    let strDataIn = fromByteArray(Memory.readByteArray(dataIn, dataInLength))
+    let strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
 
     let time = now()
     let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
@@ -104,10 +106,12 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
     send({
       subject,
       event: operation,
-      algorithm: CCAlgorithm[alg].name,
-      key: strKey,
-      iv: strIV,
-      in: strDataIn,
+      arguments: {
+        algorithm: CCAlgorithm[alg].name,
+        key: strKey,
+        iv: strIV,
+        in: strDataIn,
+      },      
       time,
       backtrace,
     })
@@ -119,12 +123,14 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
     let time = now()
     let { dataOut, dataOutMoved, operation } = this
     let len = Memory.readUInt(dataOutMoved)
-    let strDataOut = fromByteArray(Memory.readByteArray(dataOut, len))
+    let strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
 
     send({
       subject,
       event: operation,
-      out: strDataOut,
+      arguments: {
+        out: strDataOut,
+      },
       time,
     })
   }

@@ -1,29 +1,16 @@
 <template>
   <div>
-    <b-field><b-switch v-model="logging">Logging</b-switch>
+    <b-field>
+      <b-switch v-model="logging">Live</b-switch>
     </b-field>
     <ul class="console">
       <li v-for="(item, i) in list" :key="i">
-        <b-tag>{{ item.time | datetime }}</b-tag>
-
-        <span v-if="item.event === 'call'" class="event">
-          <b-icon size="is-small" icon="subdirectory_arrow_right"></b-icon>
-          <b-tag type="is-info">Call</b-tag>
+        <span class="time">
+          <b-tag>{{ item.time | datetime }}</b-tag>
         </span>
-        <span v-if="item.event === 'return'" class="event">
-          <b-icon size="is-small" icon="subdirectory_arrow_left"></b-icon>
-          <b-tag type="is-success">Return</b-tag>
+        <span class="event">
+          <b-tag type="is-dark">{{ item.event }}</b-tag>
         </span>
-
-        <span v-if="item.event === 'objc-call'" class="event">
-          <b-icon size="is-small" icon="subdirectory_arrow_right"></b-icon>
-          <b-tag type="is-info">ObjC Call</b-tag>
-        </span>
-        <span v-if="item.event === 'objc-return'" class="event">
-          <b-icon size="is-small" icon="subdirectory_arrow_left"></b-icon>
-          <b-tag type="is-success">ObjC Return</b-tag>
-        </span>
-
         <span class="expression">
           <code>{{ item | expr }}</code>
         </span>
@@ -85,7 +72,8 @@ export default {
       if (router.hasOwnProperty(item.event))
         return router[item.event].call(null)
       else
-        return '!ERR: Unknown type: ' + item.event
+        return item.arguments
+      // return '!ERR: Unknown type: ' + item.event
     },
     datetime: ts => new Date(ts).toLocaleString('en-US', {
       year: 'numeric', month: '2-digit', day: '2-digit',
@@ -118,8 +106,12 @@ ul.console {
     display: flex;
     flex-direction: row;
 
+    .time {
+      width: 140px;
+      margin: 2px 2px 2px;
+    }
+
     .event {
-      display: inline-block;
       width: 120px;
       margin: 2px 2px 2px 10px;
     }

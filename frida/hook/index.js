@@ -90,7 +90,7 @@ function unhook(lib, func) {
 }
 
 
-function swizzle(clazz, sel) {
+function swizzle(clazz, sel, traceResult) {
   if (swizzled[clazz] && swizzled[clazz][sel])
     return true
 
@@ -105,6 +105,28 @@ function swizzle(clazz, sel) {
     swizzled[clazz] = { sel: true }
   else
     swizzled[clazz][sel] = true
+
+  traceResult = typeof traceResult === 'undefined' ? true : Boolean(traceResult)
+
+  let onLeave
+  if (traceResult) {
+    onLeave = function(retVal) {
+      let time = now()
+      let { backtrace } = this
+      let ret = retVal
+      try {
+        ret = new ObjC.Object(ret).toString()
+      } catch (_) {}
+      send({
+        subject,
+        event: 'objc-return',
+        clazz,
+        sel,
+        ret,
+        time,
+      })
+    }
+  }
 
   Interceptor.attach(method.implementation, {
     onEnter(args) {
@@ -135,22 +157,7 @@ function swizzle(clazz, sel) {
         time,
       })
     },
-    onLeave(retVal) {
-      let time = now()
-      let { backtrace } = this
-      let ret = retVal
-      try {
-        ret = new ObjC.Object(ret).toString()
-      } catch (_) {}
-      send({
-        subject,
-        event: 'objc-return',
-        clazz,
-        sel,
-        ret,
-        time,
-      })
-    }
+    onLeave
   })
 
 }
