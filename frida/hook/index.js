@@ -160,6 +160,7 @@ function swizzle(clazz, sel, traceResult) {
     onLeave
   })
 
+  return true
 }
 
 function unswizzle(clazz, sel) {

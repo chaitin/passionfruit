@@ -20,13 +20,13 @@
         </header>
 
         <section class="modal-card-body">
-          <!-- <p class="subtitle is-6">
-              <span v-if="symbol.address.value">
-                0x{{ symbol.address.value.toString(16) }}</span>
-              <span v-else>{{ symbol.address }}</span>
-            </p> -->
+          <p>Address:
+            <span v-if="symbol.address.value">
+              0x{{ symbol.address.value.toString(16) }}</span>
+            <span v-else>{{ symbol.address }}</span>
+          </p>
 
-          <p>Arguments</p>
+          <p>Arguments:</p>
 
           <b-field v-for="(arg, index) in args" :key="index">
             <b-select placeholder="Argument type" v-model="arg.type" expanded>
@@ -53,7 +53,7 @@
         </section>
 
         <footer class="modal-card-foot confirm-footer">
-          <button class="button" type="button" @click="symbolDialogActive = false">Dismiss</button>
+          <button class="button" type="button" @click="dismiss">Dismiss</button>
           <button class="button is-primary" @click="hook">Send to Interceptor</button>
         </footer>
       </div>
@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import { HOOK_DYLIB } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 
 export default {
@@ -130,9 +132,19 @@ export default {
     paginate(page, filtered, paginator) {
       this.slice = filtered.slice((page - 1) * paginator, page * paginator)
     },
-    hook() {
-      // todo
+    dismiss() {
+      this.symbolDialogActive = false
     },
+    async hook() {
+      let result = await this.hookDylib({
+        module: this.module, name: this.symbol.name,
+        args: this.args.map(t => t.type), ret: this.ret,
+      })
+      this.symbolDialogActive = false
+    },
+    ...mapActions({
+      hookDylib: HOOK_DYLIB,
+    })
   },
   computed: {
     expr() {

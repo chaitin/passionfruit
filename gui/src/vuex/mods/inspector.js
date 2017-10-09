@@ -13,34 +13,44 @@ export const state = {
 export const getters = {
   [types.GET_SOCKET]: state => state.socket,
   [types.IS_OBJC_HOOKED]: state =>
-    (clz, method) => // todo: one more lambda
-    state.objc.hasOwnProperty(clz) && state.objc[clz][method],
+    (clazz, method) => // todo: one more lambda
+    state.objc.hasOwnProperty(clazz) && state.objc[clazz][method],
   [types.IS_SYMBOL_HOOKED]: state =>
     (module, symbol) =>
     state.dylib.hasOwnProperty(module) && state.dylib[module][symbol],
 }
 
 
+export const actions = {
+  [types.HOOK_DYLIB]: async({ state, commit }, opt) => {
+    let { module, symbol, ret, args } = opt
+    await state.socket.call('hook', opt)
+    commit(types.HOOK_DYLIB, { module, symbol })
+  },
+  [types.HOOK_OBJC]: async({ state, commit }, { clazz, method }) => {
+    if (state.objc[clazz] && state.objc[clazz][method])
+      return
+  },
+}
+
 export const mutations = {
-  [types.HOOK_OBJC](clz, method) {
-    if (state.objc.hasOwnProperty(clz)) {
-      state.objc[clz][method] = true
-    } else {
-      state.objc[clz] = { method: true }
-    }
+  [types.HOOK_OBJC](state, { clazz, method }) {
+    if (state.objc.hasOwnProperty(clazz))
+      state.objc[clazz][method] = true
+    else
+      state.objc[clazz] = { method: true }
   },
-  [types.UNHOOK_OBJC](clz, method) {
-    if (state.objc.hasOwnProperty(clz))
-      delete state.objc[clz][method]
+  [types.UNHOOK_OBJC](state, { clazz, method }) {
+    if (state.objc.hasOwnProperty(clazz))
+      delete state.objc[clazz][method]
   },
-  [types.HOOK_DYLIB](module, symbol) {
-    if (state.dylib.hasOwnProperty(module)) {
+  [types.HOOK_DYLIB](state, { module, symbol }) {
+    if (state.dylib.hasOwnProperty(module))
       state.dylib[module][symbol] = true
-    } else {
+    else
       state.dylib[module] = { symbol: true }
-    }
   },
-  [types.UNHOOK_DYLIB](module, symbol) {
+  [types.UNHOOK_DYLIB](state, { module, symbol }) {
     if (state.dylib.hasOwnProperty(module))
       delete state.dylib[module][symbol]
   },
