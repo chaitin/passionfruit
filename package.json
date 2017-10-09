@@ -1,5 +1,5 @@
 {
-  "name": "ipaspect",
+  "name": "Passionfruit",
   "version": "0.0.2",
   "description": "Inject to iOS App",
   "main": "app.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ChiChou/ipaspect.git"
+    "url": "git+ssh://git@github.com/chaitin/passionfruit.git"
   },
   "keywords": [
     "iOS",
@@ -20,9 +20,9 @@
   "author": "CodeColorist",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ChiChou/ipaspect/issues"
+    "url": "https://github.com/chaitin/passionfruit/issues"
   },
-  "homepage": "https://github.com/ChiChou/ipaspect#readme",
+  "homepage": "https://github.com/chaitin/passionfruit#readme",
   "dependencies": {
     "base64-js": "^1.2.1",
     "frida": "^10.6.3",

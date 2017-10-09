@@ -40,10 +40,10 @@
 #define FLAG_ARC 0x8
 #define FLAG_RESTRICT 0x10
 
-#define LOG(fmt, ...) NSLog(@"[ipaspect]" fmt, ##__VA_ARGS__)
+#define LOG(fmt, ...) NSLog(@"[passionfruit]" fmt, ##__VA_ARGS__)
 
 __attribute__((visibility("default"))) extern "C" int
-ipaspect_checkport(char *buf, size_t *size) {
+passionfruit_checkport(char *buf, size_t *size) {
   pid_t pid = getpid();
   LOG("pid: %d", pid);
   int buf_size = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, 0, 0);
@@ -141,7 +141,7 @@ ipaspect_checkport(char *buf, size_t *size) {
   return 0;
 }
 
-__attribute__((visibility("default"))) extern "C" int8_t ipaspect_checksec() {
+__attribute__((visibility("default"))) extern "C" int8_t passionfruit_checksec() {
   int result = 0;
   struct mach_header *mh = (struct mach_header *)_dyld_get_image_header(0);
   struct load_command *lc;

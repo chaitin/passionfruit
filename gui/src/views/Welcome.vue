@@ -2,7 +2,7 @@
   <div class="container is-fluid">
     <div class="columns section">
       <div class="column is-one-quarter">
-        <h1 class="title has-text-grey-darker">ipaspect</h1>
+        <h1 class="title has-text-grey-darker">Passionfruit</h1>
         <aside class="menu">
           <p class="menu-label">
             Devices <loading v-if="loadingDevices" class="is-pulled-right"></loading>
@@ -20,7 +20,7 @@
           </p>
           <ul class="menu-list">
             <li><a><b-icon icon="settings"></b-icon> <span>Preference</span></a></li>
-            <li><a target="_blank" href="http://github.com/chichou/ipaspect"><b-icon icon="open_in_browser"></b-icon> <span>Github</span></a></li>
+            <li><a target="_blank" href="http://github.com/chaitin/passionfruit"><b-icon icon="open_in_browser"></b-icon> <span>Github</span></a></li>
           </ul>
         </aside>
       </div>

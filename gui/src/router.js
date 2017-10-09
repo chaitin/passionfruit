@@ -74,7 +74,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title || 'ipaspect'
+  document.title = to.meta.title || 'Passionfruit'
   next()
 })
 

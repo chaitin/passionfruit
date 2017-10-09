@@ -1,4 +1,4 @@
-# ipaspect
+# Passionfruit
 
 Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida.re) and [vuejs](https://www.vuejs.org).
 

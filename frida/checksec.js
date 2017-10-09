@@ -10,9 +10,9 @@ module.exports = function() {
     var result = {}
 
     // check flags
-    var addr = Module.findExportByName('ipaspect.dylib', 'ipaspect_checksec');
+    var addr = Module.findExportByName('passionfruit.dylib', 'passionfruit_checksec');
     if (!addr)
-      return reject('ipaspect agent has not been installed on device')
+      return reject('passionfruit agent has not been installed on device')
 
     var checksec = new NativeFunction(addr, 'int', []);
     var flags = checksec();

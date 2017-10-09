@@ -4,7 +4,7 @@
       <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
         <ul class="level-item">
           <li>
-            <a href="/">ipaspect</a>
+            <a href="/">Passionfruit</a>
           </li>
           <li v-if="err">Unknown device</li>
           <li v-else>
@@ -126,7 +126,7 @@ export default {
     // todo: detect device removal
     app(val, old) {
       if (val.name)
-        document.title = `ipaspect: ${val.name}`
+        document.title = `Passionfruit: ${val.name}`
     },
   },
   computed: {

@@ -1,7 +1,7 @@
 const STATUS_OK = 0
 
 module.exports = function() {
-  const addr = Module.findExportByName('ipaspect.dylib', 'ipaspect_checkport');
+  const addr = Module.findExportByName('passionfruit.dylib', 'passionfruit_checkport');
   const lsof = new NativeFunction(addr, 'int', ['pointer', 'pointer']);
   const len = 2048;
 
