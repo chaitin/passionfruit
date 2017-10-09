@@ -6,13 +6,13 @@ const DeviceView = () => import(/* webpackChunkName: "first" */'~/views/Device.v
 const InspectView = () => import(/* webpackChunkName: "first" */'~/views/Inspect.vue')
 
 const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/General.vue')
-const ModulesView = () => import('~/views/tabs/Modules.vue')
-const ClassesView = () => import('~/views/tabs/Classes.vue')
+const ModulesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Modules.vue')
+const ClassesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Classes.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
-const BinaryCookieView = () => import('~/views/tabs/BinaryCookieView.vue')
+const BinaryCookieView = () => import('~/views/tabs/BinaryCookie.vue')
 
 
 Vue.use(VueRouter)
