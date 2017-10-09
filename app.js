@@ -59,7 +59,7 @@ router
     ctx.body = { status: 'ok', pid }
   })
 
-const port = process.env.PORT || 31337
+const port = parseInt(process.env.PORT) || 31337
 
 app
   .use(compress({
