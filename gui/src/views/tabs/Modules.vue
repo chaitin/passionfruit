@@ -32,9 +32,9 @@
       <template slot="detail" scope="props">
         <loading-tab v-if="props.row.loading"></loading-tab>
 
-        <div class="content" v-if="props.index == 0">
+        <div class="content" v-if="props.row.imports">
           <h4 class="title">Imports</h4>
-          <functions :list="imports" :loading="loading" :module="props.row.name"></functions>
+          <functions :list="props.row.imports" :loading="loading" :module="props.row.name"></functions>
         </div>
 
         <div class="content" v-if="props.row.exports.length">
@@ -63,19 +63,19 @@ import Functions from '~/components/Functions.vue'
 export default {
   components: { LoadingTab, Functions },
   methods: {
-    load() {
+    async load() {
       this.loading = true
-      this.socket.call('imports').then(list => {
-        this.imports = list.filter(imp => imp.type === 'function')
-        this.socket.call('modules').then(modules => {
-          this.modules = modules.map((mod, index) =>
-            Object.assign({
-              loading: false,
-              exports: [],
-            }, mod))
-          this.loading = false
-        })
-      })
+      let modules = await this.socket.call('modules')
+      this.modules = modules.map((mod, index) =>
+        Object.assign({
+          loading: false,
+          exports: [],
+        }, mod))
+
+      let imports = await this.socket.call('imports')
+      this.imports = imports.filter(imp => imp.type === 'function')
+      this.modules[0].imports = this.imports
+      this.loading = false
     },
     openDetail(mod, index) {
       if (mod.detailed)
