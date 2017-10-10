@@ -23,6 +23,10 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 
 Apps list.
 
+![General](screenshot/metainfo.png)
+
+Checksec, url schemes and metainfo.
+
 ![Finder](screenshot/finder.png)
 
 File browser with hex viewer, image viewer, plist viewer and SQlite database reader.
@@ -44,10 +48,6 @@ Intercepted calls, arguments and stack trace.
 ![UIDump](screenshot/uidump.png)
 
 Dump ui descriotion of the key window.
-
-![Cookies](screenshot/cookies.png)
-
-Binary Cookies.
 
 ## Setup
 
