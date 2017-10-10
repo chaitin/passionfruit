@@ -38,24 +38,17 @@ exports.classes = function() {
   return globalClasses
 }
 
-exports.methods = function methods(clazz) {
-  return ObjC.classes[clazz].$ownMethods
-}
-
-exports.proto = function proto(clazz) {
-  let chain = []
+exports.inspect = function(clazz) {
+  let proto = []
   let clz = ObjC.classes[clazz]
   if (!clz)
     throw new Error(`class ${clazz} not found`)
 
   while (clz = clz.$superClass)
-    chain.push(clz.$className)
-  return chain
-}
+    proto.unshift(clz.$className)
 
-exports.inspect = function(clazz) {
   return {
-    methods: methods(clazz),
-    proto: proto(clazz),
+    methods: ObjC.classes[clazz].$ownMethods,
+    proto,
   }
 }

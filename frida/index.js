@@ -34,7 +34,6 @@ rpc.exports = {
   ownClasses,
   methods,
   inspect,
-  proto,
   imports,
 
   ls,

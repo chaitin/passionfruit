@@ -27,7 +27,17 @@
             <loading-tab v-if="loadingMethods"></loading-tab>
 
             <div v-else>
-              <h4 class="title">{{ selected }}</h4>
+              <nav class="breadcrumb" aria-label="Proto types">
+                <ul>
+                  <li v-for="superClazz in proto" :key="superClazz" @click="expand(superClazz)">
+                    <a href="#">{{ superClazz }}</a>
+                  </li>
+                  <li class="is-active">
+                    <a href="#" aria-current="page">{{ selected }}</a>
+                  </li>
+                </ul>
+              </nav>
+
               <ul class="oc-methods">
                 <li v-for="(method, index) in methods" :key="index" @click="toggleHook(method)">
                   <b-icon icon="fiber_manual_record" class="is-small" :class="{ 'has-text-danger': method.hooked }"></b-icon>
@@ -77,6 +87,7 @@ export default {
       loadingMethods: false,
       selected: null,
       methods: [],
+      proto: [],
     }
   },
   watch: {
@@ -115,20 +126,24 @@ export default {
     toggleHook(method) {
       this.$toast.open(`TODO: hook ${this.selected} ${method.name}`)
     },
-    expand(clz) {
+    async expand(clz) {
       this.showDialog = true
       this.selected = clz
       this.loadingMethods = true
-      this.socket.call('methods', { clz })
-        .then(methods => {
-          this.methods = methods.map(name => {
-            return {
-              name,
-              hooked: this.isObjCHooked(clz, name)
-            }
-          })
+
+      try {
+        let { methods, proto } = await this.socket.call('inspect', { clz })
+        this.methods = methods.map(name => {
+          return {
+            name,
+            hooked: this.isObjCHooked(clz, name)
+          }
         })
-        .finally(() => this.loadingMethods = false)
+        this.proto = proto
+      } catch (_) {
+        // todo:
+      }
+      this.loadingMethods = false
     }
   },
   mounted() {
