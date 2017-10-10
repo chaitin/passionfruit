@@ -47,11 +47,11 @@ Intercepted calls, arguments and stack trace.
 
 ![UIDump](screenshot/uidump.png)
 
-Dump ui descriotion of the key window.
+Dump ui description of the key window.
 
 ## Setup
 
-Requirements: 
+Requirements:
 
 * Latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
 * [theos](https://github.com/theos/theos) for building the tweak component
