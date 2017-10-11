@@ -2,13 +2,13 @@ function getOwnClasses(sort) {
   const free = new NativeFunction(Module.findExportByName(null, 'free'), 'void', ['pointer'])
   const objc_copyClassNamesForImage = new NativeFunction(Module.findExportByName(
     null, 'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
-  const classes = new Array(count)
   const p = Memory.alloc(Process.pointerSize)
   Memory.writeUInt(p, 0)
   const path = ObjC.classes.NSBundle.mainBundle().executablePath().UTF8String()
   const pPath = Memory.allocUtf8String(path)
   const pClasses = objc_copyClassNamesForImage(pPath, p)
   const count = Memory.readUInt(p)
+  const classes = new Array(count)
   for (let i = 0; i < count; i++) {
     let pClassName = Memory.readPointer(pClasses.add(i * Process.pointerSize))
     classes[i] = Memory.readUtf8String(pClassName)
