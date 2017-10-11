@@ -1,8 +1,6 @@
-/* 
+/*
  * common hook
  */
-
-'use strict'
 
 require('./cccrypt')
 
@@ -12,32 +10,33 @@ const hooked = {}
 const swizzled = {}
 
 const now = () => (new Date()).getTime()
-const readable = (type, arg) => type === 'char *' ? Memory.readUtf8String(arg) : arg
+const readable = (type, arg) => (type === 'char *' ? Memory.readUtf8String(arg) : arg)
 
 
-function hook(lib, func, signature) {
-  const funcPtr = Module.findExportByName(lib, func)
+function hook(library, func, signature) {
+  const funcPtr = Module.findExportByName(library, func)
   if (!funcPtr)
     throw new Error('symbol not found')
 
-  if (!lib) {
-    let mod = Process.getModuleByAddress(funcPtr)
+  let lib = library
+  if (!library) {
+    const mod = Process.getModuleByAddress(funcPtr)
     lib = mod.name
   }
 
   if (hooked[lib] && hooked[lib][func])
     return true
 
-  let intercept = Interceptor.attach(funcPtr, {
+  const intercept = Interceptor.attach(funcPtr, {
     onEnter(args) {
-      let time = now()
-      let pretty = []
+      const time = now()
+      const pretty = []
       for (let i = 0; i < signature.args.length; i++) {
-        let arg = ptr(args[i])
+        const arg = ptr(args[i])
         pretty[i] = readable(signature.args[i], arg)
       }
 
-      let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
         .map(DebugSymbol.fromAddress).filter(e => e.name)
 
       this.backtrace = backtrace
@@ -56,8 +55,8 @@ function hook(lib, func, signature) {
       if (!signature.ret)
         return
 
-      let time = now()
-      let ret = readable(signature.ret, retVal)
+      const time = now()
+      const ret = readable(signature.ret, retVal)
 
       send({
         subject,
@@ -90,33 +89,32 @@ function unhook(lib, func) {
 }
 
 
-function swizzle(clazz, sel, traceResult) {
+function swizzle(clazz, sel, traceResult = true) {
   if (swizzled[clazz] && swizzled[clazz][sel])
     return true
 
-  if (!ObjC.classes.hasOwnProperty(clazz))
+  if (!ObjC.classes[clazz])
     throw new Error(`class ${clazz} not found`)
 
-  if (!ObjC.classes[clazz].hasOwnProperty(sel))
+  if (!ObjC.classes[clazz][sel])
     throw new Error(`method ${sel} not found in ${clazz}`)
 
-  let method = ObjC.classes[clazz][sel]
+  const method = ObjC.classes[clazz][sel]
   if (!swizzled[clazz])
     swizzled[clazz] = { sel: true }
   else
     swizzled[clazz][sel] = true
 
-  traceResult = typeof traceResult === 'undefined' ? true : Boolean(traceResult)
-
   let onLeave
-  if (traceResult) {
-    onLeave = function(retVal) {
-      let time = now()
-      let { backtrace } = this
+  if (traceResult)
+    onLeave = (retVal) => {
+      const time = now()
       let ret = retVal
       try {
         ret = new ObjC.Object(ret).toString()
-      } catch (_) {}
+      } catch (ignored) {
+        //
+      }
       send({
         subject,
         event: 'objc-return',
@@ -126,24 +124,21 @@ function swizzle(clazz, sel, traceResult) {
         time,
       })
     }
-  }
 
   Interceptor.attach(method.implementation, {
     onEnter(args) {
-      let time = now()
-      let readable = []
-      for (let i = 2; i < method.argumentTypes.length; i++) {
-        if (method.argumentTypes[i] === 'pointer') {
+      const time = now()
+      const readableArgs = []
+      for (let i = 2; i < method.argumentTypes.length; i++)
+        if (method.argumentTypes[i] === 'pointer')
           try {
-            let obj = ObjC.Object(args[i]).toString()
-            readable.push(obj)
+            const obj = ObjC.Object(args[i]).toString()
+            readableArgs.push(obj)
           } catch (ex) {
-            readable.push(args[i])
+            readableArgs.push(args[i])
           }
-        } else {
-          readable.push(args[i])
-        }
-      }
+        else
+          readableArgs.push(args[i])
 
       // Objective C's backtrace does not contain valuable information,
       // so I removed it
@@ -151,13 +146,13 @@ function swizzle(clazz, sel, traceResult) {
       send({
         subject,
         event: 'objc-call',
-        args: readable,
+        args: readableArgs,
         clazz,
         sel,
         time,
       })
     },
-    onLeave
+    onLeave,
   })
 
   return true
@@ -165,8 +160,8 @@ function swizzle(clazz, sel, traceResult) {
 
 function unswizzle(clazz, sel) {
   if (swizzled[clazz] && swizzled[clazz][sel]) {
-    let method = ObjC.classes[clazz][sel]
-    let original = swizzled[clazz][sel]
+    const method = ObjC.classes[clazz][sel]
+    const original = swizzled[clazz][sel]
 
     method.implementation = original
 

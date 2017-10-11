@@ -5,7 +5,7 @@ module.exports = function base64ArrayBuffer(arrayBuffer) {
   const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
   const bytes = new Uint8Array(arrayBuffer)
-  const byteLength = bytes.byteLength
+  const { byteLength } = bytes
   const byteRemainder = byteLength % 3
   const mainLength = byteLength - byteRemainder
 

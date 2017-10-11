@@ -1,12 +1,14 @@
 import { toJSON } from './lib/nsdict'
 
+const toString = str => String.prototype.toString.call(str)
+const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
+
 
 function info() {
-  const mainBundle = ObjC.classes.NSBundle.mainBundle()
-  const info = mainBundle.infoDictionary()
-  const json = toJSON(info)
-  const data = ObjC.classes.NSProcessInfo.processInfo()
-    .environment().objectForKey_('HOME') + ''
+  const mainBundle = NSBundle.mainBundle()
+  const json = toJSON(mainBundle.infoDictionary())
+  const data = toString(NSProcessInfo.processInfo()
+    .environment().objectForKey_('HOME'))
 
   const map = {
     name: 'CFBundleDisplayName',
@@ -15,34 +17,31 @@ function info() {
     minOS: 'MinimumOSVersion',
   }
 
-  let result = {
-    id: mainBundle.bundleIdentifier() + '',
-    bundle: mainBundle.bundlePath() + '',
-    binary: mainBundle.executablePath() + '',
+  const result = {
+    id: toString(mainBundle.bundleIdentifier()),
+    bundle: toString(mainBundle.bundlePath()),
+    binary: toString(mainBundle.executablePath()),
     data,
     json,
   }
 
-  if (json.hasOwnProperty('CFBundleURLTypes')) {
-    result['urls'] = json['CFBundleURLTypes'].map(item => {
-      return {
-        name: item['CFBundleURLName'],
-        schemes: item['CFBundleURLSchemes'],
-        role: item['CFBundleTypeRole'],
-      }
-    })
-  }
+  /* eslint dot-notation: 0 */
+  if (Object.prototype.hasOwnProperty.call(json, 'CFBundleURLTypes'))
+    result.urls = json['CFBundleURLTypes'].map(item => ({
+      name: item['CFBundleURLName'],
+      schemes: item['CFBundleURLSchemes'],
+      role: item['CFBundleTypeRole'],
+    }))
 
-  for (let key in map) {
+  /* eslint guard-for-in: 0 */
+  for (const key in map)
     result[key] = json[map[key]] || 'N/A'
-  }
 
   return result
 }
 
 
 function userDefaults() {
-  const NSUserDefaults = ObjC.classes.NSUserDefaults
   return NSUserDefaults.alloc().init().dictionaryRepresentation().toString()
 }
 

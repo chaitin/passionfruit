@@ -1,20 +1,17 @@
-const { NSMutableDictionary, NSArray, NSString, NSKeyedUnarchiver } = ObjC.classes
-
-import { toNSObject } from './lib/nsdict'
+const { NSMutableDictionary } = ObjC.classes
 
 
-const SecItemCopyMatching = new NativeFunction(
-  ptr(Module.findExportByName('Security', 'SecItemCopyMatching')), 'pointer', ['pointer', 'pointer'])
-const SecItemDelete = new NativeFunction(
-  ptr(Module.findExportByName('Security', 'SecItemDelete')), 'pointer', ['pointer'])
+const SecItemCopyMatching = new NativeFunction(ptr(Module.findExportByName('Security', 'SecItemCopyMatching')), 'pointer', ['pointer', 'pointer'])
+const SecItemDelete = new NativeFunction(ptr(Module.findExportByName('Security', 'SecItemDelete')), 'pointer', ['pointer'])
 const SecAccessControlGetConstraints = new NativeFunction(
   ptr(Module.findExportByName('Security', 'SecAccessControlGetConstraints')),
-  'pointer', ['pointer'])
-
+  'pointer', ['pointer'],
+)
 
 
 const kCFBooleanTrue = ObjC.classes.__NSCFBoolean.numberWithBool_(true)
 
+/* eslint no-unused-vars: 0 */
 const kSecReturnAttributes = 'r_Attributes',
   kSecReturnData = 'r_Data',
   kSecReturnRef = 'r_Ref',
@@ -55,44 +52,44 @@ const kSecReturnAttributes = 'r_Attributes',
   kSecAttrAccessibleAlwaysThisDeviceOnly = 'dku'
 
 const kSecConstantReverse = {
-  'r_Attributes': 'kSecReturnAttributes',
-  'r_Data': 'kSecReturnData',
-  'r_Ref': 'kSecReturnRef',
-  'm_Limit': 'kSecMatchLimit',
-  'm_LimitAll': 'kSecMatchLimitAll',
-  'class': 'kSecClass',
-  'keys': 'kSecClassKey',
-  'idnt': 'kSecClassIdentity',
-  'cert': 'kSecClassCertificate',
-  'genp': 'kSecClassGenericPassword',
-  'inet': 'kSecClassInternetPassword',
-  'svce': 'kSecAttrService',
-  'acct': 'kSecAttrAccount',
-  'agrp': 'kSecAttrAccessGroup',
-  'labl': 'kSecAttrLabel',
-  'srvr': 'kSecAttrServer',
-  'cdat': 'kSecAttrCreationDate',
-  'accc': 'kSecAttrAccessControl',
-  'gena': 'kSecAttrGeneric',
-  'sync': 'kSecAttrSynchronizable',
-  'mdat': 'kSecAttrModificationDate',
-  'desc': 'kSecAttrDescription',
-  'icmt': 'kSecAttrComment',
-  'crtr': 'kSecAttrCreator',
-  'type': 'kSecAttrType',
-  'scrp': 'kSecAttrScriptCode',
-  'alis': 'kSecAttrAlias',
-  'invi': 'kSecAttrIsInvisible',
-  'nega': 'kSecAttrIsNegative',
-  'cusi': 'kSecAttrHasCustomIcon',
-  'prot': 'kSecProtectedDataItemAttr',
-  'pdmn': 'kSecAttrAccessible',
-  'ak': 'kSecAttrAccessibleWhenUnlocked',
-  'ck': 'kSecAttrAccessibleAfterFirstUnlock',
-  'dk': 'kSecAttrAccessibleAlways',
-  'aku': 'kSecAttrAccessibleWhenUnlockedThisDeviceOnly',
-  'cku': 'kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly',
-  'dku': 'kSecAttrAccessibleAlwaysThisDeviceOnly',
+  r_Attributes: 'kSecReturnAttributes',
+  r_Data: 'kSecReturnData',
+  r_Ref: 'kSecReturnRef',
+  m_Limit: 'kSecMatchLimit',
+  m_LimitAll: 'kSecMatchLimitAll',
+  class: 'kSecClass',
+  keys: 'kSecClassKey',
+  idnt: 'kSecClassIdentity',
+  cert: 'kSecClassCertificate',
+  genp: 'kSecClassGenericPassword',
+  inet: 'kSecClassInternetPassword',
+  svce: 'kSecAttrService',
+  acct: 'kSecAttrAccount',
+  agrp: 'kSecAttrAccessGroup',
+  labl: 'kSecAttrLabel',
+  srvr: 'kSecAttrServer',
+  cdat: 'kSecAttrCreationDate',
+  accc: 'kSecAttrAccessControl',
+  gena: 'kSecAttrGeneric',
+  sync: 'kSecAttrSynchronizable',
+  mdat: 'kSecAttrModificationDate',
+  desc: 'kSecAttrDescription',
+  icmt: 'kSecAttrComment',
+  crtr: 'kSecAttrCreator',
+  type: 'kSecAttrType',
+  scrp: 'kSecAttrScriptCode',
+  alis: 'kSecAttrAlias',
+  invi: 'kSecAttrIsInvisible',
+  nega: 'kSecAttrIsNegative',
+  cusi: 'kSecAttrHasCustomIcon',
+  prot: 'kSecProtectedDataItemAttr',
+  pdmn: 'kSecAttrAccessible',
+  ak: 'kSecAttrAccessibleWhenUnlocked',
+  ck: 'kSecAttrAccessibleAfterFirstUnlock',
+  dk: 'kSecAttrAccessibleAlways',
+  aku: 'kSecAttrAccessibleWhenUnlockedThisDeviceOnly',
+  cku: 'kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly',
+  dku: 'kSecAttrAccessibleAlwaysThisDeviceOnly',
 }
 
 const constantLookup = v => kSecConstantReverse[v] || v
@@ -102,64 +99,74 @@ const kSecClasses = [
   kSecClassIdentity,
   kSecClassCertificate,
   kSecClassGenericPassword,
-  kSecClassInternetPassword
+  kSecClassInternetPassword,
 ]
 
-//
+
+function odas(raw) {
+  try {
+    const data = new ObjC.Object(raw)
+    return Memory.readUtf8String(data.bytes(), data.length())
+  } catch (_) {
+    try {
+      return raw.toString()
+    } catch (__) {
+      return ''
+    }
+  }
+}
+
+function decodeOd(item, flags) {
+  const constraints = item
+  const constraintEnumerator = constraints.keyEnumerator()
+
+  for (let constraintKey; constraintKey !== null; constraintEnumerator.nextObject())
+    switch (odas(constraintKey)) {
+      case 'cpo':
+        flags.push('kSecAccessControlUserPresence')
+        break
+
+      case 'cup':
+        flags.push('kSecAccessControlDevicePasscode')
+        break
+
+      case 'pkofn':
+        flags.push(constraints.objectForKey_('pkofn') === 1 ? 'Or' : 'And')
+        break
+
+      case 'cbio':
+        flags.push(constraints.objectForKey_('cbio').count() === 1 ?
+          'kSecAccessControlTouchIDAny' :
+          'kSecAccessControlTouchIDCurrentSet')
+        break
+
+      default:
+        break
+    }
+}
 
 function decodeAcl(entry) {
   // No access control? Move along.
-  if (!entry.containsKey_(kSecAttrAccessControl)) {
+  if (!entry.containsKey_(kSecAttrAccessControl))
     return []
-  }
-  let constraints = SecAccessControlGetConstraints(entry.objectForKey_(kSecAttrAccessControl))
-  let accessControls = ObjC.Object(constraints)
-  if (accessControls.handle == NULL) {
+
+  const constraints = SecAccessControlGetConstraints(entry.objectForKey_(kSecAttrAccessControl))
+  const accessControls = ObjC.Object(constraints)
+  if (accessControls.handle === NULL)
     return []
-  }
 
-  let flags = []
-  let enumerator = accessControls.keyEnumerator()
-  let key = null
-
-  while (key = enumerator.nextObject(), key !== null) {
-    let item = accessControls.objectForKey_(key)
+  const flags = []
+  const enumerator = accessControls.keyEnumerator()
+  for (let key = enumerator.nextObject(); key !== null; key = enumerator.nextObject()) {
+    const item = accessControls.objectForKey_(key)
     switch (odas(key)) {
       case 'dacl':
         break
       case 'osgn':
-        flags.push['PrivateKeyUsage']
+        flags.push('PrivateKeyUsage')
       case 'od':
-        let constraints = item
-        let constraintEnumerator = constraints.keyEnumerator()
-        let constraintKey
-
-        while (constraintKey = constraintEnumerator.nextObject(), constraintKey !== null) {
-          switch (odas(constraintKey)) {
-            case 'cpo':
-              flags.push('kSecAccessControlUserPresence')
-              break
-
-            case 'cup':
-              flags.push('kSecAccessControlDevicePasscode')
-              break
-
-            case 'pkofn':
-              flags.push(constraints.objectForKey_('pkofn') == 1 ? 'Or' : 'And')
-              break
-
-            case 'cbio':
-              flags.push(constraints.objectForKey_('cbio').count() == 1 ?
-                'kSecAccessControlTouchIDAny' :
-                'kSecAccessControlTouchIDCurrentSet')
-              break
-
-            default:
-              break
-          }
-        }
+        decodeOd(item, flags)
         break
-
       case 'prp':
         flags.push('ApplicationPassword')
         break
@@ -167,52 +174,32 @@ function decodeAcl(entry) {
       default:
         break
     }
-
-    return flags
   }
+  return flags
 }
 
-function odas(raw) {
-  try {
-    let data = new ObjC.Object(raw)
-    return Memory.readUtf8String(data.bytes(), data.length())
-  } catch (_) {
-    try {
-      return raw.toString()
-    } catch (_) {
-      return ''
-    }
-  }
-}
-
-function remove() {
-  // todo
-}
-
-function commit() {
-  // todo
-}
 
 function list() {
-  let result = []
+  const result = []
 
-  let query = NSMutableDictionary.alloc().init()
+  const query = NSMutableDictionary.alloc().init()
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnAttributes)
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnData)
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnRef)
   query.setObject_forKey_(kSecMatchLimitAll, kSecMatchLimit)
 
-  kSecClasses.forEach(clazz => {
+  kSecClasses.forEach((clazz) => {
     query.setObject_forKey_(clazz, kSecClass)
 
-    let p = Memory.alloc(Process.pointerSize)
-    let status = SecItemCopyMatching(query, p)
+    const p = Memory.alloc(Process.pointerSize)
+    const status = SecItemCopyMatching(query, p)
+    /* eslint eqeqeq: 0 */
     if (status != 0x00)
       return
 
-    let arr = new ObjC.Object(Memory.readPointer(p))
+    const arr = new ObjC.Object(Memory.readPointer(p))
     for (let i = 0, size = arr.count(); i < size; i++) {
-      let item = arr.objectAtIndex_(i)
+      const item = arr.objectAtIndex_(i)
       result.push({
         clazz: constantLookup(clazz),
         creation: odas(item.objectForKey_(kSecAttrCreationDate)),
@@ -234,7 +221,7 @@ function list() {
         service: odas(item.objectForKey_(kSecAttrService)),
         account: odas(item.objectForKey_(kSecAttrAccount)),
         label: odas(item.objectForKey_(kSecAttrLabel)),
-        data: odas(item.objectForKey_('v_Data'))
+        data: odas(item.objectForKey_('v_Data')),
       })
     }
   })
@@ -244,8 +231,8 @@ function list() {
 
 function clear() {
   // keychain item times to query for
-  kSecClasses.forEach(clazz => {
-    let query = NSMutableDictionary.alloc().init()
+  kSecClasses.forEach((clazz) => {
+    const query = NSMutableDictionary.alloc().init()
     query.setObject_forKey_(clazz, kSecClass)
     SecItemDelete(query)
   })

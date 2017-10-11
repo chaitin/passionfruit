@@ -21,28 +21,27 @@ const now = () => (new Date()).getTime()
 
 Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
   onEnter(args) {
-    let op = args[0].toInt32()
-    let alg = args[1].toInt32()
-    let options = args[2].toInt32()
-    let key = args[3]
-    let keyLength = args[4].toInt32()
-    let iv = args[5]
+    const op = args[0].toInt32()
+    const alg = args[1].toInt32()
+    // const options = args[2].toInt32()
+    const key = args[3]
+    const keyLength = args[4].toInt32()
+    const iv = args[5]
 
-    let strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-    let strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+    const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+    const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-    let time = now()
-    let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+    const time = now()
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
       .map(DebugSymbol.fromAddress).filter(e => e.name)
 
     let operation = CCOperation[op]
-    if (operation === 'kCCEncrypt') {
+    if (operation === 'kCCEncrypt')
       operation = 'encrypt'
-    } else if (operation === 'kCCDecrypt') {
+    else if (operation === 'kCCDecrypt')
       operation = 'decrypt'
-    } else {
+    else
       console.error('unknown operation', op)
-    }
 
     send({
       subject,
@@ -57,7 +56,7 @@ Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
       time,
       backtrace,
     })
-  }
+  },
 })
 
 
@@ -69,39 +68,38 @@ Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
 
 Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
   onEnter(args) {
-    let op = args[0].toInt32()
-    let alg = args[1].toInt32()
-    let options = args[2].toInt32()
-    let key = args[3]
-    let keyLength = args[4].toInt32()
-    let iv = args[5]
-    let dataIn = args[6]
-    let dataInLength = args[7].toInt32()
-    let dataOut = args[8]
-    let dataOutAvailable = args[9]
-    let dataOutMoved = args[10]
+    const op = args[0].toInt32()
+    const alg = args[1].toInt32()
+    // const options = args[2].toInt32()
+    const key = args[3]
+    const keyLength = args[4].toInt32()
+    const iv = args[5]
+    const dataIn = args[6]
+    const dataInLength = args[7].toInt32()
+    const dataOut = args[8]
+    const dataOutAvailable = args[9]
+    const dataOutMoved = args[10]
 
     this.dataOut = dataOut
     this.dataOutAvailable = dataOutAvailable
     this.dataOutMoved = dataOutMoved
 
-    let strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-    let strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+    const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+    const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-    let strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
+    const strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
 
-    let time = now()
-    let backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+    const time = now()
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
       .map(DebugSymbol.fromAddress).filter(e => e.name)
 
     let operation = CCOperation[op]
-    if (operation === 'kCCEncrypt') {
+    if (operation === 'kCCEncrypt')
       operation = 'encrypt'
-    } else if (operation === 'kCCDecrypt') {
+    else if (operation === 'kCCDecrypt')
       operation = 'decrypt'
-    } else {
+    else
       console.error('unknown operation', op)
-    }
 
     this.operation = operation
     send({
@@ -113,7 +111,7 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
         key: strKey,
         iv: strIV,
         in: strDataIn,
-      },      
+      },
       time,
       backtrace,
     })
@@ -122,10 +120,10 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
     if (retVal.toInt32() !== 0)
       return
 
-    let time = now()
-    let { dataOut, dataOutMoved, operation } = this
-    let len = Memory.readUInt(dataOutMoved)
-    let strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
+    const time = now()
+    const { dataOut, dataOutMoved, operation } = this
+    const len = Memory.readUInt(dataOutMoved)
+    const strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
 
     send({
       subject,
@@ -135,5 +133,5 @@ Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
       },
       time,
     })
-  }
+  },
 })

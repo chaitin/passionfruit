@@ -1,8 +1,8 @@
 // fixme: this private api only works in SpringBoard
 
-module.exports = function(url) {
+module.exports = (url) => {
   const { LSApplicationWorkspace, NSURL } = ObjC.classes
-  let workspace = LSApplicationWorkspace.defaultWorkspace()
-  let link = NSURL.URLWithString_(url)
+  const workspace = LSApplicationWorkspace.defaultWorkspace()
+  const link = NSURL.URLWithString_(url)
   return workspace.openSensitiveURL_withOptions_(link, NULL)
 }

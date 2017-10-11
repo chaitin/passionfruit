@@ -1,11 +1,14 @@
+function quote(table) {
+  return `"${table.replace(/"/g, '')}"`
+}
+
 class Database {
   constructor(filename) {
     this.db = SqliteDatabase.open(filename)
   }
 
   tables() {
-    let statement = this.prepare(
-      'SELECT tbl_name FROM sqlite_master WHERE type="table" and tbl_name <> "sqlite_sequence"')
+    const statement = this.prepare('SELECT tbl_name FROM sqlite_master WHERE type="table" and tbl_name <> "sqlite_sequence"')
     return this.all(statement).map(row => row[0])
   }
 
@@ -13,37 +16,34 @@ class Database {
     // I know it's an injection, but since this tool allows you query arbitary sql,
     // leave this alone or help me commit some code to escape the table name
 
-    let statement = this.prepare(`PRAGMA table_info(${quote(table)})`)
+    const statement = this.prepare(`PRAGMA table_info(${quote(table)})`)
     return this.all(statement)
   }
 
   all(statement) {
-    let result = [],
-      row
-    while ((row = statement.step()) !== null) {
+    const result = []
+    for (let row; row !== null; row = statement.step())
       result.push(row)
-    }
+
     return result
   }
 
-  prepare(sql, args) {
-    args = args || []
-    let statement = this.db.prepare(sql)
+  prepare(sql, args = []) {
+    const statement = this.db.prepare(sql)
     for (let i = 0; i < args.length; i++) {
-      let index = i + 1
-      let arg = args[i]
-      if (typeof arg == 'number') {
+      const index = i + 1
+      const arg = args[i]
+      if (typeof arg === 'number')
         if (Math.floor(arg) === arg)
           statement.bindInteger(index, arg)
         else
           statement.bindFloat(index, arg)
-      } else if (arg === null || typeof arg === 'undefined') {
+      else if (arg === null || typeof arg === 'undefined')
         statement.bindNull(index)
-      } else if (arg instanceof ArrayBuffer) {
+      else if (arg instanceof ArrayBuffer)
         statement.bindBlob(index, arg)
-      } else {
+      else
         statement.bindText(index)
-      }
     }
     return statement
   }
@@ -53,42 +53,36 @@ class Database {
   }
 }
 
-function quote(table) {
-  table = table.replace(/\"/g, '')
-  return `"${table}"`
-}
-
 function data({ path, table }) {
-  let db = new Database(path)
-  let sql = `select * from ${quote(table)} limit 500`
-  let result = {
+  const db = new Database(path)
+  const sql = `select * from ${quote(table)} limit 500`
+  const result = {
     header: db.columns(table),
-    data: db.all(db.prepare(sql))
+    data: db.all(db.prepare(sql)),
   }
   db.close()
   return result
 }
 
 function query({ path, sql }) {
-  let db = new Database(path)
-  let statement = db.prepare(sql)
-  let result = db.all(statement)
+  const db = new Database(path)
+  const statement = db.prepare(sql)
+  const result = db.all(statement)
   db.close()
   return result
 }
 
 function tables(path) {
-  let db = new Database(path)
-  let tables = db.tables()
+  const db = new Database(path)
+  const list = db.tables()
   db.close()
-  return tables
+  return list
 }
 
 module.exports = {
-  // todo: design the api?
   tables,
   query,
 
   Database,
-  data
+  data,
 }

@@ -1,13 +1,17 @@
+/* eslint no-use-before-define:0 */
+import { hasOwnProperty } from './utils'
+
 const {
   NSMutableDictionary,
   NSArray,
   NSDictionary,
   NSMutableArray,
   NSNumber,
-  NSInteger,
   NSString,
+  NSNull,
   __NSCFBoolean,
 } = ObjC.classes
+
 
 function toJSON(value) {
   if (value === null || typeof value !== 'object')
@@ -19,8 +23,8 @@ function toJSON(value) {
     return dictFromNSDictionary(value)
   else if (value.isKindOfClass_(NSNumber))
     return value.floatValue()
-  else
-    return value.toString()
+
+  return value.toString()
 }
 
 function dictFromNSDictionary(nsDict) {
@@ -28,8 +32,8 @@ function dictFromNSDictionary(nsDict) {
   const keys = nsDict.allKeys()
   const count = keys.count()
   for (let i = 0; i < count; i++) {
-    let key = keys.objectAtIndex_(i)
-    let value = nsDict.objectForKey_(key)
+    const key = keys.objectAtIndex_(i)
+    const value = nsDict.objectForKey_(key)
     jsDict[key.toString()] = toJSON(value)
   }
 
@@ -40,7 +44,7 @@ function arrayFromNSArray(nsArray) {
   const arr = []
   const count = nsArray.count()
   for (let i = 0; i < count; i++) {
-    let val = nsArray.objectAtIndex_(i)
+    const val = nsArray.objectAtIndex_(i)
     arr.push(toJSON(val))
   }
   return arr
@@ -61,23 +65,21 @@ function toNSObject(obj) {
     return NSString.stringWithString_(obj)
 
   if (Array.isArray(obj)) {
-    let mutableArray = NSMutableArray.alloc().init()
-    obj.forEach(item => mutableArray.addObject_(toNSObject(obj)))
+    const mutableArray = NSMutableArray.alloc().init()
+    obj.forEach(item => mutableArray.addObject_(toNSObject(item)))
     return mutableArray
   }
 
-  let known = {}
-  let mutableDict = NSMutableDictionary.alloc().init()
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      console.log(key, obj[key])
-      let val = toNSObject(obj[key])
+  const mutableDict = NSMutableDictionary.alloc().init()
+  for (const key in obj)
+    if (hasOwnProperty(obj, key)) {
+      const val = toNSObject(obj[key])
       mutableDict.setObject_forKey_(val, key)
     }
-  }
 
   return mutableDict
 }
+
 
 module.exports = {
   dictFromNSDictionary,

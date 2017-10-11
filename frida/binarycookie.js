@@ -7,18 +7,18 @@ function str(obj, def) {
   return obj ? obj.toString() : (def || 'N/A')
 }
 
-module.exports = function() {
-  let cookies = []
+module.exports = function binaryCookies() {
+  const cookies = []
 
   for (let i = 0; i < jar.count(); i++) {
-    let cookie = jar.objectAtIndex_(i)
-    let item = {
+    const cookie = jar.objectAtIndex_(i)
+    const item = {
       version: cookie.version().toString(),
       name: cookie.name().toString(),
       value: cookie.value().toString(),
       domain: cookie.domain().toString(),
       path: cookie.path().toString(),
-      isSecure: str(cookie.isSecure(), 'false')
+      isSecure: str(cookie.isSecure(), 'false'),
     }
     cookies.push(item)
   }
