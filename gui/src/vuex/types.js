@@ -36,6 +36,8 @@ export const IS_OBJC_HOOKED = 'IS_OBJC_HOOKED'
 export const HOOK_DYLIB = 'HOOK_DYLIC'
 export const UNHOOK_DYLIB = 'UNHOOK_DYLIC'
 export const IS_SYMBOL_HOOKED = 'IS_SYMBOL_HOOKED'
+export const ALL_HOOKS = 'ALL_HOOKS'
+export const DELETE_HOOK = 'DELETE_HOOK'
 
 export const CONSOLE_APPEND = 'CONSOLE_APPEND'
 export const CONSOLE_LIST = 'CONSOLE_LIST'

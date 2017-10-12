@@ -17,7 +17,10 @@
           <b-tag>{{ item.time | datetime }}</b-tag>
         </span>
         <span class="event">
-          <b-tag type="is-dark">{{ item.event }}</b-tag>
+          <b-taglist attached>
+            <b-tag type="is-info">{{ item.subject }}</b-tag>
+            <b-tag type="is-dark">{{ item.event }}</b-tag>
+          </b-taglist>
         </span>
         <span class="expression">
           <code>{{ item | expr }}</code>

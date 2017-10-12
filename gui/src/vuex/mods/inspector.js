@@ -7,6 +7,7 @@ export const state = {
   // hooks
   objc: {},
   dylib: {},
+  hooks: [],
 }
 
 
@@ -16,43 +17,72 @@ export const getters = {
     (clazz, method) => // todo: one more lambda
     state.objc.hasOwnProperty(clazz) && state.objc[clazz][method],
   [types.IS_SYMBOL_HOOKED]: state =>
-    (module, symbol) =>
-    state.dylib.hasOwnProperty(module) && state.dylib[module][symbol],
+    (module, name) =>
+    state.dylib.hasOwnProperty(module) && state.dylib[module][name],
+  [types.ALL_HOOKS]: state => state.hooks,
 }
 
 
 export const actions = {
   [types.HOOK_DYLIB]: async({ state, commit }, opt) => {
-    let { module, symbol, ret, args } = opt
+    const { module, name } = opt
+    if (state.dylib[module] && state.dylib[module][name])
+      return
+
     await state.socket.call('hook', opt)
-    commit(types.HOOK_DYLIB, { module, symbol })
+    commit(types.HOOK_DYLIB, opt)
   },
-  [types.HOOK_OBJC]: async({ state, commit }, { clazz, method }) => {
+  [types.HOOK_OBJC]: async({ state, commit }, opt) => {
+    const { clazz, method } = opt
     if (state.objc[clazz] && state.objc[clazz][method])
       return
+
+    await state.socket.call('swizzle', opt)
+    commit(types.HOOK_DYLIB, opt)
   },
+  [types.DELETE_HOOK]: async({ state, commit }, index) => {
+    const item = state.hooks[index]
+    if (item.type === 'dylib') {
+      await state.socket.call('unhook', item)
+      commit(types.UNHOOK_DYLIB, item)
+    } else if (item.type === 'objc') {
+      await state.socket.call('unswizzle', item)
+      commit(types.UNHOOK_OBJC, item)
+    } else {
+      throw new Error('unknown type' + item.type)
+    }
+    // todo: toast
+  }
 }
 
 export const mutations = {
   [types.HOOK_OBJC](state, { clazz, method }) {
+    const item = { type: 'objc', clazz, method }
     if (state.objc.hasOwnProperty(clazz))
-      state.objc[clazz][method] = true
+      state.objc[clazz][method] = item
     else
-      state.objc[clazz] = { method: true }
+      state.objc[clazz] = { method: item }
+    state.hooks.push(item)
   },
   [types.UNHOOK_OBJC](state, { clazz, method }) {
-    if (state.objc.hasOwnProperty(clazz))
-      delete state.objc[clazz][method]
+    const item = state.objc[clazz][method]
+    const index = state.hooks.indexOf(item)
+    state.hooks.splice(index, 1)
+    delete state.objc[clazz][method]
   },
-  [types.HOOK_DYLIB](state, { module, symbol }) {
+  [types.HOOK_DYLIB](state, { module, name }) {
+    const item = { type: 'dylib', module, name }
     if (state.dylib.hasOwnProperty(module))
-      state.dylib[module][symbol] = true
+      state.dylib[module][name] = item
     else
-      state.dylib[module] = { symbol: true }
+      state.dylib[module] = { name: item }
+    state.hooks.push(item)
   },
-  [types.UNHOOK_DYLIB](state, { module, symbol }) {
-    if (state.dylib.hasOwnProperty(module))
-      delete state.dylib[module][symbol]
+  [types.UNHOOK_DYLIB](state, { module, name }) {
+    const item = state.dylib[module][name]
+    const index = state.hooks.indexOf(item)
+    state.hooks.splice(index, 1)
+    delete state.dylib[module][name]
   },
   [types.STORE_SOCKET](state, socket) {
     socket.call = (function(event, data) {

@@ -33,14 +33,14 @@ export class AsyncSearch {
 
 export function debounce(func, wait, immediate) {
   let timeout
-  return function() {
-    let context = this,
-      args = arguments
-    let later = function() {
+  /* eslint func-names: 0 */
+  return function(...args) {
+    const context = this
+    const later = () => {
       timeout = null
       if (!immediate) func.apply(context, args)
     }
-    let callNow = immediate && !timeout
+    const callNow = immediate && !timeout
     clearTimeout(timeout)
     timeout = setTimeout(later, wait || 400)
     if (callNow) func.apply(context, args)
@@ -55,19 +55,16 @@ export function humanFileSize(size) {
 
 
 export function download(socket, file, mime) {
-  let { name, path } = file
-  mime = mime || 'octet/stream'
+  const { path } = file
 
-  return socket.call('download', path).then(({ size, session }) => {
+  return socket.call('download', path).then(({ session }) => {
     const dest = socketStream.createStream()
     const parts = []
     socketStream(socket).emit('download', dest, { session })
 
     return new Promise((resolve, reject) => {
-      dest.on('data', data => {
-        parts.push(data)
-      }).on('end', () => {
-        const blob = new Blob(parts, { type: mime })
+      dest.on('data', data => parts.push(data)).on('end', () => {
+        const blob = new Blob(parts, { type: mime || 'octet/stream' })
         let url = URL.createObjectURL(blob)
         resolve(url)
       }).on('error', reject)

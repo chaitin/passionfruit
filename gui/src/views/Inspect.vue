@@ -26,6 +26,23 @@
       <div class="level-right">
         <nav class="level-item field has-addons">
           <p class="control">
+            <b-dropdown position="is-bottom-left">
+              <a class="button is-light" slot="trigger">
+                <span class="is-size-7">Manage Hooks</span>
+                <b-icon icon="call_split"></b-icon>
+              </a>
+              <b-dropdown-item custom>
+                <ul class="hooks">
+                  <li v-for="(hook, index) in hooks" :key="index">
+                    <a class="delete is-pulled-right is-danger" @click="removeHook(index)"></a>
+                    <span v-if="hook.type == 'dylib'">{{ hook.module }}!{{ hook.name }}</span>
+                    <span v-else>{{ hook.clazz }}|{{ hook.method }}</span>
+                  </li>
+                </ul>
+              </b-dropdown-item>
+            </b-dropdown>
+          </p>
+          <p class="control">
             <b-tooltip label="Screenshot" position="is-left">
               <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
                 <b-icon icon="camera"></b-icon>
@@ -114,8 +131,9 @@ import io from 'socket.io-client'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
 import {
-  GET_SOCKET, STORE_SOCKET, CONSOLE_UNREAD, CONSOLE_APPEND,
-  CONSOLE_CLEAR
+  GET_SOCKET, STORE_SOCKET,
+  CONSOLE_UNREAD, CONSOLE_APPEND, CONSOLE_CLEAR,
+  ALL_HOOKS, DELETE_HOOK,
 } from '~/vuex/types'
 
 import Icon from '~/components/Icon.vue'
@@ -123,7 +141,6 @@ import Icon from '~/components/Icon.vue'
 export default {
   components: { Icon },
   watch: {
-    // todo: detect device removal
     app(val, old) {
       if (val.name)
         document.title = `Passionfruit: ${val.name}`
@@ -132,6 +149,7 @@ export default {
   computed: {
     ...mapGetters({
       socket: GET_SOCKET,
+      hooks: ALL_HOOKS,
       unreadMessage: CONSOLE_UNREAD,
     })
   },
@@ -188,6 +206,9 @@ export default {
         type: 'is-danger',
       })
     },
+    ...mapActions({
+      removeHook: DELETE_HOOK,      
+    }),
     ...mapMutations({
       storeSocket: STORE_SOCKET,
       consoleAppend: CONSOLE_APPEND,
@@ -228,5 +249,15 @@ export default {
 
 .search {
   margin-top: 0;
+}
+
+ul.hooks {
+  li {
+    white-space: nowrap;
+
+    .delete {
+      cursor: pointer;
+    }
+  }
 }
 </style>

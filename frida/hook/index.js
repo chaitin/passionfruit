@@ -71,7 +71,7 @@ function hook(library, func, signature) {
   })
 
   if (!hooked[lib])
-    hooked[lib] = { func: intercept }
+    hooked[lib] = { [func]: intercept }
   else
     hooked[lib][func] = intercept
 
@@ -79,10 +79,14 @@ function hook(library, func, signature) {
 }
 
 function unhook(lib, func) {
-  if (hooked[lib] && hooked[lib][func]) {
-    Interceptor.revert(Module.findExportsByName(lib, func))
-    delete hooked[lib][func]
-    return true
+  if (hooked[lib]) {
+    const intercept = hooked[lib][func]
+    if (intercept) {
+      intercept.detach()
+      delete hooked[lib][func]
+      console.log('unhook', lib, func)
+      return true
+    }
   }
 
   throw new Error('function has not been hooked before')
@@ -100,11 +104,6 @@ function swizzle(clazz, sel, traceResult = true) {
     throw new Error(`method ${sel} not found in ${clazz}`)
 
   const method = ObjC.classes[clazz][sel]
-  if (!swizzled[clazz])
-    swizzled[clazz] = { sel: true }
-  else
-    swizzled[clazz][sel] = true
-
   let onLeave
   if (traceResult)
     onLeave = (retVal) => {
@@ -125,7 +124,7 @@ function swizzle(clazz, sel, traceResult = true) {
       })
     }
 
-  Interceptor.attach(method.implementation, {
+  const intercept = Interceptor.attach(method.implementation, {
     onEnter(args) {
       const time = now()
       const readableArgs = []
@@ -155,18 +154,22 @@ function swizzle(clazz, sel, traceResult = true) {
     onLeave,
   })
 
+  if (!swizzled[clazz])
+    swizzled[clazz] = { [sel]: intercept }
+  else
+    swizzled[clazz][sel] = intercept
+
   return true
 }
 
 function unswizzle(clazz, sel) {
-  if (swizzled[clazz] && swizzled[clazz][sel]) {
-    const method = ObjC.classes[clazz][sel]
-    const original = swizzled[clazz][sel]
-
-    method.implementation = original
-
-    delete swizzled[clazz][sel]
-    return true
+  if (swizzled[clazz]) {
+    const intercept = swizzled[clazz][sel]
+    if (intercept) {
+      intercept.detach()
+      delete swizzled[clazz][sel]
+      return true
+    }
   }
 
   throw new Error(`method ${sel} of ${clazz} has not been swizzled`)
