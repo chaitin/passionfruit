@@ -11,6 +11,7 @@ import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
+require('./jailbreak')
 
 toggleTouchID(false)
 // hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})

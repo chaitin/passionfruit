@@ -1,0 +1,175 @@
+const paths = `/Applications/Cydia.app
+/Applications/FakeCarrier.app
+/Applications/Icy.app
+/Applications/IntelliScreen.app
+/Applications/MxTube.app
+/Applications/RockApp.app
+/Applications/SBSettings.app
+/Applications/WinterBoard.app
+/Applications/blackra1n.app
+/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist
+/Library/MobileSubstrate/DynamicLibraries/Veency.plist
+/Library/MobileSubstrate/MobileSubstrate.dylib
+/System/Library/LaunchDaemons/com.ikey.bbot.plist
+/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist
+/bin/bash
+/bin/sh
+/etc/apt
+/etc/ssh/sshd_config
+/private/var/lib/apt
+/private/var/lib/cydia
+/private/var/mobile/Library/SBSettings/Themes
+/private/var/stash
+/private/var/tmp/cydia.log
+/usr/bin/sshd
+/usr/libexec/sftp-server
+/usr/libexec/ssh-keysign
+/usr/sbin/sshd
+/var/cache/apt
+/var/lib/apt
+/private/jailbreak.txt
+/var/lib/cydia`.split('\n')
+
+const subject = 'jailbreak'
+
+/* eslint no-param-reassign: 0 */
+Interceptor.attach(Module.findExportByName(null, 'open'), {
+  onEnter(args) {
+    if (!args[0])
+      return
+
+    const path = Memory.readUtf8String(args[0])
+    if (paths.indexOf(path) > -1) {
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          path,
+          method: 'open',
+        },
+      })
+      args[0] = NULL
+    }
+  },
+})
+
+Interceptor.attach(Module.findExportByName(null, 'stat'), {
+  onEnter(args) {
+    if (!args[0])
+      return
+
+    const path = Memory.readUtf8String(args[0])
+    if (paths.indexOf(path) > -1) {
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          path,
+          method: 'stat',
+        },
+      })
+      args[0] = NULL
+    }
+  },
+})
+
+Interceptor.attach(Module.findExportByName(null, 'getenv'), {
+  onEnter(args) {
+    const key = Memory.readUtf8String(args[0])
+    if (key === 'DYLD_INSERT_LIBRARIES') {
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          env: 'DYLD_INSERT_LIBRARIES',
+        },
+      })
+      args[0] = NULL
+    }
+  },
+})
+
+Interceptor.attach(Module.findExportByName(null, '_dyld_get_image_name'), {
+  onLeave(retVal) {
+    if (Memory.readUtf8String(retVal).indexOf('MobileSubstrate') > -1)
+      retVal.replace(ptr(0x00))
+  },
+})
+
+Interceptor.attach(Module.findExportByName(null, 'fork'), {
+  onLeave(retVal) {
+    retVal.replace(ptr(-1))
+  },
+})
+
+const { UIApplication, NSURL, NSString, NSError, NSFileManager } = ObjC.classes
+/* eslint camelcase:0 */
+const canOpenURL_publicURLsOnly_ = UIApplication['- _canOpenURL:publicURLsOnly:']
+Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
+  onEnter(args) {
+    const url = ObjC.Object(args[2]).toString()
+    if (/^cydia:\/\//i.exec(url)) {
+      args[2] = NSURL.URLWithString_('invalid://')
+      this.shouldOverride = true
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          url,
+        },
+      })
+    }
+  },
+  onLeave(retVal) {
+    if (this.shouldOverride)
+      retVal.replace(ptr('0x00'))
+  },
+})
+
+Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
+  onEnter(args) {
+    const path = new ObjC.Object(args[2]).toString()
+    if (paths.indexOf(path) > -1) {
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          path,
+        },
+      })
+      this.shouldOverride = true
+    }
+  },
+  onLeave(retVal) {
+    if (this.shouldOverride)
+      retVal.replace(ptr('0x00'))
+  },
+})
+
+Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implementation, {
+  onEnter(args) {
+    const path = ObjC.Object(args[2]).toString()
+    if (path.match(/^\/private/)) {
+      send({
+        subject,
+        time: new Date().getTime(),
+        event: 'detect',
+        arguments: {
+          path,
+        },
+      })
+      this.shouldOverride = true
+      /* eslint prefer-destructuring: 0 */
+      this.error = args[5]
+    }
+  },
+  onLeave() {
+    if (this.shouldOverride)
+      Memory.writePointer(this.error, NSError.alloc())
+  },
+})
