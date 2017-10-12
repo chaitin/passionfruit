@@ -155,16 +155,20 @@ export default {
         this.view(mapping[ext] || 'text')
       }
     },
-    load(directory) {
+    async load(directory) {
+      if (this.loading)
+        this.$toast.open('busy...')
+
       this.loading = true
-      this.socket.call('ls', directory).then(({ path, list }) => {
-        if (!directory) {
-          this.root = path
-        }
-        this.path = path
-        this.list = list
-        this.selected = null
-      }).finally(() => this.loading = false)
+      const { path, list } = await this.socket.call('ls', directory)
+      if (!directory)
+        this.root = path
+
+      this.path = path
+      this.list = list
+      this.selected = null
+
+      this.loading = false
     },
   }
 }
