@@ -39,7 +39,8 @@ function ls(path) {
     fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)
 
     return {
-      type: Memory.readPointer(isDir) === 0 ? 'file' : 'directory',
+      /* eslint eqeqeq:0 */
+      type: Memory.readPointer(isDir) == 0 ? 'file' : 'directory',
       name: filename,
       path: fullPath,
       attribute: getDataAttrForPath(fullPath),
