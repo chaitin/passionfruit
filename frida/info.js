@@ -1,14 +1,13 @@
 import { toJSON } from './lib/nsdict'
 
-const toString = str => String.prototype.toString.call(str)
 const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
 
 
 function info() {
   const mainBundle = NSBundle.mainBundle()
   const json = toJSON(mainBundle.infoDictionary())
-  const data = toString(NSProcessInfo.processInfo()
-    .environment().objectForKey_('HOME'))
+  const data = NSProcessInfo.processInfo()
+    .environment().objectForKey_('HOME').toString()
 
   const map = {
     name: 'CFBundleDisplayName',
@@ -18,9 +17,9 @@ function info() {
   }
 
   const result = {
-    id: toString(mainBundle.bundleIdentifier()),
-    bundle: toString(mainBundle.bundlePath()),
-    binary: toString(mainBundle.executablePath()),
+    id: mainBundle.bundleIdentifier().toString(),
+    bundle: mainBundle.bundlePath().toString(),
+    binary: mainBundle.executablePath().toString(),
     data,
     json,
   }
@@ -42,7 +41,7 @@ function info() {
 
 
 function userDefaults() {
-  return NSUserDefaults.alloc().init().dictionaryRepresentation().toString()
+  return toJSON(NSUserDefaults.alloc().init().dictionaryRepresentation())
 }
 
 
