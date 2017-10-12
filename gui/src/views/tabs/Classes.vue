@@ -96,6 +96,7 @@ export default {
     },
     filter: debounce(function(val, old) {
       this.matcher.search(val)
+      this.page = 1
     }),
     page(val, old) {
       this.paginate(val, this.filtered, this.paginator)
