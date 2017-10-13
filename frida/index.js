@@ -11,7 +11,8 @@ import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
-require('./jailbreak')
+require('./jailbreak') // try bypass jailbreak
+require('./pasteboard') // monitor pasteboard
 
 toggleTouchID(false)
 // hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})

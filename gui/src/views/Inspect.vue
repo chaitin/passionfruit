@@ -207,7 +207,7 @@ export default {
       })
     },
     ...mapActions({
-      removeHook: DELETE_HOOK,      
+      removeHook: DELETE_HOOK,
     }),
     ...mapMutations({
       storeSocket: STORE_SOCKET,
