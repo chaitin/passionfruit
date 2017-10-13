@@ -1,5 +1,7 @@
+const { UIDebuggingInformationOverlay, LAContext, UIWindow } = ObjC.classes
+
 function dumpWindow() {
-  return ObjC.classes.UIWindow.keyWindow().recursiveDescription().toString()
+  return UIWindow.keyWindow().recursiveDescription().toString()
 }
 
 let originalImplementation = null
@@ -7,7 +9,6 @@ let originalImplementation = null
 
 function toggleTouchID(enable) {
   const subject = 'touchid'
-  const { LAContext } = ObjC.classes
   if (!LAContext)
     return {
       status: 'error',
@@ -50,7 +51,19 @@ function toggleTouchID(enable) {
   }
 }
 
+let overlay = null
+function toggleDebugOverlay() {
+  ObjC.schedule(ObjC.mainQueue, () => {
+    if (overlay === null) {
+      UIDebuggingInformationOverlay.prepareDebuggingOverlay()
+      overlay = UIDebuggingInformationOverlay.overlay()
+    }
+    overlay.toggleVisibility()
+  })
+}
+
 module.exports = {
   dumpWindow,
   toggleTouchID,
+  toggleDebugOverlay,
 }

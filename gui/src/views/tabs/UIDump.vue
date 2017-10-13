@@ -5,6 +5,10 @@
         <b-icon icon="refresh"></b-icon>
         <span>Refresh</span>
       </button>
+      <button class="button" @click="toggleDebugOverlay">
+        <b-icon icon="build"></b-icon>
+        <span>Toggle Debug Information Overlay (iOS 10+)</span>
+      </button>
     </b-field>
 
     <pre class="uidump">{{ description }}</pre>
@@ -40,7 +44,12 @@ export default {
         .then(description => this.description = description)
         // no need to catch, leave it to the global handler
         .finally(() => this.loading = false)
-    }
+    },
+    async toggleDebugOverlay() {
+      await this.socket.call('toggleDebugOverlay')
+      this.$toast.open(`Operation succeeded.
+        Tap status bar with two fingers on device to toggle the window`)
+    },
   },
   mounted() {
     this.refresh()

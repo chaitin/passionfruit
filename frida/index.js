@@ -8,7 +8,7 @@ import { info } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
-import { dumpWindow, toggleTouchID } from './ui'
+import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
 require('./jailbreak')
@@ -51,6 +51,7 @@ rpc.exports = {
 
   dumpWindow,
   toggleTouchID,
+  toggleDebugOverlay,
 
   dumpKeyChain: keychain.list,
 
