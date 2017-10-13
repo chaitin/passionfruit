@@ -110,6 +110,9 @@ const { UIApplication, NSURL, NSString, NSError, NSFileManager } = ObjC.classes
 const canOpenURL_publicURLsOnly_ = UIApplication['- _canOpenURL:publicURLsOnly:']
 Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
   onEnter(args) {
+    if (!args[2])
+      return
+
     const url = ObjC.Object(args[2]).toString()
     if (/^cydia:\/\//i.exec(url)) {
       args[2] = NSURL.URLWithString_('invalid://')
@@ -132,6 +135,9 @@ Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
 
 Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
   onEnter(args) {
+    if (!args[2])
+      return
+
     const path = new ObjC.Object(args[2]).toString()
     if (paths.indexOf(path) > -1) {
       send({
@@ -153,6 +159,9 @@ Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
 
 Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implementation, {
   onEnter(args) {
+    if (!args[2])
+      return
+
     const path = ObjC.Object(args[2]).toString()
     if (path.match(/^\/private/)) {
       send({

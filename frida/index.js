@@ -22,7 +22,7 @@ hook('libsqlite3.dylib', 'sqlite3_bind_int', { args: ['pointer', 'int', 'int'] }
 hook('libsqlite3.dylib', 'sqlite3_bind_null', { args: ['pointer', 'int'] })
 hook('libsqlite3.dylib', 'sqlite3_bind_text', { args: ['pointer', 'int', 'char *', 'int', 'pointer'] })
 
-swizzle('NSURL', 'URLWithString_', false)
+// swizzle('NSURL', 'URLWithString_', false)
 swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
 
 

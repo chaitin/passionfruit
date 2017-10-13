@@ -38,16 +38,19 @@ export const actions = {
       return
 
     await state.socket.call('swizzle', opt)
-    commit(types.HOOK_DYLIB, opt)
+    commit(types.HOOK_OBJC, opt)
   },
-  [types.DELETE_HOOK]: async({ state, commit }, index) => {
+  [types.UNHOOK_OBJC]: async({ state, commit }, opt) => {
+    await state.socket.call('unswizzle', opt)
+    commit(types.UNHOOK_OBJC, opt)
+  },
+  [types.DELETE_HOOK]: async({ state, commit, dispatch }, index) => {
     const item = state.hooks[index]
     if (item.type === 'dylib') {
       await state.socket.call('unhook', item)
       commit(types.UNHOOK_DYLIB, item)
     } else if (item.type === 'objc') {
-      await state.socket.call('unswizzle', item)
-      commit(types.UNHOOK_OBJC, item)
+      dispatch(types.UNHOOK_OBJC, item)
     } else {
       throw new Error('unknown type' + item.type)
     }

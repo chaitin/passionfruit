@@ -56,9 +56,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import LoadingTab from '~/components/LoadingTab.vue'
-import { GET_SOCKET, IS_OBJC_HOOKED, IS_SYMBOL_HOOKED } from '~/vuex/types'
+import { GET_SOCKET, IS_OBJC_HOOKED, IS_SYMBOL_HOOKED, HOOK_OBJC, UNHOOK_OBJC } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
 
 
@@ -124,8 +124,15 @@ export default {
     paginate(page, filtered, paginator) {
       this.slice = filtered.slice((page - 1) * paginator, page * paginator).sort()
     },
-    toggleHook(method) {
-      this.$toast.open(`TODO: hook ${this.selected} ${method.name}`)
+    toggleHook(selector) {
+      const clazz = this.selected
+      const method = selector.name
+      if (this.isObjCHooked(clazz, method))
+        this.unswizzle({ clazz, method })
+      else
+        this.swizzle({ clazz, method })
+
+      this.showDialog = false
     },
     async expand(clz) {
       this.showDialog = true
@@ -145,7 +152,11 @@ export default {
         // todo:
       }
       this.loadingMethods = false
-    }
+    },
+    ...mapActions({
+      swizzle: HOOK_OBJC,
+      unswizzle: UNHOOK_OBJC,
+    })
   },
   mounted() {
     this.matcher = new AsyncSearch().onMatch(result => this.filtered = result)
