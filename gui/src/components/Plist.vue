@@ -1,6 +1,6 @@
 <template>
   <div class="plist-viewer">
-    <h3 class="title">{{ title }}</h3>
+    <h3 class="title" v-if="title">{{ title }}</h3>
     <b-field class="column">
       <p class="control">
         <a class="button" @click="expandAll">

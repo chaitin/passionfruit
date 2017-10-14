@@ -55,6 +55,7 @@ Requirements:
 
 * Latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
 * [theos](https://github.com/theos/theos) for building the tweak component
+* [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
 * Any desktop browser you like
 
 ### Building agent tweak
@@ -74,7 +75,7 @@ This is the easiest way to start if you don't want to modify the project.
 
 * Open the terminal and `cd` into the project directory.
 * If it is the first time you cloned this project, you need to install npm dependencies and build the frontend. Run `npm install` or `yarn` for the node.js requirements on the first time. Then `npm run build` (or `yarn run build`) to build the bundle.
-* Then use `npm start` or `yarn start` 
+* Then use `npm start` or `yarn start`
 * Open `http://localhost:31337` in your browser. If the port 31337 is in use, set environment variable `PORT` to use an alternative port: `PORT=12345 npm start`
 
 ### Development (optional)

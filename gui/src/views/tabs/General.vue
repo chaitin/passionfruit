@@ -2,7 +2,7 @@
   <div>
     <loading-tab v-if="loading"></loading-tab>
 
-    <section class="section columns" v-else>
+    <section class="columns" v-else>
       <div class="column content">
         <h3 class="title">Binary</h3>
         <b-field grouped group-multiline>
@@ -62,7 +62,7 @@
           <b-panel collapsible v-for="url in info.urls" :key="url.name">
             <span slot="header">{{ url.name || '(empty name)' }}</span>
             <ul>
-              <li v-for="scheme in url.schemes">{{ scheme }}://</li>
+              <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li>
             </ul>
           </b-panel>
         </div>

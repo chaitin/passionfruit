@@ -45,6 +45,7 @@ exports.inspect = (clazz) => {
   if (!clz)
     throw new Error(`class ${clazz} not found`)
 
+  clz = clz.$superClass
   for (; clz; clz = clz.$superClass)
     proto.unshift(clz.$className)
 

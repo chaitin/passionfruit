@@ -4,14 +4,15 @@ import imports from './imports'
 import cookies from './binarycookie'
 import keychain from './keychain'
 
-import { info } from './info'
+import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
-require('./jailbreak')
+require('./jailbreak') // try bypass jailbreak
+require('./pasteboard') // monitor pasteboard
 
 toggleTouchID(false)
 // hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})
@@ -29,6 +30,7 @@ swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
 rpc.exports = {
   checksec,
   info,
+  userDefaults,
 
   lsof,
   classes,
