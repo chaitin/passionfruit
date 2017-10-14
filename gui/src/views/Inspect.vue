@@ -102,15 +102,9 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'keychain' }">
-                <b-icon icon="vpn_key"></b-icon>
-                <span>KeyChain</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link :to="{ name: 'binarycookie' }">
-                <b-icon icon="work"></b-icon>
-                <span>Cookies</span>
+              <router-link :to="{ name: 'storage' }">
+                <b-icon icon="storage"></b-icon>
+                <span>Storage</span>
               </router-link>
             </li>
           </ul>

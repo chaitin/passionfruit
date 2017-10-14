@@ -4,15 +4,17 @@ import VueRouter from 'vue-router'
 const WelcomeView = () => import(/* webpackChunkName: "first" */'~/views/Welcome.vue')
 const DeviceView = () => import(/* webpackChunkName: "first" */'~/views/Device.vue')
 const InspectView = () => import(/* webpackChunkName: "first" */'~/views/Inspect.vue')
+const SubNavView = () => import(/* webpackChunkName: "first" */'~/views/SubNavigation.vue')
 
 const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/General.vue')
 const ModulesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Modules.vue')
 const ClassesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Classes.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
-const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
+const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const BinaryCookieView = () => import('~/views/tabs/BinaryCookie.vue')
+const UserDefaultsView = () => import('~/views/tabs/UserDefaults.vue')
 
 
 Vue.use(VueRouter)
@@ -57,17 +59,30 @@ const router = new VueRouter({
         component: ConsoleView,
         name: 'console',
       }, {
-        path: 'keychain',
-        component: KeyChainView,
-        name: 'keychain',
+        path: 'storage',
+        component: SubNavView,
+        name: 'storage',
+        children: [
+          {
+            path: 'keychain',
+            component: KeyChainView,
+            name: 'keychain',
+          },
+          {
+            path: 'cookies',
+            component: BinaryCookieView,
+            name: 'cookies',
+          },
+          {
+            path: 'userdefaults',
+            component: UserDefaultsView,
+            name: 'userdefaults',
+          }
+        ]
       }, {
         path: 'uidump',
         component: UIDumpView,
         name: 'uidump',
-      }, {
-        path: 'binarycookie',
-        component: BinaryCookieView,
-        name: 'binarycookie',
       }]
     }
   ]
