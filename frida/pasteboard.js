@@ -4,7 +4,10 @@ const subject = 'pasteboard'
 
 let current = null
 setInterval(() => {
-  const str = pasteboard.string().toString()
+  let str = pasteboard.string()
+  if (!str)
+    return
+  str = str.toString()
   if (str === current)
     return
 
