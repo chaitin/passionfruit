@@ -118,9 +118,9 @@
       </div>
     </header>
 
-    <div class="conatiner is-fluid" v-if="err">
+    <section class="container section is-fluid" v-if="err">
       <b-message type="is-danger" has-icon>{{ err }}</b-message>
-    </div>
+    </section>
     <b-loading :active="loading" :canCancel="true" @cancel="home"></b-loading>
 
     <div v-if="connected" class="container is-fluid">
