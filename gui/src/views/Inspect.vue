@@ -1,124 +1,130 @@
 <template>
-  <div class="container is-fluid">
-    <header class="level is-marginless">
-      <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
-        <ul class="level-item">
-          <li>
-            <a href="/">Passionfruit</a>
-          </li>
-          <li v-if="err">Unknown device</li>
-          <li v-else>
-            <router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
-              <icon :icon="device.icon"></icon> {{ device.name }}</router-link>
-          </li>
-          <li v-if="err">Unknown App</li>
-          <li v-else class="is-active">
-            <a href="#" v-if="app" aria-current="page">
-              <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
-            <div class="tags has-addons">
-              <span class="tag is-light">{{ app.identifier }}</span>
-              <span class="tag is-success" v-if="app.pid">pid: {{ app.pid }}</span>
-            </div>
-          </li>
-        </ul>
-      </nav>
+  <div>
+    <header class="hero">
+      <div class="level container is-fluid">
+        <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
+          <ul class="level-item">
+            <li>
+              <a href="/">Passionfruit</a>
+            </li>
+            <li v-if="err">Unknown device</li>
+            <li v-else>
+              <router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
+                <icon :icon="device.icon"></icon> {{ device.name }}</router-link>
+            </li>
+            <li v-if="err">Unknown App</li>
+            <li v-else class="is-active">
+              <a href="#" v-if="app" aria-current="page">
+                <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
+              <div class="tags has-addons">
+                <span class="tag is-dark">{{ app.identifier }}</span>
+                <span class="tag is-success" v-if="app.pid">pid: {{ app.pid }}</span>
+              </div>
+            </li>
+          </ul>
+        </nav>
 
-      <div class="level-right">
-        <nav class="level-item field has-addons">
-          <p class="control">
-            <b-dropdown position="is-bottom-left">
-              <a class="button is-light" slot="trigger">
-                <span class="is-size-7">Manage Hooks</span>
-                <b-icon icon="call_split"></b-icon>
-              </a>
-              <b-dropdown-item custom>
-                <ul class="hooks">
-                  <li v-for="(hook, index) in hooks" :key="index">
-                    <a class="delete is-pulled-right is-danger" @click="removeHook(index)"></a>
-                    <span v-if="hook.type == 'dylib'">{{ hook.module }}!{{ hook.name }}</span>
-                    <span v-else>{{ hook.clazz }}|{{ hook.method }}</span>
-                  </li>
-                </ul>
-              </b-dropdown-item>
-            </b-dropdown>
-          </p>
-          <p class="control">
-            <b-tooltip label="Screenshot" position="is-left">
-              <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-                <b-icon icon="camera"></b-icon>
-              </a>
-            </b-tooltip>
-          </p>
-          <p class="control">
-            <b-tooltip label="Kill Process" position="is-left">
-              <button class="button is-danger" @click="kill">
-                <b-icon icon="power_settings_new"></b-icon>
-              </button>
-            </b-tooltip>
-          </p>
+        <div class="level-right">
+          <nav class="level-item field has-addons">
+            <p class="control">
+              <b-dropdown position="is-bottom-left">
+                <a class="button" slot="trigger">
+                  <span class="is-size-7">Manage Hooks</span>
+                  <b-icon icon="call_split"></b-icon>
+                </a>
+                <b-dropdown-item custom>
+                  <ul class="hooks">
+                    <li v-for="(hook, index) in hooks" :key="index">
+                      <a class="delete is-pulled-right is-danger" @click="removeHook(index)"></a>
+                      <span v-if="hook.type == 'dylib'">{{ hook.module }}!{{ hook.name }}</span>
+                      <span v-else>{{ hook.clazz }}|{{ hook.method }}</span>
+                    </li>
+                  </ul>
+                </b-dropdown-item>
+              </b-dropdown>
+            </p>
+            <p class="control">
+              <b-tooltip label="Screenshot" position="is-left">
+                <a class="button" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
+                  <b-icon icon="camera"></b-icon>
+                </a>
+              </b-tooltip>
+            </p>
+            <p class="control">
+              <b-tooltip label="Kill Process" position="is-left">
+                <button class="button is-danger" @click="kill">
+                  <b-icon icon="power_settings_new"></b-icon>
+                </button>
+              </b-tooltip>
+            </p>
+          </nav>
+        </div>
+      </div>
+
+      <div class="container is-fluid">
+        <nav v-if="connected" class="tabs is-centered is-fullwidth is-boxed">
+          <ul>
+            <li>
+              <router-link :to="{ name: 'general' }">
+                <b-icon icon="dashboard"></b-icon>
+                <span>General</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'files' }">
+                <b-icon icon="folder_special"></b-icon>
+                <span>Files</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'modules' }">
+                <b-icon icon="view_module"></b-icon>
+                <span>Modules</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'classes' }">
+                <b-icon icon="gavel"></b-icon>
+                <span>Classes</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'console' }">
+                <b-icon icon="announcement"></b-icon>
+                <span>Output</span>
+                <b-tag rounded v-show="unreadMessage" type="is-info">{{ unreadMessage }}</b-tag>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'uidump' }">
+                <b-icon icon="visibility"></b-icon>
+                <span>UIDump</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'keychain' }">
+                <b-icon icon="vpn_key"></b-icon>
+                <span>KeyChain</span>
+              </router-link>
+            </li>
+            <li>
+              <router-link :to="{ name: 'binarycookie' }">
+                <b-icon icon="work"></b-icon>
+                <span>Cookies</span>
+              </router-link>
+            </li>
+          </ul>
         </nav>
       </div>
     </header>
 
-    <b-message v-if="err" type="is-danger" has-icon>{{ err }}</b-message>
+    <div class="conatiner is-fluid" v-if="err">
+      <b-message type="is-danger" has-icon>{{ err }}</b-message>
+    </div>
     <b-loading :active="loading" :canCancel="true" @cancel="home"></b-loading>
 
-    <div v-if="connected">
-      <nav class="tabs is-centered is-fullwidth">
-        <ul>
-          <li>
-            <router-link :to="{ name: 'general' }">
-              <b-icon icon="dashboard"></b-icon>
-              <span>General</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'files' }">
-              <b-icon icon="folder_special"></b-icon>
-              <span>Files</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'modules' }">
-              <b-icon icon="view_module"></b-icon>
-              <span>Modules</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'classes' }">
-              <b-icon icon="gavel"></b-icon>
-              <span>Classes</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'console' }">
-              <b-icon icon="announcement"></b-icon>
-              <span>Output</span>
-              <b-tag rounded v-show="unreadMessage" type="is-info">{{ unreadMessage }}</b-tag>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'uidump' }">
-              <b-icon icon="visibility"></b-icon>
-              <span>UIDump</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'keychain' }">
-              <b-icon icon="vpn_key"></b-icon>
-              <span>KeyChain</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'binarycookie' }">
-              <b-icon icon="work"></b-icon>
-              <span>Cookies</span>
-            </router-link>
-          </li>
-        </ul>
-      </nav>
-
-      <section class="tab-content">
+    <div v-if="connected" class="container is-fluid">
+      <section class="tab-content main">
         <router-view class="tab-item"></router-view>
       </section>
     </div>
@@ -257,6 +263,33 @@ ul.hooks {
 
     .delete {
       cursor: pointer;
+    }
+  }
+}
+
+.tab-content.main {
+  margin-top: 20px;
+}
+
+.hero {
+  background: whitesmoke;
+  .level {
+    margin-bottom: 0;
+  }
+
+  .tabs.is-boxed a {
+    color: #7d7d7d;
+    &.is-active {
+      background: #fff;
+      color: #222;
+
+      &:hover {
+        background: #fff;
+      }
+    }
+    &:hover {
+      background: #efefef;
+      color: #222;
     }
   }
 }
