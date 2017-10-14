@@ -1,14 +1,19 @@
 <template>
   <div>
     <b-field class="level-left">
-      <button class="button" @click="refresh" :class="{ 'is-loading': loading }">
-        <b-icon icon="refresh"></b-icon>
-        <span>Refresh</span>
-      </button>
-      <button class="button" @click="toggleDebugOverlay">
-        <b-icon icon="build"></b-icon>
-        <span>Toggle Debug Information Overlay (iOS 10+)</span>
-      </button>
+      <p class="control">
+        <button class="button" @click="refresh" :class="{ 'is-loading': loading }">
+          <b-icon icon="refresh"></b-icon>
+          <span>Refresh</span>
+        </button>
+      </p>
+
+      <p class="control">
+        <button class="button" @click="toggleDebugOverlay" ref="toggleDebug">
+          <b-icon icon="build"></b-icon>
+          <span>Debug Overlay (iOS 10+)</span>
+        </button>
+      </p>
     </b-field>
 
     <pre class="uidump">{{ description }}</pre>
@@ -46,9 +51,15 @@ export default {
         .finally(() => this.loading = false)
     },
     async toggleDebugOverlay() {
-      await this.socket.call('toggleDebugOverlay')
-      this.$toast.open(`Operation succeeded.
-        Tap status bar with two fingers on device to toggle the window`)
+      try {
+        await this.socket.call('toggleDebugOverlay')
+        this.$toast.open(
+          `Operation succeeded. Tap status bar with two fingers
+          on device to toggle the window`)
+      } catch(e) {
+        this.$toast.open({ message: e, type: 'is-danger' })
+        this.$refs.toggleDebug.setAttribute('disabled', '')
+      }
     },
   },
   mounted() {

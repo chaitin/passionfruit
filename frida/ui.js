@@ -53,6 +53,12 @@ function toggleTouchID(enable) {
 
 let overlay = null
 function toggleDebugOverlay() {
+  const p = Module.findExportByName('CoreFoundation', 'kCFCoreFoundationVersionNumber')
+  const version = Memory.readDouble(p)
+
+  if (version < 1300)
+    throw new Error(`iOS version ${version} lower than expected, the feature is unavailable`)
+
   ObjC.schedule(ObjC.mainQueue, () => {
     if (overlay === null) {
       UIDebuggingInformationOverlay.prepareDebuggingOverlay()
