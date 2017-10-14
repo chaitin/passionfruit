@@ -4,7 +4,7 @@ import imports from './imports'
 import cookies from './binarycookie'
 import keychain from './keychain'
 
-import { info } from './info'
+import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, home, plist, text, download } from './finder'
@@ -30,6 +30,7 @@ swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
 rpc.exports = {
   checksec,
   info,
+  userDefaults,
 
   lsof,
   classes,
