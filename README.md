@@ -2,7 +2,7 @@
 
 Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida.re) and [vuejs](https://www.vuejs.org).
 
-## feature
+## Features
 
 * **Fully web based GUI!**
 * Only supports jailbroken device now. Non-jailbroken solution is on the way.
@@ -17,7 +17,7 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 * Read cookies.
 * Simple ui dump.
 
-## screenshots
+## Screenshots
 
 ![Welcome](screenshot/home.png)
 
@@ -69,7 +69,7 @@ make package
 
 Deploy generated `.deb` to your jailbroken iOS device.
 
-### Start the gui
+### Starting the gui
 
 This is the easiest way to start if you don't want to modify the project.
 
@@ -82,7 +82,7 @@ This is the easiest way to start if you don't want to modify the project.
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage  each time you make a change. The following steps enable livereload.
 
-#### Api server
+#### API server
 
 ```shell
 yarn
