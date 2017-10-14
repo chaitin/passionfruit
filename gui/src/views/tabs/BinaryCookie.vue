@@ -18,6 +18,10 @@
           <b-checkbox disabled v-model="props.row.isSecured"></b-checkbox>
         </b-table-column>
       </template>
+
+      <div slot="empty" class="has-text-centered">
+        <p v-show="!loading"><b-icon icon="info"></b-icon> <span>No binary cookie found</span></p>
+      </div>
     </b-table>
   </div>
 </template>

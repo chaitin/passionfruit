@@ -102,7 +102,7 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'storage' }">
+              <router-link :to="{ name: 'keychain' }">
                 <b-icon icon="storage"></b-icon>
                 <span>Storage</span>
               </router-link>
