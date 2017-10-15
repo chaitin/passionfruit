@@ -7,21 +7,20 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 * **Fully web based GUI!**
 * Only supports jailbroken device now. Non-jailbroken solution is on the way.
 * List all url schemes.
-* Screenshot
+* Screenshot.
 * List human readable app meta info (Info.plist).
 * Checksec: see if target app is encrypted, and has enabled PIE, ARC and stack canary.
 * App sandbox file browser. Directly preview images, SQLite databases and plist files on device. You can always download the file for further investigation.
 * Check the loaded frameworks. Hook exported native functions from these dylib to print the arguments and stack trace.
+* Log SQLite operations.
+* Log and try to bypass jailbreak detection.
 * List Objective-C classes from app, hook the methods and inspect the arguments and stack trace.
 * Read keychain items.
 * Read cookies.
+* Read UserDefaults.
 * Simple ui dump.
 
 ## Screenshots
-
-![Welcome](screenshot/home.png)
-
-Apps list.
 
 ![General](screenshot/metainfo.png)
 
@@ -48,6 +47,10 @@ Intercepted calls, arguments and stack trace.
 ![UIDump](screenshot/uidump.png)
 
 Dump ui description of the key window.
+
+![keychain](screenshot/keychain.png)
+
+KeyChain reader.
 
 ## Setup
 
