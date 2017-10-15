@@ -1,4 +1,4 @@
-/* eslint camelcase:0 */
+/* eslint camelcase:0, no-cond-assign:0 */
 
 function getOwnClasses(sort) {
   const free = new NativeFunction(Module.findExportByName(null, 'free'), 'void', ['pointer'])
@@ -45,8 +45,7 @@ exports.inspect = (clazz) => {
   if (!clz)
     throw new Error(`class ${clazz} not found`)
 
-  clz = clz.$superClass
-  for (; clz; clz = clz.$superClass)
+  while (clz = clz.$superClass)
     proto.unshift(clz.$className)
 
   return {
