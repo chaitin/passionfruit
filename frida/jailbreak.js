@@ -32,7 +32,7 @@ const paths = `/Applications/Cydia.app
 
 const subject = 'jailbreak'
 
-/* eslint no-param-reassign: 0 */
+/* eslint no-param-reassign: 0, camelcase: 0, eqeqeq: 0, prefer-destructuring: 0 */
 Interceptor.attach(Module.findExportByName(null, 'open'), {
   onEnter(args) {
     if (!args[0])
@@ -106,7 +106,6 @@ Interceptor.attach(Module.findExportByName(null, 'fork'), {
 })
 
 const { UIApplication, NSURL, NSString, NSError, NSFileManager } = ObjC.classes
-/* eslint camelcase:0 */
 const canOpenURL_publicURLsOnly_ = UIApplication['- _canOpenURL:publicURLsOnly:']
 Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
   onEnter(args) {
@@ -173,7 +172,6 @@ Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implemen
         },
       })
       this.shouldOverride = true
-      /* eslint prefer-destructuring: 0 */
       this.error = args[5]
     }
   },

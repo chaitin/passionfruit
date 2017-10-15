@@ -22,7 +22,9 @@ class Database {
 
   all(statement) {
     const result = []
-    for (let row; row !== null; row = statement.step())
+    let row
+    /* eslint no-cond-assign: 0 */
+    while ((row = statement.step()) !== null)
       result.push(row)
 
     return result

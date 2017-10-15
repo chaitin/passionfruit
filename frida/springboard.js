@@ -2,7 +2,7 @@ const {
   SBBacklightController,
   SBLockScreenManager,
   SBApplicationController,
-  SBUIController
+  SBUIController,
 } = ObjC.classes
 
 
@@ -31,5 +31,5 @@ rpc.exports = {
         controller.applicationWithDisplayIdentifier_(bundle) // iOS 7-
       SBUIController.sharedInstanceIfExists().activateApplication_(app)
     })
-  }
+  },
 }
