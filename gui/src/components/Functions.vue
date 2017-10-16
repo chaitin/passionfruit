@@ -46,6 +46,13 @@
             </button>
           </b-field>
 
+          <p>Returns:</p>
+          <b-field>
+            <b-select placeholder="Return type" v-model="ret" expanded>
+              <option v-for="(t, j) in types" :key="j" :value="t">{{ t }}</option>
+            </b-select>
+          </b-field>
+
           <b-field>
             <code>{{ expr }}</code>
           </b-field>
@@ -113,14 +120,14 @@ export default {
       args: [],
       types: ['int', 'uint', 'long', 'ulong', 'char', 'uchar', 'char *',
         'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64'],
-      ret: 'void',
+      ret: 'int',
     }
   },
   methods: {
     openSymbolDetail(symbol) {
       this.symbolDialogActive = true
       this.args = []
-      this.ret = 'void'
+      this.ret = 'int'
       this.symbol = symbol
     },
     addArg() {
@@ -148,7 +155,8 @@ export default {
   },
   computed: {
     expr() {
-      return this.symbol.name + '(' + this.args.map(t => t.type).join(', ') + ')'
+      const args = this.args.map(t => t.type).join(', ')
+      return `${this.ret} ${this.symbol.name}(${args})`
     }
   },
   mounted() {
