@@ -1775,24 +1775,6 @@ fresh@^0.5.0:
   version "0.5.0"
   resolved "http://registry.npm.taobao.org/fresh/download/fresh-0.5.0.tgz#f474ca5e6a9246d6fd8e0953cfa9b9c805afa78e"
 
-frida-fs@^1.1.1:
-  version "1.1.1"
-  resolved "http://registry.npm.taobao.org/frida-fs/download/frida-fs-1.1.1.tgz#6b3c17e260ce317fb6271a9bfda9afb6da42760e"
-  dependencies:
-    babel-plugin-transform-runtime "^6.15.0"
-    babel-preset-es2015 "^6.18.0"
-    babel-runtime "^6.20.0"
-
-frida-load@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/frida-load/download/frida-load-1.0.0.tgz#d0a448a4c55e4a0b5ecc0efe57fe3cf629d778c5"
-  dependencies:
-    babel-preset-es2015 "^6.0.15"
-    babelify "^7.2.0"
-    browserify "^11.1.0"
-    concat-stream "^1.5.0"
-    mold-source-map "^0.4.0"
-
 frida@^10.6.3:
   version "10.6.3"
   resolved "https://registry.npmjs.org/frida/-/frida-10.6.3.tgz#4fe33795c2a69dbcf5fc71b1ca2929f4ccc5a56f"
@@ -2981,14 +2963,6 @@ object.omit@^2.0.0:
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
-
-objection@^0.8.7:
-  version "0.8.7"
-  resolved "https://registry.npmjs.org/objection/-/objection-0.8.7.tgz#d24b039b68a27af64ec84a77192ceca5dc96d9bb"
-  dependencies:
-    ajv "^5.1.1"
-    bluebird "^3.5.0"
-    lodash "^4.17.4"
 
 on-finished@^2.1.0:
   version "2.3.0"
