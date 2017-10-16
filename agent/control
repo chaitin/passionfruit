@@ -1,9 +1,0 @@
-Package: cn.chaitin.passionfruit
-Name: Passionfruit agent
-Depends: mobilesubstrate
-Version: 0.0.1
-Architecture: iphoneos-arm
-Description: Agent for Passionfruit
-Maintainer: codecolorist
-Author: codecolorist
-Section: Tweaks

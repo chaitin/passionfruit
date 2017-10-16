@@ -1,5 +1,4 @@
 import checksec from './checksec'
-import lsof from './lsof'
 import imports from './imports'
 import cookies from './binarycookie'
 import keychain from './keychain'
@@ -32,7 +31,6 @@ rpc.exports = {
   info,
   userDefaults,
 
-  lsof,
   classes,
   ownClasses,
   methods,

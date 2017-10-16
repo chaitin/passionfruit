@@ -57,20 +57,8 @@ KeyChain reader.
 Requirements:
 
 * Latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
-* [theos](https://github.com/theos/theos) for building the tweak component
 * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
 * Any desktop browser you like
-
-### Building agent tweak
-
-Make sure you have theos installed, see [theos installation](https://github.com/theos/theos/wiki/Installation)
-
-```shell
-cd agent
-make package
-```
-
-Deploy generated `.deb` to your jailbroken iOS device.
 
 ### Starting the gui
 
