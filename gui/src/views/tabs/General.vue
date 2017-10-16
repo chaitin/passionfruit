@@ -16,7 +16,7 @@
           <div class="control">
             <b-taglist attached>
               <b-tag type="is-light">PIE</b-tag>
-              <b-tag type="is-success" v-if="sec.arc">ENABLED</b-tag>
+              <b-tag type="is-success" v-if="sec.pie">ENABLED</b-tag>
               <b-tag type="is-warning" v-else>N/A</b-tag>
             </b-taglist>
           </div>
