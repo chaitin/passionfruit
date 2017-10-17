@@ -58,7 +58,7 @@ Requirements:
 
 * Latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
 * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
-* Any desktop browser you like
+* Any modern desktop browser you like
 
 ### Starting the gui
 
@@ -71,7 +71,7 @@ This is the easiest way to start if you don't want to modify the project.
 
 ### Development (optional)
 
-For those who wants to contribute, you may probably need to restart the api server and reload webpage  each time you make a change. The following steps enable livereload.
+For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
 
 #### API server
 
@@ -87,6 +87,14 @@ cd gui
 yarn
 npm run dev
 ```
+
+#### Frida script compiler
+
+Frida agent needs to be compiled at the first time: `npm run build`
+
+If you need livereload like webpack, use `npm run watch`.
+
+
 
 Now open localhost:8080 in browser.
 
