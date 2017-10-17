@@ -11,7 +11,7 @@ module.exports = () => new Promise((resolve, reject) => {
   if (headers.flags.pie)
     result.pie = true
 
-  const isEncrypted = headers.cmds.some(cmd => /^encryption_info_(32|64)$/.test(cmd.type))
+  const isEncrypted = headers.cmds.some(cmd => /^encryption_info_(32|64)$/.test(cmd.type) && cmd.id === 1)
   if (isEncrypted)
     result.encrypted = true
 
