@@ -5,7 +5,7 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 ## Features
 
 * **Fully web based GUI!**
-* Only supports jailbroken device now. Non-jailbroken solution is on the way.
+* Also supports non-jailbroken device.
 * List all url schemes.
 * Screenshot.
 * List human readable app meta info (Info.plist).
