@@ -38,16 +38,20 @@ Interceptor.attach(Module.findExportByName(null, 'open'), {
     if (!args[0])
       return
 
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     const path = Memory.readUtf8String(args[0])
     if (paths.indexOf(path) > -1) {
       send({
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           path,
           method: 'open',
         },
+        backtrace,
       })
       args[0] = NULL
     }
@@ -60,11 +64,14 @@ Interceptor.attach(Module.findExportByName(null, 'stat'), {
       return
 
     const path = Memory.readUtf8String(args[0])
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     if (paths.indexOf(path) > -1) {
       send({
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           path,
           method: 'stat',
@@ -78,11 +85,14 @@ Interceptor.attach(Module.findExportByName(null, 'stat'), {
 Interceptor.attach(Module.findExportByName(null, 'getenv'), {
   onEnter(args) {
     const key = Memory.readUtf8String(args[0])
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     if (key === 'DYLD_INSERT_LIBRARIES') {
       send({
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           env: 'DYLD_INSERT_LIBRARIES',
         },
@@ -102,6 +112,7 @@ Interceptor.attach(Module.findExportByName(null, '_dyld_get_image_name'), {
 Interceptor.attach(Module.findExportByName(null, 'fork'), {
   onLeave(retVal) {
     retVal.replace(ptr(-1))
+    // todo: send
   },
 })
 
@@ -113,6 +124,8 @@ Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
       return
 
     const url = ObjC.Object(args[2]).toString()
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     if (/^cydia:\/\//i.exec(url)) {
       args[2] = NSURL.URLWithString_('invalid://')
       this.shouldOverride = true
@@ -120,6 +133,7 @@ Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           url,
         },
@@ -138,11 +152,14 @@ Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
       return
 
     const path = new ObjC.Object(args[2]).toString()
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     if (paths.indexOf(path) > -1) {
       send({
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           path,
         },
@@ -162,11 +179,14 @@ Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implemen
       return
 
     const path = ObjC.Object(args[2]).toString()
+    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
+      DebugSymbol.fromAddress).filter(e => e.name)
     if (path.match(/^\/private/)) {
       send({
         subject,
         time: new Date().getTime(),
         event: 'detect',
+        backtrace,
         arguments: {
           path,
         },
