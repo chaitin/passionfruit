@@ -3,6 +3,9 @@
   "version": "0.0.2",
   "description": "Inject to iOS App",
   "main": "app.js",
+  "engines": {
+    "node": ">= 7.10.1"
+  },
   "browserify": {
     "transform": [
       [

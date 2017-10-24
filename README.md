@@ -56,7 +56,7 @@ KeyChain reader.
 
 Requirements:
 
-* Latest [node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
+* Latest [node.js](https://nodejs.org/) (>=7.10.1) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
 * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
 * Any modern desktop browser you like
 
