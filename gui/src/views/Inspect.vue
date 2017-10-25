@@ -181,7 +181,7 @@ export default {
         .on('close', console.warn.bind(console))
         .on('disconnect', () => {
           this.$toast.open(`disconnected from ${bundle}`)
-          this.err = 'Application disconnected'
+          this.err = 'Application disconnected. Reload the page to retry, or select another app in main menu.'
           this.connected = false
           this.loading = false
         })
