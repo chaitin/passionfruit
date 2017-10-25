@@ -67,7 +67,7 @@ export const mutations = {
       apps.list = []
   },
   [types.UPDATE_APPS]: (state, list) => state.device.apps.list = list,
-  [types.APPS_ERROR]: (state, err) => state.device.apps.error = error,
+  [types.APPS_ERROR]: (state, err) => state.device.apps.error = err,
 }
 
 export const actions = {
