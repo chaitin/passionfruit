@@ -3,11 +3,15 @@ import { toJSON } from './lib/nsdict'
 const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
 
 
+const NSTemporaryDirectory = new NativeFunction(Module.findExportByName(null, 'NSTemporaryDirectory'), 'pointer', [])
+
+
 function info() {
   const mainBundle = NSBundle.mainBundle()
   const json = toJSON(mainBundle.infoDictionary())
   const data = NSProcessInfo.processInfo()
     .environment().objectForKey_('HOME').toString()
+  const tmp = new ObjC.Object(NSTemporaryDirectory())
 
   const map = {
     name: 'CFBundleDisplayName',
@@ -20,6 +24,7 @@ function info() {
     id: mainBundle.bundleIdentifier().toString(),
     bundle: mainBundle.bundlePath().toString(),
     binary: mainBundle.executablePath().toString(),
+    tmp,
     data,
     json,
   }
