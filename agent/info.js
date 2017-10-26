@@ -1,9 +1,7 @@
 import { toJSON } from './lib/nsdict'
+import { NSTemporaryDirectory } from './lib/foundation'
 
 const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
-
-
-const NSTemporaryDirectory = new NativeFunction(Module.findExportByName(null, 'NSTemporaryDirectory'), 'pointer', [])
 
 
 function info() {
