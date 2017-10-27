@@ -60,7 +60,22 @@ Requirements:
 * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
 * Any modern desktop browser you like
 
-### Starting the gui
+### Jailbroken Device
+
+See https://www.frida.re/docs/ios/
+
+> Start `Cydia` and add Frida’s repository by going to `Manage` -> `Sources` -> `Edit` -> `Add` and enter `https://build.frida.re`. You should now be able to find and install the `Frida` package which lets Frida inject JavaScript into apps running on your iOS device. This happens over USB, so you will need to have your USB cable handy, though there’s no need to plug it in just yet.
+
+### Non-jailbroken Device
+
+Official documentation of frida.re (linked above) also introduces how to inject [FridaGadget.dylib](https://build.frida.re/frida/ios/lib/FridaGadget.dylib) to the ipa, requires repack and resign.
+
+Here are some articles about how to do so:
+
+* [MonkeyDev/wiki/非越狱App集成#集成frida](https://github.com/AloneMonkey/MonkeyDev/wiki/%E9%9D%9E%E8%B6%8A%E7%8B%B1App%E9%9B%86%E6%88%90#集成frida)（Chinese)
+* https://www.nccgroup.trust/uk/about-us/newsroom-and-events/blogs/2016/october/ios-instrumentation-without-jailbreak/
+
+### Starting the WebUI
 
 This is the easiest way to start if you don't want to modify the project.
 
@@ -97,6 +112,22 @@ If you need livereload like webpack, use `npm run watch`.
 
 
 Now open localhost:8080 in browser.
+
+## FAQ
+
+### Why `npm start` is complaining about syntax error?
+
+This project uses the lastest ECMAScript feature in server side. You need nodejs v7.10.1 at least, but v8.x and above is recommended. I've got some users reporting that yarn is not compatible with lower nodejs version.
+
+### "Device is not an iOS device, or you have not installed frida on it"
+
+Make sure you have frida.re successfully installed. See the links above. Also, check if the version on of frida on device matches.
+
+### Have problem with `npm install/build`?
+
+Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/).
+
+Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install ; npm run build`.
 
 ## LICENCE
 
