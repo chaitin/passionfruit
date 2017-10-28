@@ -48,6 +48,7 @@ export function debounce(func, wait, immediate) {
 }
 
 export function humanFileSize(size) {
+  if (isNaN(size)) return 'N/A'
   if (size == 0) return '0 kB'
   let i = Math.floor(Math.log(size) / Math.log(1024))
   return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['bytes', 'kB', 'MB', 'GB', 'TB'][i]

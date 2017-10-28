@@ -9,7 +9,10 @@ const fileManager = ObjC.classes.NSFileManager.defaultManager()
 function getDataAttrForPath(path) {
   const urlPath = ObjC.classes.NSURL.fileURLWithPath_(path)
   const dict = fileManager.attributesOfItemAtPath_error_(urlPath.path(), NULL)
-  if (!dict) return dict
+  const result = {}
+  if (!dict)
+    return result
+
   const info = dictFromNSDictionary(dict)
   const lookup = {
     owner: 'NSFileOwnerAccountName',
@@ -21,7 +24,6 @@ function getDataAttrForPath(path) {
     modification: 'NSFileModificationDate',
     protection: 'NSFileProtectionKey',
   }
-  const result = {}
   for (const key in lookup)
     if (hasOwnProperty(lookup, key) && lookup[key] in info)
       result[key] = info[lookup[key]]
@@ -34,6 +36,8 @@ function ls(path) {
   let list = fileManager.directoryContentsAtPath_(path)
   const isDir = Memory.alloc(Process.pointerSize)
 
+  if (!list)
+    return { path, list: [] }
   list = arrayFromNSArray(list).map((filename) => {
     const fullPath = `${path}/${filename}`
     fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)
@@ -43,7 +47,7 @@ function ls(path) {
       type: Memory.readPointer(isDir) == 0 ? 'file' : 'directory',
       name: filename,
       path: fullPath,
-      attribute: getDataAttrForPath(fullPath),
+      attribute: getDataAttrForPath(fullPath) || {},
     }
   })
 
