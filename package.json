@@ -29,7 +29,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon .",
     "start": "cross-env NODE_ENV=production node .",
-    "build": "pushd gui && npm run build && popd && frida-compile agent -o _agent.js",
+    "build": "frida-compile agent -o _agent.js && cd gui && (yarn run build || npm run build)",
     "watch": "frida-compile agent -o _agent.js -w",
     "postinstall": "cd gui && (yarn || npm install)"
   },
