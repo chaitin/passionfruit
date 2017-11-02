@@ -61,6 +61,8 @@ router
   })
 
 const port = parseInt(process.env.PORT, 10) || 31337
+const host = process.env.HOST || 'localhost'
+
 
 app
   .use(compress({
@@ -106,10 +108,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(logger())
 }
 
-console.info(`listening on http://localhost:${port}`)
+console.info(`listening on http://${host}:${port}`)
 const server = http.createServer(app.callback())
 channels.attach(server)
-server.listen(port)
+server.listen(port, host)
 
 
 process.on('unhandledRejection', (err) => {

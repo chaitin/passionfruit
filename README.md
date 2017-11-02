@@ -82,7 +82,7 @@ This is the easiest way to start if you don't want to modify the project.
 * Open the terminal and `cd` into the project directory.
 * If it is the first time you cloned this project, you need to install npm dependencies and build the frontend. Run `npm install` or `yarn` for the node.js requirements on the first time. Then `npm run build` (or `yarn run build`) to build the bundle.
 * Then use `npm start` or `yarn start`
-* Open `http://localhost:31337` in your browser. If the port 31337 is in use, set environment variable `PORT` to use an alternative port: `PORT=12345 npm start`
+* Open `http://localhost:31337` in your browser. If the port 31337 is in use, set environment variable `PORT` to use an alternative port. Also, setting `HOST` can force to listen on an alternative interface, but be careful because it has no authentication yet: `HOST=192.168.1.100 PORT=12345 npm start`
 
 ### Development (optional)
 
