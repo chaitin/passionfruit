@@ -1,5 +1,3 @@
-// to speed up, I removed all data validation
-
 function ReadOnlyMemoryBuffer(address, size) {
   this.base = address
   this.length = size || 4096
@@ -22,12 +20,7 @@ const isLE = ((new Uint32Array((new Uint8Array([1, 2, 3, 4])).buffer))[0] === 0x
 const proto = ReadOnlyMemoryBuffer.prototype
 
 proto.slice = function(begin, end) {
-  size = (typeof end === 'undefined' ? this.length : end ) - begin
-
-  /* if (isNaN(end) || end > this.length) {
-    throw new Error('invalid end: ' + end)
-  } */
-
+  const size = (typeof end === 'undefined' ? this.length : end ) - begin
   return new ReadOnlyMemoryBuffer(this.base.add(begin), size)
 }
 
@@ -35,7 +28,9 @@ proto.toString = function() {
   return Memory.readUtf8String(this.base)
 }
 
-const stub = () => throw new Error('not implemented')
+const stub = () => {
+  throw new Error('not implemented')
+}
 
 mapping.forEach((type) => {
   const [bufferType, fridaType, size] = type

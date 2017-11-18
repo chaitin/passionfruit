@@ -1,12 +1,14 @@
-const macho = require('macho')
+import macho from 'macho'
+
+import ReadOnlyMemoryBuffer from './lib/romembuffer'
 
 
 module.exports = () => new Promise((resolve, reject) => {
   const result = {}
 
-  const appModule = Process.enumerateModulesSync()[0]
-  const rawHeaders = Buffer.from(Memory.readByteArray(appModule.base, Math.min(appModule.size, 65536)))
-  const headers = macho.parse(rawHeaders)
+  const [appModule, ] = Process.enumerateModulesSync()
+  const buffer = new ReadOnlyMemoryBuffer(appModule.base, appModule.size)
+  const headers = macho.parse(buffer)
 
   if (headers.flags.pie)
     result.pie = true
@@ -20,11 +22,8 @@ module.exports = () => new Promise((resolve, reject) => {
     return names
   }, new Set())
 
-  if (importNames.has('__stack_chk_guard'))
-    result.canary = true
-
-  if (importNames.has('objc_release'))
-    result.arc = true
+  result.canary = importNames.has('__stack_chk_guard')
+  result.arc = importNames.has('objc_release')
 
   resolve(result)
 })
