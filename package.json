@@ -30,6 +30,7 @@
     "dev": "cross-env NODE_ENV=development nodemon .",
     "start": "cross-env NODE_ENV=production node .",
     "build": "frida-compile agent -o _agent.js && cd gui && (yarn run build || npm run build)",
+    "compile": "frida-compile agent -o _agent.js",
     "watch": "frida-compile agent -o _agent.js -w",
     "postinstall": "cd gui && (yarn || npm install)"
   },
