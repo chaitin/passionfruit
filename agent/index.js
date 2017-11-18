@@ -10,6 +10,10 @@ import { ls, home, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
+/*
+
+disable to default hooks speed up
+
 require('./jailbreak') // try bypass jailbreak
 require('./pasteboard') // monitor pasteboard
 
@@ -24,7 +28,7 @@ hook('libsqlite3.dylib', 'sqlite3_bind_text', { args: ['pointer', 'int', 'char *
 
 // swizzle('NSURL', 'URLWithString_', false)
 swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
-
+*/
 
 rpc.exports = {
   checksec,
