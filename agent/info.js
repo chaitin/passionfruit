@@ -9,7 +9,8 @@ function info() {
   const json = toJSON(mainBundle.infoDictionary())
   const data = NSProcessInfo.processInfo()
     .environment().objectForKey_('HOME').toString()
-  const tmp = new ObjC.Object(NSTemporaryDirectory())
+
+  const tmp = NSTemporaryDirectory()
 
   const map = {
     name: 'CFBundleDisplayName',
