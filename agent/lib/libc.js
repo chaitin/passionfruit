@@ -5,6 +5,8 @@ const close = wrap('close', 'int', ['int'])
 const read = wrap('read', 'int', ['int', 'pointer', 'int'])
 const write = wrap('write', 'int', ['int', 'pointer', 'int'])
 const lseek = wrap('lseek', 'int64', ['int', 'int64', 'int'])
+const mmap = wrap('mmap', 'pointer', ['pointer', 'uint', 'int', 'int', 'int', 'long'])
+const munmap = wrap('munmap', 'int', ['pointer', 'uint'])
 
 
 module.exports = {
@@ -13,4 +15,7 @@ module.exports = {
   read,
   write,
   lseek,
+
+  mmap,
+  munmap,
 }
