@@ -2,34 +2,10 @@ import { arrayFromNSArray, dictFromNSDictionary, toJSON } from './lib/nsdict'
 import { hasOwnProperty } from './lib/utils'
 import uuidv4 from './lib/uuid'
 import libc from './lib/libc'
+import { getDataAttrForPath } from './lib/foundation'
+
 
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
-
-
-function getDataAttrForPath(path) {
-  const urlPath = ObjC.classes.NSURL.fileURLWithPath_(path)
-  const dict = fileManager.attributesOfItemAtPath_error_(urlPath.path(), NULL)
-  const result = {}
-  if (!dict)
-    return result
-
-  const info = dictFromNSDictionary(dict)
-  const lookup = {
-    owner: 'NSFileOwnerAccountName',
-    size: 'NSFileSize',
-    creation: 'NSFileCreationDate',
-    permission: 'NSFilePosixPermissions',
-    type: 'NSFileType',
-    group: 'NSFileGroupOwnerAccountName',
-    modification: 'NSFileModificationDate',
-    protection: 'NSFileProtectionKey',
-  }
-  for (const key in lookup)
-    if (hasOwnProperty(lookup, key) && lookup[key] in info)
-      result[key] = info[lookup[key]]
-
-  return result
-}
 
 
 function ls(path) {
