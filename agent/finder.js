@@ -1,5 +1,4 @@
-import { arrayFromNSArray, dictFromNSDictionary, toJSON } from './lib/nsdict'
-import { hasOwnProperty } from './lib/utils'
+import { arrayFromNSArray, toJSON } from './lib/nsdict'
 import uuidv4 from './lib/uuid'
 import libc from './lib/libc'
 import { getDataAttrForPath } from './lib/foundation'

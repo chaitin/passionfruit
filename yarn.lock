@@ -2865,7 +2865,7 @@ lru-cache@^4.0.1:
 
 macho@^1.2.1:
   version "1.2.1"
-  resolved "http://registry.npm.taobao.org/macho/download/macho-1.2.1.tgz#9204a512d229ff0ac9f81641b197eb533dff0879"
+  resolved "https://registry.npmjs.org/macho/-/macho-1.2.1.tgz#9204a512d229ff0ac9f81641b197eb533dff0879"
   dependencies:
     endian-reader "^0.1.0"
 

@@ -2,6 +2,7 @@ import checksec from './checksec'
 import imports from './imports'
 import cookies from './binarycookie'
 import keychain from './keychain'
+import dumpdecrypted from './dumpdecrypted'
 
 import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
@@ -63,4 +64,6 @@ rpc.exports = {
   unhook,
   swizzle,
   unswizzle,
+
+  dumpdecrypted,
 }

@@ -1,3 +1,6 @@
+import { dictFromNSDictionary } from './nsdict'
+import { hasOwnProperty } from './utils'
+
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
 
 
