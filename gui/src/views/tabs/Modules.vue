@@ -13,7 +13,12 @@
     <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
       <template scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
-          {{ props.row.name }}
+          <b-tooltip label="Dump decrypted">
+            <a class="button is-small is-dark" @click="dump(props.row.name)">
+              <b-icon icon="system_update_alt"></b-icon>
+            </a>
+          </b-tooltip>
+          <span>{{ props.row.name }}</span>
         </b-table-column>
 
         <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
@@ -57,6 +62,8 @@
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
+import { download } from '~/lib/utils'
+
 import LoadingTab from '~/components/LoadingTab.vue'
 import Functions from '~/components/Functions.vue'
 
@@ -76,6 +83,38 @@ export default {
       this.imports = imports.filter(imp => imp.type === 'function')
       this.modules[0].imports = this.imports
       this.loading = false
+    },
+    async dump(name) {
+      this.loading = true
+      try {
+        let path = await this.socket.call('dumpdecrypted', name)
+        this.$dialog.confirm({
+          title: 'Dump successful',
+          message: `File dumped to: \n ${path}`,
+          cancelText: 'Dismiss',
+          confirmText: 'Download',
+          type: 'is-success',
+          onConfirm: () => {
+            setImmediate(() => {
+              download(this.socket, { path }).then(url => {
+                let link = document.createElement('a')
+                link.setAttribute('href', url)
+                link.setAttribute('download', name)
+                link.click()
+              })
+            })
+          }
+        })
+      } catch(ex) {
+        this.$toast.open({
+          duration: 10 * 1000,
+          message: ex,
+          type: 'is-danger',
+        })
+      } finally {
+        this.loading = false
+      }
+      // todo: download
     },
     openDetail(mod, index) {
       if (mod.detailed)

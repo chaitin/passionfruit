@@ -65,7 +65,7 @@ function text(path) {
 function download(path) {
   const session = uuidv4()
   const name = Memory.allocUtf8String(path)
-  const watermark = 4 * 1024
+  const watermark = 10 * 1024 * 1024
   const subject = 'download'
   const { size } = getDataAttrForPath(path)
 
