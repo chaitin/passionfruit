@@ -32,9 +32,6 @@ router
     const list = await frida.enumerateDevices()
     ctx.body = list.filter(dev => dev.type === 'tether').map(serializeDevice)
   })
-  .get('/device/:device/info', async (ctx) => {
-    ctx.body = await FridaUtil.info(ctx.params.device)
-  })
   .get('/device/:device/apps', async (ctx) => {
     const id = ctx.params.device
     const dev = await FridaUtil.getDevice(id)
@@ -46,12 +43,6 @@ router
       else
         throw ex
     }
-  })
-  .get('/device/:device/screenshot', async (ctx) => {
-    const image = await FridaUtil.screenshot(ctx.params.device)
-    ctx.body = fs.createReadStream(image)
-    /* eslint prefer-template: 0 */
-    ctx.attachment(path.basename(image) + '.png')
   })
   .post('/device/spawn', async (ctx) => {
     const { device, bundle } = ctx.params

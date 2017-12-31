@@ -80,15 +80,9 @@ export const actions = {
       .then(({ data }) => commit(types.UPDATE_DEVICES, data))
       .finally(() => commit(types.DEVICES_LOADING, false))
   },
-  [types.LOAD_DEVICE_DETAIL]({ commit, state }) {
+  [types.LOAD_DEVICE_DETAIL]({ state }) {
     if (!state.selected.id)
       return
-
-    commit(types.DEVICE_DETAIL_LOADING, true)
-    axios.get(`/device/${state.selected.id}/info`)
-      .then(({ data }) => commit(types.DEVICE_DETAIL, data))
-      .catch(({ response }) => commit(types.DEVICE_DETAIL_ERROR, response.data))
-      .finally(() => commit(types.DEVICE_DETAIL_LOADING, false))
   },
   [types.LOAD_APPS]({ commit, state }) {
     if (!state.selected.id)

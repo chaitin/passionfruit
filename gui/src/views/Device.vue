@@ -51,10 +51,6 @@
             <b-dropdown-item value="small">
               <b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
           </b-dropdown>
-          <a class="button is-light" :href="'/api/device/' + device.id + '/screenshot'" target="_blank">
-            <b-icon icon="camera"></b-icon>
-            <span>Screenshot</span>
-          </a>
         </b-field>
       </header>
 

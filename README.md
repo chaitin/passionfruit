@@ -7,7 +7,6 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 * **Fully web based GUI!**
 * Also supports non-jailbroken device.
 * List all url schemes.
-* Screenshot.
 * List human readable app meta info (Info.plist).
 * Checksec: see if target app is encrypted, and has enabled PIE, ARC and stack canary.
 * App sandbox file browser. Directly preview images, SQLite databases and plist files on device. You can always download the file for further investigation.
@@ -28,7 +27,7 @@ Checksec, url schemes and metainfo.
 
 ![Finder](screenshot/finder.png)
 
-File browser with hex viewer, image viewer, plist viewer and SQlite database reader.
+File browser with hex viewer, image viewer, plist viewer and SQLite database reader.
 
 ![Modules](screenshot/modules.png)
 
@@ -57,7 +56,6 @@ KeyChain reader.
 Requirements:
 
 * Latest [node.js](https://nodejs.org/) (>=7.10.1) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
-* [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice) `brew install libimobiledevice` on macOS
 * Any modern desktop browser you like
 
 ### Jailbroken Device
