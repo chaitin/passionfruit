@@ -3,10 +3,16 @@ const {
   SBLockScreenManager,
   SBApplicationController,
   SBUIController,
+  
+  LSApplicationWorkspace,
+  NSURL,
 } = ObjC.classes
 
 
+import { arrayFromNSArray } from './lib/nsdict'
+
 const perform = f => ObjC.schedule(ObjC.mainQueue, f)
+const workspace = LSApplicationWorkspace.defaultWorkspace()
 
 rpc.exports = {
   unlock() {
@@ -17,10 +23,15 @@ rpc.exports = {
   },
 
   uiopen(url) {
-    const { LSApplicationWorkspace, NSURL } = ObjC.classes
-    const workspace = LSApplicationWorkspace.defaultWorkspace()
     const link = NSURL.URLWithString_(url)
     return workspace.openSensitiveURL_withOptions_(link, NULL)
+  },
+
+  urls() {
+    return {
+      'public': arrayFromNSArray(workspace.publicURLSchemes()),
+      'private': arrayFromNSArray(workspace.privateURLSchemes()),
+    }
   },
 
   activate(bundle) {
