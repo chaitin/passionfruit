@@ -29,9 +29,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon .",
     "start": "cross-env NODE_ENV=production node .",
-    "build": "frida-compile agent -o _agent.js && cd gui && (yarn run build || npm run build)",
-    "compile": "frida-compile agent -o _agent.js",
-    "watch": "frida-compile agent -o _agent.js -w",
+    "build": "npm run compile && cd gui && (yarn run build || npm run build)",
+    "compile": "node compile.js compile",
+    "watch": "node compile.js watch",
     "postinstall": "cd gui && (yarn || npm install)"
   },
   "repository": {
@@ -64,7 +64,8 @@
     "promise.prototype.finally": "^3.0.0",
     "socket.io": "^2.0.3",
     "socket.io-stream": "^0.9.1",
-    "sqlite3": "^3.1.9"
+    "sqlite3": "^3.1.9",
+    "frida-compile": "^5.1.0"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -74,7 +75,6 @@
     "cross-env": "^5.0.5",
     "eslint-config-airbnb-base": "^12.0.2",
     "eslint-plugin-import": "^2.7.0",
-    "frida-compile": "^5.1.0",
     "macho": "^1.2.1"
   }
 }

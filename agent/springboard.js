@@ -1,3 +1,5 @@
+import { arrayFromNSArray } from './app/lib/nsdict'
+
 const {
   SBBacklightController,
   SBLockScreenManager,
@@ -7,9 +9,6 @@ const {
   LSApplicationWorkspace,
   NSURL,
 } = ObjC.classes
-
-
-import { arrayFromNSArray } from './lib/nsdict'
 
 const perform = f => ObjC.schedule(ObjC.mainQueue, f)
 const workspace = LSApplicationWorkspace.defaultWorkspace()
