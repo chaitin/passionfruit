@@ -5,6 +5,7 @@ const WelcomeView = () => import(/* webpackChunkName: "first" */'~/views/Welcome
 const DeviceView = () => import(/* webpackChunkName: "first" */'~/views/Device.vue')
 const InspectView = () => import(/* webpackChunkName: "first" */'~/views/Inspect.vue')
 const SubNavView = () => import(/* webpackChunkName: "first" */'~/views/SubNavigation.vue')
+const URLTestView = () => import(/* webpackChunkName: "first" */'~/views/URLTest.vue')
 
 const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/General.vue')
 const ModulesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Modules.vue')
@@ -33,6 +34,15 @@ const router = new VueRouter({
         component: DeviceView,
         name: 'apps'
       }]
+    },
+    {
+      path: '/url/',
+      component: URLTestView,
+    },
+    {
+      path: '/url/:scheme',
+      component: URLTestView,
+      name: 'uiopen',
     },
     {
       path: '/app/:device/:bundle',
