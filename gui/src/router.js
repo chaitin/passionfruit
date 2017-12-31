@@ -36,11 +36,11 @@ const router = new VueRouter({
       }]
     },
     {
-      path: '/url/',
+      path: '/url/:device/',
       component: URLTestView,
     },
     {
-      path: '/url/:scheme',
+      path: '/url/:device/:scheme',
       component: URLTestView,
       name: 'uiopen',
     },

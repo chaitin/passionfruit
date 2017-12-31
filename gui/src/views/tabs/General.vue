@@ -62,7 +62,11 @@
           <b-panel collapsible v-for="url in info.urls" :key="url.name">
             <span slot="header">{{ url.name || '(empty name)' }}</span>
             <ul>
-              <li v-for="scheme in url.schemes" :key="scheme">{{ scheme }}://</li>
+              <li v-for="scheme in url.schemes" :key="scheme">
+                <router-link :to="{ name: 'uiopen', params: { device: device.id, scheme } }">
+                  {{ scheme }}://
+                </router-link>
+              </li>
             </ul>
           </b-panel>
         </div>
@@ -77,7 +81,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { GET_SOCKET } from '~/vuex/types'
+import { GET_SOCKET, GET_DEVICE } from '~/vuex/types'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
 import Url from '~/components/URLScheme.vue'
@@ -96,6 +100,7 @@ export default {
   computed: {
     ...mapGetters({
       socket: GET_SOCKET,
+      device: GET_DEVICE,
     })
   },
   mounted() {
