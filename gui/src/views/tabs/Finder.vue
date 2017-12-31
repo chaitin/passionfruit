@@ -76,7 +76,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { GET_SOCKET, FINDER_ROOT } from '~/vuex/types'
 import FileViewer from '~/components/FileViewer.vue'
-import { download } from '~/lib/utils'
+import { download, save } from '~/lib/utils'
 
 
 const FILE_TYPE_MAPPING = {
@@ -114,12 +114,7 @@ export default {
     view(type) {
       if (type === 'download') {
         let { name } = this.selected
-        download(this.socket, this.selected).then(url => {
-          let link = document.createElement('a')
-          link.setAttribute('href', url)
-          link.setAttribute('download', name)
-          link.click()
-        })
+        download(this.socket, this.selected).then(save(name))
         return
       }
 

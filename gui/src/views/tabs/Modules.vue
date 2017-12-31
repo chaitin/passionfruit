@@ -62,7 +62,7 @@
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
 import { AsyncSearch, debounce } from '~/lib/utils'
-import { download } from '~/lib/utils'
+import { download, save } from '~/lib/utils'
 
 import LoadingTab from '~/components/LoadingTab.vue'
 import Functions from '~/components/Functions.vue'
@@ -96,12 +96,7 @@ export default {
           type: 'is-success',
           onConfirm: () => {
             setImmediate(() => {
-              download(this.socket, { path }).then(url => {
-                let link = document.createElement('a')
-                link.setAttribute('href', url)
-                link.setAttribute('download', name)
-                link.click()
-              })
+              download(this.socket, { path }).then(save(name))
             })
           }
         })

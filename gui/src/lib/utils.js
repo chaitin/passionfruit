@@ -85,3 +85,12 @@ export function download(socket, file, mime) {
     })
   })
 }
+
+export function save(name) {
+  return url => {
+    let link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', name)
+    link.click()
+  }
+}
