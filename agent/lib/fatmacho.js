@@ -10,7 +10,7 @@ const cpuType = {
   0x8000000a: 'ppc_64',
 }
 
-export function parse(data) {
+export default function parse(data) {
   const u32 = x => data.readUInt32BE(x)
   const magic = u32(0)
   if (magic !== CAFEBABE)
@@ -24,16 +24,14 @@ export function parse(data) {
     const size = u32(cursor + 8)
     const align = u32(cursor + 12)
 
-    if (offset === 0 || size === 0)
-      continue
-
-    cmds.push({
-      arch: cpuType[cpu] || 'N/A',
-      cpu,
-      offset,
-      size,
-      align
-    })
+    if (offset && size)
+      cmds.push({
+        arch: cpuType[cpu] || 'N/A',
+        cpu,
+        offset,
+        size,
+        align,
+      })
   }
 
   return cmds
