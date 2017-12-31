@@ -11,34 +11,33 @@ module.exports = {
   },
   module: {
     rules: [{
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {}
-          // other vue-loader options go here
-        }
-      },
-      {
-        test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.(png|jpg|gif|svg|eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
+      test: /\.vue$/,
+      loader: 'vue-loader',
+      options: {
+        loaders: {}
+        // other vue-loader options go here
       }
-    ]
+    },
+    {
+      test: /\.scss$/,
+      use: ['style-loader', 'css-loader', 'sass-loader']
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    },
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      exclude: /node_modules/
+    },
+    {
+      test: /\.(png|jpg|gif|svg|eot|svg|ttf|woff|woff2)$/,
+      loader: 'file-loader',
+      options: {
+        name: '[name].[ext]?[hash]'
+      }
+    }]
   },
   resolve: {
     alias: {
@@ -49,18 +48,23 @@ module.exports = {
   devServer: {
     historyApiFallback: {
       rewrites: [{
-          from: /^\/app\/.*$/,
-          to: function() {
-            return 'index.html';
-          }
-        },
-        {
-          from: /^\/welcome\/.*$/,
-          to: function() {
-            return 'index.html';
-          }
+        from: /^\/app\/.*$/,
+        to: function() {
+          return 'index.html'
         }
-      ]
+      },
+      {
+        from: /^\/welcome\/.*$/,
+        to: function() {
+          return 'index.html'
+        }
+      },
+      {
+        from: /^\/url\/.*$/,
+        to: function() {
+          return 'index.html'
+        }
+      }]
     },
     noInfo: true,
     proxy: {

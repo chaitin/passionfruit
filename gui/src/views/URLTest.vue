@@ -57,9 +57,13 @@ export default {
       storeSocket: STORE_SOCKET,
     }),
     createSocket() {
-      let { device } = this.$route.params
+      let { device, scheme } = this.$route.params
       this.device = device
       this.loading = true
+
+      if (scheme)
+        this.scheme = scheme
+
       return io('/springboard', { path: '/msg', query: { device } })
         .on('disconnect', () => {
           this.$toast.open(`disconnected from ${device}`)
@@ -81,7 +85,6 @@ export default {
       this.schemes = await this.socket.call('urls')
     },
     async open() {
-      console.log(`${this.scheme}://${this.url}`)
       await this.socket.call('uiopen', `${this.scheme}://${this.url}`)
     }
   },
