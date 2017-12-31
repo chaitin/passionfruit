@@ -8,6 +8,7 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 * Also supports non-jailbroken device.
 * List all url schemes.
 * List human readable app meta info (Info.plist).
+* Capture screenshot.
 * Checksec: see if target app is encrypted, and has enabled PIE, ARC and stack canary.
 * App sandbox file browser. Directly preview images, SQLite databases and plist files on device. You can always download the file for further investigation.
 * Check the loaded frameworks. Hook exported native functions from these dylib to print the arguments and stack trace.

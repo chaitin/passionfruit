@@ -3,6 +3,8 @@ import imports from './app/imports'
 import cookies from './app/binarycookie'
 import keychain from './app/keychain'
 import dumpdecrypted from './app/dumpdecrypted'
+import screenshot from './app/screenshot'
+
 
 import { info, userDefaults } from './app/info'
 import { classes, ownClasses, methods, inspect } from './app/classdump'
@@ -66,4 +68,5 @@ rpc.exports = {
   unswizzle,
 
   dumpdecrypted,
+  screenshot,
 }

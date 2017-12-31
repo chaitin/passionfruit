@@ -29,6 +29,9 @@
               </div>
             </li>
           </ul>
+
+          <a class="button is-small" @click="screenshot"><b-icon icon="camera"
+            title="Capture screen"></b-icon></a>
         </nav>
 
         <div class="level-right">
@@ -197,10 +200,19 @@ export default {
           this.loading = false
           this.connected = true
         })
+        .on('screenshot', buffer => console.log('screenshot', buffer))
         .on('err', err => {
           this.err = err
           this.loading = false
         })
+    },
+    async screenshot() {
+      const b64 = await this.socket.call('screenshot')
+      const url = `data:image/png;base64,${b64}`
+      let link = document.createElement('a')
+      link.setAttribute('href', url)
+      link.setAttribute('download', name)
+      link.click()
     },
     rejectionHandler(event) {
       event.preventDefault()
