@@ -1,5 +1,12 @@
 <template>
   <div>
+    <b-modal :active="isDownloading" :width="640" scroll="keep" :canCancel="false">
+      <article class="download-progress">
+        <loading></loading>
+        <strong>Preparing {{ downloadProgress }}%</strong>
+      </article>
+    </b-modal>
+
     <header class="hero">
       <div class="level container is-fluid">
         <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
@@ -133,13 +140,15 @@ import { AsyncSearch, debounce } from '~/lib/utils'
 import {
   GET_SOCKET, STORE_SOCKET,
   CONSOLE_UNREAD, CONSOLE_APPEND, CONSOLE_CLEAR,
+  DOWNLOADING, PROGRESS,
   ALL_HOOKS, DELETE_HOOK,
 } from '~/vuex/types'
 
+import Loading from '~/components/Loading.vue'
 import Icon from '~/components/Icon.vue'
 
 export default {
-  components: { Icon },
+  components: { Icon, Loading },
   watch: {
     app(val, old) {
       if (val.name)
@@ -151,6 +160,8 @@ export default {
       socket: GET_SOCKET,
       hooks: ALL_HOOKS,
       unreadMessage: CONSOLE_UNREAD,
+      isDownloading: DOWNLOADING,
+      downloadProgress: PROGRESS,
     })
   },
   methods: {
@@ -285,6 +296,18 @@ ul.hooks {
       background: #efefef;
       color: #222;
     }
+  }
+}
+
+.download-progress {
+  margin: auto;
+  color: #fff;
+  text-align: center;
+
+  strong {
+    color: #fff;
+    font-size: 24px;
+    font-weight: normal;
   }
 }
 </style>

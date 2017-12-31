@@ -2,6 +2,10 @@ import socketStream from 'socket.io-stream'
 
 const SearchWorker = require('worker-loader!./worker.js')
 
+import { DOWNLOADING, SET_DOWNLOAD_TOTAL, UPDATE_BYTES } from '~/vuex/types'
+import state from '~/vuex'
+
+
 export class AsyncSearch {
   constructor(list, key) {
     this.key = key
@@ -58,15 +62,24 @@ export function humanFileSize(size) {
 export function download(socket, file, mime) {
   const { path } = file
 
-  return socket.call('download', path).then(({ session }) => {
+  if (state.getters[DOWNLOADING])
+    return Promise.reject('only one task allowed at the same time')
+
+  return socket.call('download', path).then(({ session, size }) => {
     const dest = socketStream.createStream()
     const parts = []
+    state.commit(DOWNLOADING, true)
+    state.commit(SET_DOWNLOAD_TOTAL, size)
     socketStream(socket).emit('download', dest, { session })
 
     return new Promise((resolve, reject) => {
-      dest.on('data', data => parts.push(data)).on('end', () => {
+      dest.on('data', chunk => {
+        state.commit(UPDATE_BYTES, chunk.length)
+        parts.push(chunk)
+      }).on('end', () => {
         const blob = new Blob(parts, { type: mime || 'octet/stream' })
         let url = URL.createObjectURL(blob)
+        state.commit(DOWNLOADING, false)
         resolve(url)
       }).on('error', reject)
     })

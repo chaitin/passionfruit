@@ -114,7 +114,6 @@ export default {
       } finally {
         this.loading = false
       }
-      // todo: download
     },
     openDetail(mod, index) {
       if (mod.detailed)
