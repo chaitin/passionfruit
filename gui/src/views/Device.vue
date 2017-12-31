@@ -87,7 +87,7 @@
             </b-table-column>
 
             <b-table-column field="name" label="Name" sortable>
-              <router-link :to="{ name: 'inspect', params: { device: device.id, bundle: props.row.identifier } }">{{ props.row.name }}</router-link>
+              <router-link :to="{ name: 'general', params: { device: device.id, bundle: props.row.identifier } }">{{ props.row.name }}</router-link>
             </b-table-column>
 
             <b-table-column field="identifier" label="Bundle ID" sortable>

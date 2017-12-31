@@ -1,7 +1,14 @@
 <template>
   <div class="container">
     <section>
-      <h1>URL Launcher</h1>
+      <h1>
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+          <ul>
+            <li><a href="/"><b-icon icon="home"></b-icon><span>Passionfruit</span></a></li>
+            <li class="is-active"><a>Url Launcher</a></li>
+          </ul>
+        </nav>
+      </h1>
       <b-field>
         <b-select class="prefix" placeholder="Select a scheme" icon="home" tabindex="1" v-model="scheme">
           <optgroup label="Public">
@@ -13,11 +20,21 @@
               :key="index">{{ url }}://</option>
           </optgroup>
         </b-select>
-        <b-input placeholder="" expanded tabindex="2" v-model="url"></b-input>
+        <b-input placeholder="" expanded tabindex="2" v-model="url"
+          @keyup.enter="open" :disabled="!connected"></b-input>
         <p class="control">
-          <button class="button is-success" @click="open">Start</button>
+          <button class="button is-success" @click="open" :disabled="!connected">Start</button>
         </p>
       </b-field>
+
+      <ul>
+        <li v-for="(item, index) in history" :key="index">
+          <a href="#" @click="start(item)">{{ item }}</a></li>
+      </ul>
+
+      <b-message title="Error" type="is-warning" v-show="err">
+        {{ err }}            
+      </b-message>
     </section>
   </div>
 </template>
@@ -37,25 +54,39 @@ export default {
         'private': [],
         'public': [],
       },
+      history: [],
       scheme: '',
       url: '',
       device: '',
       loading: false,
       socket: null,
+
+      connected: false,
+      err: null,
     }
   },
   mounted() {
     const socket = this.socket = this.createSocket()
     this.storeSocket(socket)
+    window.addEventListener('unhandledrejection', this.rejectionHandler)
   },
   beforeDestroy() {
     if (this.socket)
       this.socket.call('detach')
+    window.removeEventListener('unhandledrejection', this.rejectionHandler)
   },
   methods: {
     ...mapMutations({
       storeSocket: STORE_SOCKET,
     }),
+    rejectionHandler(event) {
+      event.preventDefault()
+      this.$toast.open({
+        duration: 10 * 1000,
+        message: event.reason,
+        type: 'is-danger',
+      })
+    },
     createSocket() {
       let { device, scheme } = this.$route.params
       this.device = device
@@ -78,6 +109,7 @@ export default {
         })
         .on('err', err => {
           this.err = err
+          this.connected = false
           this.loading = false
         })
     },
@@ -85,8 +117,13 @@ export default {
       this.schemes = await this.socket.call('urls')
     },
     async open() {
-      await this.socket.call('uiopen', `${this.scheme}://${this.url}`)
-    }
+      const url = [this.scheme, encodeURIComponent(this.url)].join('://')
+      this.history.push(url)
+      return this.start(url)
+    },
+    async start(url) {
+      return this.socket.call('uiopen', url)
+    },
   },
 }
 </script>
