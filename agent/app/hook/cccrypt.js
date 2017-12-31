@@ -14,124 +14,139 @@ const CCAlgorithm = [
 const subject = 'crypto'
 const now = () => (new Date()).getTime()
 
-// CCCryptorStatus
-// CCCryptorCreate(CCOperation op, CCAlgorithm alg, CCOptions options,
-//     const void *key, size_t keyLength, const void *iv,
-//     CCCryptorRef *cryptorRef);
+const handlers = {
+  // CCCryptorStatus
+  // CCCryptorCreate(CCOperation op, CCAlgorithm alg, CCOptions options,
+  //     const void *key, size_t keyLength, const void *iv,
+  //     CCCryptorRef *cryptorRef);
 
-Interceptor.attach(Module.findExportByName(null, 'CCCryptorCreate'), {
-  onEnter(args) {
-    const op = args[0].toInt32()
-    const alg = args[1].toInt32()
-    // const options = args[2].toInt32()
-    const key = args[3]
-    const keyLength = args[4].toInt32()
-    const iv = args[5]
+  CCCryptorCreate: {
+    onEnter(args) {
+      const op = args[0].toInt32()
+      const alg = args[1].toInt32()
+      // const options = args[2].toInt32()
+      const key = args[3]
+      const keyLength = args[4].toInt32()
+      const iv = args[5]
 
-    const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-    const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+      const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+      const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-    const time = now()
-    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
-      .map(DebugSymbol.fromAddress).filter(e => e.name)
+      const time = now()
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
 
-    let operation = CCOperation[op]
-    if (operation === 'kCCEncrypt')
-      operation = 'encrypt'
-    else if (operation === 'kCCDecrypt')
-      operation = 'decrypt'
-    else
-      console.error('unknown operation', op)
+      let operation = CCOperation[op]
+      if (operation === 'kCCEncrypt')
+        operation = 'encrypt'
+      else if (operation === 'kCCDecrypt')
+        operation = 'decrypt'
+      else
+        console.error('unknown operation', op)
 
-    send({
-      subject,
-      func: 'CCCryptorCreate',
-      event: operation,
-      arguments: {
-        operation,
-        algorithm: CCAlgorithm[alg].name,
-        key: strKey,
-        iv: strIV,
-      },
-      time,
-      backtrace,
-    })
+      send({
+        subject,
+        func: 'CCCryptorCreate',
+        event: operation,
+        arguments: {
+          operation,
+          algorithm: CCAlgorithm[alg].name,
+          key: strKey,
+          iv: strIV,
+        },
+        time,
+        backtrace,
+      })
+    },
   },
-})
 
+  // CCCryptorStatus
+  // CCCrypt(CCOperation op, CCAlgorithm alg, CCOptions options,
+  //     const void *key, size_t keyLength, const void *iv,
+  //     const void *dataIn, size_t dataInLength, void *dataOut,
+  //     size_t dataOutAvailable, size_t *dataOutMoved);
 
-// CCCryptorStatus
-// CCCrypt(CCOperation op, CCAlgorithm alg, CCOptions options,
-//     const void *key, size_t keyLength, const void *iv,
-//     const void *dataIn, size_t dataInLength, void *dataOut,
-//     size_t dataOutAvailable, size_t *dataOutMoved);
+  CCCrypt: {
+    onEnter(args) {
+      const op = args[0].toInt32()
+      const alg = args[1].toInt32()
+      // const options = args[2].toInt32()
+      const key = args[3]
+      const keyLength = args[4].toInt32()
+      const iv = args[5]
+      const dataIn = args[6]
+      const dataInLength = args[7].toInt32()
+      const dataOut = args[8]
+      const dataOutAvailable = args[9]
+      const dataOutMoved = args[10]
 
-Interceptor.attach(Module.findExportByName(null, 'CCCrypt'), {
-  onEnter(args) {
-    const op = args[0].toInt32()
-    const alg = args[1].toInt32()
-    // const options = args[2].toInt32()
-    const key = args[3]
-    const keyLength = args[4].toInt32()
-    const iv = args[5]
-    const dataIn = args[6]
-    const dataInLength = args[7].toInt32()
-    const dataOut = args[8]
-    const dataOutAvailable = args[9]
-    const dataOutMoved = args[10]
+      this.dataOut = dataOut
+      this.dataOutAvailable = dataOutAvailable
+      this.dataOutMoved = dataOutMoved
 
-    this.dataOut = dataOut
-    this.dataOutAvailable = dataOutAvailable
-    this.dataOutMoved = dataOutMoved
+      const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
+      const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-    const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-    const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+      const strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
 
-    const strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
+      const time = now()
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
 
-    const time = now()
-    const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
-      .map(DebugSymbol.fromAddress).filter(e => e.name)
+      let operation = CCOperation[op]
+      if (operation === 'kCCEncrypt')
+        operation = 'encrypt'
+      else if (operation === 'kCCDecrypt')
+        operation = 'decrypt'
+      else
+        console.error('unknown operation', op)
 
-    let operation = CCOperation[op]
-    if (operation === 'kCCEncrypt')
-      operation = 'encrypt'
-    else if (operation === 'kCCDecrypt')
-      operation = 'decrypt'
-    else
-      console.error('unknown operation', op)
+      this.operation = operation
+      send({
+        subject,
+        event: operation,
+        arguments: {
+          operation,
+          algorithm: CCAlgorithm[alg].name,
+          key: strKey,
+          iv: strIV,
+          in: strDataIn,
+        },
+        time,
+        backtrace,
+      })
+    },
+    onLeave(retVal) {
+      if (retVal.toInt32() !== 0)
+        return
 
-    this.operation = operation
-    send({
-      subject,
-      event: operation,
-      arguments: {
-        operation,
-        algorithm: CCAlgorithm[alg].name,
-        key: strKey,
-        iv: strIV,
-        in: strDataIn,
-      },
-      time,
-      backtrace,
-    })
+      const time = now()
+      const { dataOut, dataOutMoved, operation } = this
+      const len = Memory.readUInt(dataOutMoved)
+      const strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
+
+      send({
+        subject,
+        event: operation,
+        arguments: {
+          out: strDataOut,
+        },
+        time,
+      })
+    },
   },
-  onLeave(retVal) {
-    if (retVal.toInt32() !== 0)
-      return
+}
 
-    const time = now()
-    const { dataOut, dataOutMoved, operation } = this
-    const len = Memory.readUInt(dataOutMoved)
-    const strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
 
-    send({
-      subject,
-      event: operation,
-      arguments: {
-        out: strDataOut,
-      },
-      time,
-    })
-  },
-})
+let hooks = []
+export default function toggle(on) {
+  if (on && !hooks.length)
+    for (const func in handlers)
+      if (({}).hasOwnProperty.call(handlers, func))
+        hooks.push(Interceptor.attach(Module.findExportByName(null, func), handlers[func]))
+
+  if (!on && hooks.length) {
+    hooks.forEach(hook => hook.detach())
+    hooks = []
+  }
+}
