@@ -19,7 +19,7 @@
     <div class="columns">
       <div class="column is-three-quarter">
         <b-table class="fixed finder" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
-          <template scope="props">
+          <template slot-scope="props">
             <b-table-column field="name" label="Name" sortable class="ellipsis">
               <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
               <b-icon icon="insert_drive_file" v-else></b-icon>

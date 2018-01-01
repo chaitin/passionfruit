@@ -2,7 +2,7 @@
   <div class="keychain">
 
     <b-table :data="list" narrowed hasDetails :loading="loading" default-sort="clazz" detailed>
-      <template scope="props">
+      <template slot-scope="props">
         <b-table-column field="clazz" label="Class" sortable width="120">
           <b-tag>{{ props.row.clazz | trim('kSecClass') }}</b-tag>
         </b-table-column>
@@ -20,7 +20,7 @@
         </b-table-column>
       </template>
 
-      <template slot="detail" scope="props">
+      <template slot="detail" slot-scope="props">
         <article>
           <ul class="keychain-attributes">
             <li v-for="(title, key) in columns" :key="key">

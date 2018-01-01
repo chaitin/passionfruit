@@ -73,7 +73,7 @@
 
         <b-table v-else :data="apps" :narrowed="isSmallIcon" :hasDetails="false" :loading="loadingApps" default-sort="name">
 
-          <template scope="props">
+          <template slot-scope="props">
             <b-table-column field="smallIcon" width="16" label="" v-show="isSmallIcon">
               <icon :icon="props.row.smallIcon"></icon>
             </b-table-column>

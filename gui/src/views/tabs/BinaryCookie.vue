@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-table class="column fixed" :data="cookies" narrowed :loading="loading" default-sort="name">
-      <template scope="props">
+      <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="160">
           <span class="break-all">{{ props.row.name }}</span>
         </b-table-column>

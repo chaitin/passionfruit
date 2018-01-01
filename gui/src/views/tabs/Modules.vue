@@ -11,7 +11,7 @@
     </b-field>
 
     <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
-      <template scope="props">
+      <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           <b-tooltip label="Dump decrypted">
             <a class="button is-small is-dark" @click="dump(props.row.name)">
@@ -22,7 +22,7 @@
         </b-table-column>
 
         <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
-          0x{{ props.row.baseAddress.value.toString(16) }}
+          0x{{ props.row.baseAddress.toString(16) }}
         </b-table-column>
 
         <b-table-column field="size" label="Size" class="monospace" sortable width="120">
@@ -34,7 +34,7 @@
         </b-table-column>
       </template>
 
-      <template slot="detail" scope="props">
+      <template slot="detail" slot-scope="props">
         <loading-tab v-if="props.row.loading"></loading-tab>
 
         <div class="content" v-if="props.row.imports">

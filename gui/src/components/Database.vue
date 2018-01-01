@@ -20,7 +20,7 @@
 
       <div class="overflow">
         <b-table :data="rows" v-if="table" bordered striped narrowed sortable :loading="loading">
-          <template scope="props">
+          <template slot-scope="props">
             <template v-for="(hdr, index) in columns">
               <b-table-column :field="hdr[1]" :label="hdr[1]" :key="index">
                 <template>{{ props.row[index] }}</template>
