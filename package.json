@@ -51,7 +51,8 @@
   "dependencies": {
     "base64-js": "^1.2.1",
     "eslint": "^4.8.0",
-    "frida": "^10.6.3",
+    "frida": "^10.6.29",
+    "frida-compile": "^5.1.0",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compress": "^2.0.0",
@@ -64,8 +65,7 @@
     "promise.prototype.finally": "^3.0.0",
     "socket.io": "^2.0.3",
     "socket.io-stream": "^0.9.1",
-    "sqlite3": "^3.1.9",
-    "frida-compile": "^5.1.0"
+    "sqlite3": "^3.1.13"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
