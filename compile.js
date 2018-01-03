@@ -7,7 +7,7 @@ const tasks = [
 
 const watch = process.argv.indexOf('watch') > -1
 const opt = {
-  bytecode: !watch,
+  bytecode: false,
   compress: !watch,
   babelify: true,
 }
