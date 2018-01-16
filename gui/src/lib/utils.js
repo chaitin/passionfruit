@@ -59,6 +59,15 @@ export function humanFileSize(size) {
 }
 
 
+export function hexAddr(addr) {
+  try {
+    return '0x' + parseInt(addr, 10).toString(16)
+  } catch(ex) {
+    return 'N/A'
+  }
+}
+
+
 export function download(socket, file, mime) {
   const { path } = file
 

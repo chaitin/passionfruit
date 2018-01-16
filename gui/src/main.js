@@ -7,7 +7,7 @@ import axios from 'axios'
 import App from '~/App.vue'
 import router from '~/router'
 import store from '~/vuex'
-import { humanFileSize } from '~/lib/utils'
+import { humanFileSize, hexAddr } from '~/lib/utils'
 
 
 import 'material-design-icons/iconfont/material-icons.css'
@@ -21,6 +21,7 @@ axios.defaults.baseURL = '/api'
 
 Vue.use(Buefy)
 Vue.filter('filesize', humanFileSize)
+Vue.filter('hex', hexAddr)
 
 
 const v = new Vue({
