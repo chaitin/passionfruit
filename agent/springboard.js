@@ -5,7 +5,7 @@ const {
   SBLockScreenManager,
   SBApplicationController,
   SBUIController,
-  
+
   LSApplicationWorkspace,
   NSURL,
 } = ObjC.classes
@@ -28,8 +28,8 @@ rpc.exports = {
 
   urls() {
     return {
-      'public': arrayFromNSArray(workspace.publicURLSchemes()),
-      'private': arrayFromNSArray(workspace.privateURLSchemes()),
+      public: arrayFromNSArray(workspace.publicURLSchemes()),
+      private: arrayFromNSArray(workspace.privateURLSchemes()),
     }
   },
 
