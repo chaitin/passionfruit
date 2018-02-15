@@ -4,8 +4,8 @@ Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida
 
 ## Features
 
-* **Fully web based GUI!**
-* Also supports non-jailbroken device.
+* **Cross plarform web GUI!**
+* Also supports non-jailbroken device (see [Non-jailbroken device](#non-jailbroken-device)).
 * List all url schemes.
 * List human readable app meta info (Info.plist).
 * Capture screenshot.
@@ -54,36 +54,57 @@ KeyChain reader.
 
 ## Setup
 
-Requirements:
+### Desktop requirements:
 
-* Latest [node.js](https://nodejs.org/) (>=7.10.1) and [yarn](https://yarnpkg.com/) (or [npm](https://www.npmjs.com) if you prefer) to run the api server and web gui
+* Latest [node.js](https://nodejs.org/) (>=7.10.1) and [npm](https://www.npmjs.com) to run the api server and web gui
 * Any modern desktop browser you like
 
-### Jailbroken Device
+Passionfruit is now avaliable on npm, so just type following command to install:
+
+```shell
+npm install -g passionfruit
+```
+
+Then launch it:
+
+```shell
+passionfruit
+```
+
+Note that if the port 31337 is in use, set environment variable `PORT` to use an alternative port. Also, setting `HOST` can force to listen on an alternative interface, but be careful because it has no authentication yet: 
+
+```
+HOST=192.168.1.100 PORT=12345 passionfruit
+```
+
+### Device setup:
+
+#### Jailbroken Device
 
 See https://www.frida.re/docs/ios/
 
 > Start `Cydia` and add Frida’s repository by going to `Manage` -> `Sources` -> `Edit` -> `Add` and enter `https://build.frida.re`. You should now be able to find and install the `Frida` package which lets Frida inject JavaScript into apps running on your iOS device. This happens over USB, so you will need to have your USB cable handy, though there’s no need to plug it in just yet.
 
-### Non-jailbroken Device
+#### Non-jailbroken Device
 
 Official documentation of frida.re (linked above) also introduces how to inject [FridaGadget.dylib](https://build.frida.re/frida/ios/lib/FridaGadget.dylib) to the ipa, requires repack and resign.
 
 Here are some articles about how to do so:
 
 * [MonkeyDev/wiki/非越狱App集成#集成frida](https://github.com/AloneMonkey/MonkeyDev/wiki/%E9%9D%9E%E8%B6%8A%E7%8B%B1App%E9%9B%86%E6%88%90#集成frida)（Chinese)
+* https://github.com/tanprathan/Fridpa
 * https://www.nccgroup.trust/uk/about-us/newsroom-and-events/blogs/2016/october/ios-instrumentation-without-jailbreak/
 
-### Starting the WebUI
+## Development setup
 
-This is the easiest way to start if you don't want to modify the project.
+Clone this project and install requirements:
 
-* Open the terminal and `cd` into the project directory.
-* If it is the first time you cloned this project, you need to install npm dependencies and build the frontend. Run `npm install` or `yarn` for the node.js requirements on the first time. Then `npm run build` (or `yarn run build`) to build the bundle.
-* Then use `npm start` or `yarn start`
-* Open `http://localhost:31337` in your browser. If the port 31337 is in use, set environment variable `PORT` to use an alternative port. Also, setting `HOST` can force to listen on an alternative interface, but be careful because it has no authentication yet: `HOST=192.168.1.100 PORT=12345 npm start`
-
-### Development (optional)
+```shell
+git clone https://github.com/chaitin/passionfruit.git
+npm install
+cd gui
+npm install
+```
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
 
@@ -108,23 +129,23 @@ Frida agent needs to be compiled at the first time: `npm run build`
 
 If you need livereload like webpack, use `npm run watch`.
 
-
-
-Now open localhost:8080 in browser.
+Now open `http://localhost:8080` in browser.
 
 ## FAQ
 
-### Why `npm start` is complaining about syntax error?
+### Why node.js is complaining about syntax error?
 
 This project uses the lastest ECMAScript feature in server side. You need nodejs v7.10.1 at least, but v8.x and above is recommended. I've got some users reporting that yarn is not compatible with lower nodejs version.
 
 ### "Device is not an iOS device, or you have not installed frida on it"
 
-Make sure you have frida.re successfully installed. See the links above. Also, check if the version on of frida on device matches.
+Make sure you have frida.re successfully installed. Also, check if the version on of frida on device matches. Frida offers both 32bit and 64bit version, wrong architecture will not work. 
 
 ### Have problem with `npm install/build`?
 
 Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/).
+
+All npm command mentioned above can be replaced with [yarn](https://yarnpkg.com/), if you prefer.
 
 Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install ; npm run build`.
 
