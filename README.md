@@ -5,6 +5,13 @@
 
 Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida.re) and [vuejs](https://www.vuejs.org).
 
+## TL;DR
+
+```shell
+npm install -g passionfruit
+passionfruit
+```
+
 ## Features
 
 * **Cross plarform web GUI!**
