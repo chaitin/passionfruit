@@ -88,7 +88,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   app.use(async (ctx, next) => {
     const opt = { root: path.join(__dirname, 'gui') }
-    if (ctx.path.startsWith('/dist/'))
+    if (ctx.path.startsWith('/static/'))
       await send(ctx, ctx.path, opt)
     else // SPA
       await send(ctx, '/index.html', opt)
