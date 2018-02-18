@@ -13,14 +13,18 @@ import { ls, home, plist, text, download } from './app/finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './app/ui'
 import { hook, unhook, swizzle, unswizzle } from './app/hook'
 
-/*
 
-disable to default hooks speed up
+// todo: add options
 
 require('./jailbreak') // try bypass jailbreak
 require('./pasteboard') // monitor pasteboard
 
 toggleTouchID(false)
+
+/*
+
+disable to default hooks speed up
+
 // hook('libSystem.B.dylib', 'open', { args: ['char *', 'int']})
 
 hook('libsqlite3.dylib', 'sqlite3_open', { args: ['char *', 'int'], ret: 'int' })
