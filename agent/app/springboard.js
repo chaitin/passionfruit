@@ -1,4 +1,4 @@
-import { arrayFromNSArray } from './app/lib/nsdict'
+import { arrayFromNSArray } from './lib/nsdict'
 
 const {
   SBBacklightController,

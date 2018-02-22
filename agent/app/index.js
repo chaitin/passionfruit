@@ -1,17 +1,17 @@
-import checksec from './app/checksec'
-import imports from './app/imports'
-import cookies from './app/binarycookie'
-import keychain from './app/keychain'
-import dumpdecrypted from './app/dumpdecrypted'
-import screenshot from './app/screenshot'
+import checksec from './checksec'
+import imports from './imports'
+import cookies from './binarycookie'
+import keychain from './keychain'
+import dumpdecrypted from './dumpdecrypted'
+import screenshot from './screenshot'
 
 
-import { info, userDefaults } from './app/info'
-import { classes, ownClasses, methods, inspect } from './app/classdump'
-import { tables, data, query } from './app/sqlite'
-import { ls, home, plist, text, download } from './app/finder'
-import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './app/ui'
-import { hook, unhook, swizzle, unswizzle } from './app/hook'
+import { info, userDefaults } from './info'
+import { classes, ownClasses, methods, inspect } from './classdump'
+import { tables, data, query } from './sqlite'
+import { ls, home, plist, text, download } from './finder'
+import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
+import { hook, unhook, swizzle, unswizzle } from './hook'
 
 
 // todo: add options

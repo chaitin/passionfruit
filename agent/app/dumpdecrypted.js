@@ -33,7 +33,7 @@ function dump(name) {
   const matches = headers.cmds.filter(cmd => /^encryption_info_(32|64)$/.test(cmd.type) && cmd.id === 1) 
   if (!matches.length)
     throw new Error(`Module ${name} is not encrypted`)
-    
+
   const encryptionInfo = matches.pop()
   const fd = open(Memory.allocUtf8String(module.path), O_RDONLY, 0)
   if (fd == -1)
@@ -67,7 +67,7 @@ function dump(name) {
   write(outfd, module.base.add(encryptionInfo.fileoff), encryptionInfo.size)
 
   close(outfd)
-  
+
   return tmp
 }
 

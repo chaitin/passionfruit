@@ -1,6 +1,6 @@
 {
   "name": "passionfruit",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Inject to iOS App",
   "main": "app.js",
   "engines": {
@@ -32,8 +32,8 @@
     "init": "npm install && cd gui && npm install",
     "build": "npm run compile && cd gui && npm run build",
     "prepublish": "npm run build",
-    "compile": "node compile.js compile",
-    "watch": "node compile.js watch"
+    "compile": "node scripts/compile.js compile",
+    "watch": "node scripts/compile.js watch"
   },
   "repository": {
     "type": "git",
