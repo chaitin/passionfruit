@@ -108,6 +108,11 @@ process.on('unhandledRejection', (err) => {
   console.error('An unhandledRejection occurred: ')
   console.error(`Rejection: ${err}`)
   console.error(err.stack)
+
+  channels.broadcast('unhandledRejection', {
+    err: err.toString(),
+    stack: err.stack,
+  })
 })
 
 module.exports = app
