@@ -81,7 +81,7 @@ Then launch it:
 passionfruit
 ```
 
-Note that if the port 31337 is in use, set environment variable `PORT` to use an alternative port. Also, setting `HOST` can force to listen on an alternative interface, but be careful because it has no authentication yet: 
+Note that if the port 31337 is in use, set environment variable `PORT` to use an alternative port. Also, setting `HOST` can force to listen on an alternative interface, but be careful because it has no authentication yet:
 
 ```
 HOST=192.168.1.100 PORT=12345 passionfruit
@@ -135,7 +135,7 @@ npm run dev
 
 #### Frida script compiler
 
-Frida agent needs to be compiled at the first time: `npm run build`
+Frida agent needs to be compiled at the first time: `npm run prepare`
 
 If you need livereload like webpack, use `npm run watch`.
 
@@ -149,15 +149,15 @@ This project uses the lastest ECMAScript feature in server side. You need nodejs
 
 ### "Device is not an iOS device, or you have not installed frida on it"
 
-Make sure you have frida.re successfully installed. Also, check if the version on of frida on device matches. Frida offers both 32bit and 64bit version, wrong architecture will not work. 
+Make sure you have frida.re successfully installed. Also, check if the version on of frida on device matches. Frida offers both 32bit and 64bit version, wrong architecture will not work.
 
-### Have problem with `npm install/build`?
+### Have problem with `npm install`?
 
 Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/).
 
 All npm command mentioned above can be replaced with [yarn](https://yarnpkg.com/), if you prefer.
 
-Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install ; npm run build`.
+Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install`.
 
 ## LICENCE
 
