@@ -121,7 +121,6 @@ For those who wants to contribute, you may probably need to restart the api serv
 #### API server
 
 ```shell
-yarn
 npm run dev
 ```
 
@@ -129,15 +128,22 @@ npm run dev
 
 ```shell
 cd gui
-yarn
 npm run dev
 ```
 
 #### Frida script compiler
 
-Frida agent needs to be compiled at the first time: `npm run prepare`
+Frida agent needs to be compiled at the first time:
 
-If you need livereload like webpack, use `npm run watch`.
+```shell
+npm run prepare
+```
+
+If you need livereload like webpack, use:
+
+```shell
+npm run watch
+```
 
 Now open `http://localhost:8080` in browser.
 
