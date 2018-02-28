@@ -115,6 +115,7 @@ npm install
 cd gui
 npm install
 ```
+Known issues https://github.com/chaitin/passionfruit/issues/17 
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
 
