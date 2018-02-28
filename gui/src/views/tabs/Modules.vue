@@ -10,7 +10,7 @@
       </b-select>
     </b-field>
 
-    <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="name" detailed @details-open="openDetail">
+    <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" detailed @details-open="openDetail">
       <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           <b-tooltip label="Dump decrypted">
@@ -29,9 +29,10 @@
           {{ props.row.size }}
         </b-table-column>
 
-        <b-table-column field="path" label="Path" class="break-all">
+        <b-table-column field="path" label="Path" class="monospace" sortable >
           {{ props.row.path }}
         </b-table-column>
+
       </template>
 
       <template slot="detail" slot-scope="props">

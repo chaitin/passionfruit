@@ -1,0 +1,32 @@
+modules
+
+后台返回数据如下：
+
+[ FunctionContainer {
+    name: 'WeChat',
+    baseAddress: [Integer],
+    size: 56000512,
+    path: '/var/containers/Bundle/Application/993204A8-69C7-49B8-8516-0898C3B20E00/WeChat.app/WeChat',
+    [Symbol(exportsPromise)]: null,
+    [Symbol(functionsInitialized)]: false },
+  FunctionContainer {
+    name: 'MobileSubstrate.dylib',
+    baseAddress: [Integer],
+    size: 16384,
+    path: '/Library/MobileSubstrate/MobileSubstrate.dylib',
+    [Symbol(exportsPromise)]: null,
+    [Symbol(functionsInitialized)]: false },
+  FunctionContainer {
+    name: 'Intents',
+    baseAddress: [Integer],
+    size: 1404928,
+    path: '/System/Library/Frameworks/Intents.framework/Intents',
+    [Symbol(exportsPromise)]: null,
+    [Symbol(functionsInitialized)]: false },
+  FunctionContainer {
+    name: 'libbz2.1.0.dylib',
+    baseAddress: [Integer],
+    size: 69632,
+    path: '/usr/lib/libbz2.1.0.dylib',
+    [Symbol(exportsPromise)]: null,
+    [Symbol(functionsInitialized)]: false },
