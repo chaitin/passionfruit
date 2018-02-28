@@ -165,6 +165,10 @@ All npm command mentioned above can be replaced with [yarn](https://yarnpkg.com/
 
 Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install`.
 
+### "Error: Ambiguous name; it matches: ..."
+
+The app you're trying to attach has multiple processes, and frida couldn't decide which one to inject. You can try terminate the app via device gesture.
+
 ## LICENCE
 
 MIT

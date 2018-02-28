@@ -192,6 +192,16 @@ export default {
           this.connected = false
           this.loading = false
         })
+        .on('unhandledRejection', ({ err, stack }) => {
+          if (this.loading) {
+            this.$toast.open(`disconnected from ${bundle}`)
+            this.connected = false
+            this.loading = false
+            this.err = err
+          } else {
+            this.$toast.open(`an exception has occured: ${err}`)
+          }
+        })
         .on('console', this.consoleAppend)
         .on('connect', () => this.err = null)
         .on('device', dev => this.device = dev)
@@ -200,7 +210,7 @@ export default {
           this.loading = false
           this.connected = true
         })
-        .on('screenshot', buffer => console.log('screenshot', buffer))
+        // .on('screenshot', buffer => console.log('screenshot', buffer))
         .on('err', err => {
           this.err = err
           this.loading = false
