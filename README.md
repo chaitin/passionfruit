@@ -116,6 +116,8 @@ npm run init
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
 
+**You need three individual shells to run simultaneously.**
+
 #### API server
 
 ```shell
