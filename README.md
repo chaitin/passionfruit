@@ -111,9 +111,7 @@ Clone this project and install requirements:
 
 ```shell
 git clone https://github.com/chaitin/passionfruit.git
-npm install
-cd gui
-npm install
+npm run init
 ```
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
