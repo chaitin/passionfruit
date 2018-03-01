@@ -29,8 +29,8 @@ function dump(name) {
   const { size } = getDataAttrForPath(module.path)
 
   const buffer = new ReadOnlyMemoryBuffer(module.base, module.size)
-  const headers = macho.parse(buffer)
-  const matches = headers.cmds.filter(cmd => /^encryption_info_(32|64)$/.test(cmd.type) && cmd.id === 1) 
+  const parsed = macho.parse(buffer)
+  const matches = parsed.cmds.filter(cmd => /^encryption_info_(32|64)$/.test(cmd.type) && cmd.id === 1)
   if (!matches.length)
     throw new Error(`Module ${name} is not encrypted`)
 
@@ -53,19 +53,21 @@ function dump(name) {
     throw new Error(`failed to copy file: ${description}`)
   }
 
-  let outfd = open(output, O_CREAT | O_RDWR, 0)
-  if (outfd == -1) {
-    outfd = open(output, O_RDWR, 0)
-    throw new Error(`unable to create writable file ${tmp}, please check your device`)
-  }
+  const outfd = open(output, O_RDWR, 0)
 
-  const zeros = Memory.alloc(8)
-  Memory.writeU64(zeros, 0)
+  // dump decrypted
   lseek(outfd, encryptionInfo.offset, SEEK_SET)
-  write(outfd, zeros, 8)
-  lseek(outfd, encryptionInfo.fileoff, SEEK_SET)
-  write(outfd, module.base.add(encryptionInfo.fileoff), encryptionInfo.size)
+  write(outfd, module.base.add(encryptionInfo.offset), encryptionInfo.size)
 
+  /*
+    https://developer.apple.com/documentation/kernel/encryption_info_command
+    https://developer.apple.com/documentation/kernel/encryption_info_command_64
+  */
+
+  // erase cryptoff, cryptsize and cryptid
+  const zeros = Memory.alloc(12)
+  lseek(outfd, encryptionInfo.fileoff + 8, SEEK_SET)  // skip cmd and cmdsize
+  write(outfd, zeros, 12)
   close(outfd)
 
   return tmp

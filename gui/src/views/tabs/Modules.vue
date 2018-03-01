@@ -22,7 +22,7 @@
         </b-table-column>
 
         <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
-          {{ props.row.baseAddress | hex }}
+          {{ props.row.baseAddress.value | hex}}
         </b-table-column>
 
         <b-table-column field="size" label="Size" class="monospace" sortable width="120">
