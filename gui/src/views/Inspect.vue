@@ -12,7 +12,7 @@
         <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
           <ul class="level-item">
             <li>
-              <a href="/">Passionfruit</a>
+              <a href="/"><img width="133.33" height="32" src="../assets/logo.svg" alt="Passionfruit"></a>
             </li>
             <li v-if="err">Unknown device</li>
             <li v-else>
