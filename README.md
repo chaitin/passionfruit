@@ -87,6 +87,10 @@ Note that if the port 31337 is in use, set environment variable `PORT` to use an
 HOST=192.168.1.100 PORT=12345 passionfruit
 ```
 
+**Security Warning**
+
+Passionfruit does not support authentication now, so any one that have access to the web page may control your connected devices!
+
 ### Device setup:
 
 #### Jailbroken Device
@@ -111,41 +115,18 @@ Clone this project and install requirements:
 
 ```shell
 git clone https://github.com/chaitin/passionfruit.git
-npm run init
+npm install
 ```
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
 
-**You need three individual shells simultaneously.**
-
-#### API server
+**Will start three shells simultaneously.**
 
 ```shell
 npm run dev
 ```
 
-#### Webpack server
-
-```shell
-cd gui
-npm run dev
-```
-
-#### Frida script compiler
-
-Frida agent needs to be compiled at the first time:
-
-```shell
-npm run prepare
-```
-
-If you need livereload like webpack, use:
-
-```shell
-npm run watch
-```
-
-Now open `http://localhost:8080` in browser.
+Browser will be open (http://localhost:8080)
 
 ## FAQ
 
