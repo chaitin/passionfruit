@@ -1,4 +1,4 @@
-# ![Passionfruit](logo.svg)
+# ![Passionfruit](gui/src/assets/logo.svg)
 
 [![npm version](https://badge.fury.io/js/passionfruit.svg)](https://badge.fury.io/js/passionfruit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
