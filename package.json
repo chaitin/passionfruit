@@ -29,8 +29,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon .",
     "start": "cross-env NODE_ENV=production node .",
-    "init": "npm install && cd gui && npm install",
-    "prepare": "npm run compile && cd gui && npm run build",
+    "postinstall": "cd gui && npm install",
+    "prepare": "npm run compile",
+    "prepublishOnly": "cd gui && npm run build",
     "compile": "node scripts/compile.js compile",
     "watch": "node scripts/compile.js watch"
   },
