@@ -140,7 +140,7 @@ Make sure you have frida.re successfully installed. Also, check if the version o
 
 ### Have problem with `npm install`?
 
-Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/).
+Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/). But some prebuilt packages may still need to be downloaded from GitHub, a reliable proxy would help.
 
 All npm command mentioned above can be replaced with [yarn](https://yarnpkg.com/), if you prefer.
 
