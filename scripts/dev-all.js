@@ -23,7 +23,7 @@ tasks.forEach(task => compiler.watch(task.src, task.dest, opt)
 
 // server side
 
-const TAG_SERVER = '[Server]'.green
+const TAG_SERVER = '[Server]'.magenta
 
 nodemon({
   script: 'app.js',

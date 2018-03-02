@@ -2,6 +2,8 @@ const path = require('path')
 const http = require('http')
 const { Z_SYNC_FLUSH } = require('zlib')
 
+require('colors')
+
 const frida = require('frida')
 const Koa = require('koa')
 
@@ -98,7 +100,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(logger())
 }
 
-console.info(`listening on http://${host}:${port}`)
+console.info(`listening on http://${host}:${port}`.green)
 const server = http.createServer(app.callback())
 channels.attach(server)
 server.listen(port, host)
