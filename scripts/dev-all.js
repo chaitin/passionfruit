@@ -27,7 +27,8 @@ const TAG_SERVER = '[Server]'.green
 
 nodemon({
   script: 'app.js',
-  ext: 'js json'
+  ext: 'js json',
+  watch: ['lib', 'app.js'],
 })
 
 nodemon
