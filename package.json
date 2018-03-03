@@ -27,13 +27,12 @@
     ]
   },
   "scripts": {
-    "postinstall": "cd gui && npm install",
-    "prepare": "npm run compile",
+    "prepare": "pushd gui && npm install && popd && npm run compile",
     "prepublishOnly": "cd gui && npm run build",
-    "dev": "node scripts/dev-all.js",
-    "compile": "node scripts/compile.js compile",
-    "start": "cross-env NODE_ENV=development nodemon .",
-    "watch": "node scripts/compile.js watch"
+    "dev": "./scripts/dev-all.js",
+    "compile": "./scripts/compile.js compile",
+    "watch": "./scripts/compile.js watch",
+    "start": "cross-env NODE_ENV=development nodemon ."
   },
   "repository": {
     "type": "git",

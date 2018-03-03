@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require('colors')
 
 const { spawn } = require('child_process')
