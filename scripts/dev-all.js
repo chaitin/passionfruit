@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 
 require('colors')
-process.env.NODE_ENV == 'development'
+const tasks = require('./agents.json')
 
 const { spawn } = require('child_process')
 const compiler = require('frida-compile')
 const nodemon = require('nodemon')
 
+process.env.NODE_ENV = 'development'
+
 // start frida compiler
 
 const TAG_FRIDA = '[Frida]'.yellow
-const tasks = require('./agents.json')
 const opt = {
   bytecode: false,
   compress: false,
@@ -44,7 +45,7 @@ nodemon
 
 // frontend
 const TAG_WEBPACK = '[WebPack]'.cyan
-const webpack = spawn('npm' ,['run', 'dev'], {
+const webpack = spawn('npm', ['run', 'dev'], {
   cwd: 'gui',
   shell: true,
   stdio: 'inherit',
