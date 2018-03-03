@@ -70,7 +70,7 @@ export default {
 
 <style>
 pre.uidump {
-  padding: 20px;
+  padding: 10px;
   overflow: auto;
 }
 </style>

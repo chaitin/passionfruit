@@ -1,9 +1,5 @@
 const compiler = require('frida-compile')
-
-const tasks = [
-  { src: 'agent/app/index.js', dest: 'agent/app.bundle.js' },
-  { src: 'agent/app/springboard.js', dest: 'agent/springboard.bundle.js' },
-]
+const tasks = require('./agents.json')
 
 const watch = process.argv.indexOf('watch') > -1
 const opt = {
@@ -23,3 +19,4 @@ else
   Promise
     .all(tasks.map(task => compiler.build(task.src, task.dest, opt)))
     .catch(err => console.error(err))
+

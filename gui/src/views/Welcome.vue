@@ -2,7 +2,7 @@
   <div class="container is-fluid">
     <div class="columns section">
       <div class="column is-one-quarter">
-        <h1 class="title has-text-grey-darker">Passionfruit</h1>
+        <h1 class="title has-text-grey-darker"><img class="logo" src="../assets/logo.svg" alt="Passionfruit"></h1>
         <aside class="menu">
           <p class="menu-label">
             Devices <loading v-if="loadingDevices" class="is-pulled-right"></loading>

@@ -10,7 +10,11 @@
       </b-select>
     </b-field>
 
+<<<<<<< HEAD
     <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" detailed @details-open="openDetail">
+=======
+    <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="baseAddress" detailed @details-open="openDetail">
+>>>>>>> da1a387a2743d5fb5e8d1a4bebd5c783480ad2b8
       <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           <b-tooltip label="Dump decrypted">
@@ -74,11 +78,17 @@ export default {
     async load() {
       this.loading = true
       let modules = await this.socket.call('modules')
-      this.modules = modules.map((mod, index) =>
-        Object.assign({
+      this.modules = modules.map((mod, index) => {
+        const copy = Object.assign({
           loading: false,
           exports: [],
-        }, mod))
+        }, mod)
+
+        if (typeof copy.baseAddress === 'string')
+          copy.baseAddress = parseInt(copy.baseAddress, 10)
+
+        return copy
+      })
 
       let imports = await this.socket.call('imports')
       this.imports = imports.filter(imp => imp.type === 'function')
