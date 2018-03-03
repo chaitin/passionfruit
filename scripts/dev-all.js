@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 require('colors')
+process.env.NODE_ENV == 'development'
 
 const { spawn } = require('child_process')
 const compiler = require('frida-compile')
@@ -44,18 +45,15 @@ nodemon
 // frontend
 const TAG_WEBPACK = '[WebPack]'.cyan
 const webpack = spawn('npm' ,['run', 'dev'], {
-  cwd: 'gui'
+  cwd: 'gui',
+  shell: true,
+  stdio: 'inherit',
 })
 
 webpack.on('exit', () => {
   console.warn(TAG_WEBPACK, 'WebPack has been terminated.'.red)
   process.exit()
 })
-
-const redirect = data => console.log(TAG_WEBPACK, data.toString())
-
-webpack.stdout.on('data', redirect)
-webpack.stderr.on('data', redirect)
 
 process.on('SIGINT', () => {
   if (!webpack.killed)
