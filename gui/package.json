@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^0.16.2",
     "buefy": "^0.5.4",
+    "frida-gum-types": "^1.0.5",
     "material-design-icons": "^3.0.1",
+    "monaco-editor": "^0.10.1",
     "socket.io-client": "^2.0.4",
     "socket.io-stream": "^0.9.1",
     "vue": "^2.5.13",
