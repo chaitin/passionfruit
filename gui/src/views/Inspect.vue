@@ -92,9 +92,9 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'console' }">
+              <router-link :to="{ name: 'output' }">
                 <b-icon icon="announcement"></b-icon>
-                <span>Output</span>
+                <span>Console</span>
                 <b-tag rounded v-show="unreadMessage" type="is-info">{{ unreadMessage }}</b-tag>
               </router-link>
             </li>

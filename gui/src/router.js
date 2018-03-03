@@ -13,6 +13,7 @@ const ClassesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Cl
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
+const CodeView = () => import(/** webpackChunkName: "editor" */'~/views/tabs/CodeRunner.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const BinaryCookieView = () => import('~/views/tabs/BinaryCookie.vue')
 const UserDefaultsView = () => import('~/views/tabs/UserDefaults.vue')
@@ -66,8 +67,20 @@ const router = new VueRouter({
         name: 'files',
       }, {
         path: 'console',
-        component: ConsoleView,
+        component: SubNavView,
         name: 'console',
+        children: [
+          {
+            path: 'runner',
+            component: CodeView,
+            name: 'runner',
+          },
+          {
+            path: 'output',
+            components: ConsoleView,
+            name: 'output',
+          }
+        ]
       }, {
         path: 'storage',
         component: SubNavView,

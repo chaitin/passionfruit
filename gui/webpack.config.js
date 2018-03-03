@@ -1,6 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const WriteFilePlugin = require('write-file-webpack-plugin')
+
 
 module.exports = {
   entry: path.resolve(__dirname, './src/main.js'),
@@ -30,6 +33,10 @@ module.exports = {
       test: /\.js$/,
       loader: 'babel-loader',
       exclude: /node_modules/
+    },
+    {
+      test: /\.d\.ts$/,
+      loader: 'raw-loader',
     },
     {
       test: /\.(png|jpg|gif|svg|eot|svg|ttf|woff|woff2)$/,
@@ -84,10 +91,20 @@ module.exports = {
   devtool: '#eval-source-map'
 }
 
+const plugins = module.exports.plugins = [
+  new WriteFilePlugin(),
+  new CopyWebpackPlugin([
+    {
+      from: path.join(__dirname, 'node_modules', 'monaco-editor', 'min', 'vs'),
+      to: 'vs'
+    }
+  ]),
+]
+
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
+  module.exports.plugins = plugins.concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -104,6 +121,6 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    })
+    }),
   ])
 }

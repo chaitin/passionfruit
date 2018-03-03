@@ -18,6 +18,19 @@
           </router-link>
         </li>
       </ul>
+
+      <ul v-if="isConsole">
+        <li>
+          <router-link :to="{ name: 'output' }">
+            <span>Output</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'runner'} ">
+            <span>Code Runner</span>
+          </router-link>
+        </li>
+      </ul>
     </nav>
     <div class="tab-content">
       <router-view class="tab-item"></router-view>
@@ -31,6 +44,9 @@ export default {
     isStorage() {
       return this.isChildOf('storage')
     },
+    isConsole() {
+      return this.isChildOf('console')
+    }
   },
   methods: {
     isChildOf(name) {
