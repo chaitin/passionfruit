@@ -132,7 +132,7 @@ Browser will be open (http://localhost:8080)
 
 ### Why node.js is complaining about syntax error?
 
-This project uses the lastest ECMAScript feature in server side. You need nodejs v7.10.1 at least, but v8.x and above is recommended. I've got some users reporting that yarn is not compatible with lower nodejs version.
+This project uses the lastest ECMAScript feature in server side. You need nodejs v7.10.1 at least, but v8.x and above is recommended.
 
 ### "Device is not an iOS device, or you have not installed frida on it"
 
@@ -141,8 +141,6 @@ Make sure you have frida.re successfully installed. Also, check if the version o
 ### Have problem with `npm install`?
 
 Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/). But some prebuilt packages may still need to be downloaded from GitHub, a reliable proxy would help.
-
-All npm command mentioned above can be replaced with [yarn](https://yarnpkg.com/), if you prefer.
 
 Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install`.
 
