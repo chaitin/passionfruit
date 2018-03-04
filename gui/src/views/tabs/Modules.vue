@@ -10,11 +10,7 @@
       </b-select>
     </b-field>
 
-<<<<<<< HEAD
     <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" detailed @details-open="openDetail">
-=======
-    <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="baseAddress" detailed @details-open="openDetail">
->>>>>>> da1a387a2743d5fb5e8d1a4bebd5c783480ad2b8
       <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           <b-tooltip label="Dump decrypted">
@@ -26,17 +22,16 @@
         </b-table-column>
 
         <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
-          {{ props.row.baseAddress.value | hex}}
+          {{ props.row.baseAddress | hex }}
         </b-table-column>
 
         <b-table-column field="size" label="Size" class="monospace" sortable width="120">
           {{ props.row.size }}
         </b-table-column>
 
-        <b-table-column field="path" label="Path" class="monospace" sortable >
+        <b-table-column field="path" label="Path" class="monospace">
           {{ props.row.path }}
         </b-table-column>
-
       </template>
 
       <template slot="detail" slot-scope="props">
