@@ -1,6 +1,7 @@
 module.exports = {
   extends: 'airbnb-base',
   globals: {
+    Duktape: true,
     NULL: true,
     rpc: true,
     ptr: true,

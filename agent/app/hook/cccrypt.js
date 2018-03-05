@@ -1,5 +1,4 @@
-import base64ArrayBuffer from '../lib/base64'
-
+const btoa = buf => Duktape.enc('base64', buf)
 
 const CCOperation = ['kCCEncrypt', 'kCCDecrypt']
 const CCAlgorithm = [
@@ -29,8 +28,8 @@ const handlers = {
       const keyLength = args[4].toInt32()
       const iv = args[5]
 
-      const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-      const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+      const strKey = btoa(Memory.readByteArray(key, keyLength))
+      const strIV = iv === 0 ? 'null' : btoa(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
       const time = now()
       const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
@@ -84,10 +83,10 @@ const handlers = {
       this.dataOutAvailable = dataOutAvailable
       this.dataOutMoved = dataOutMoved
 
-      const strKey = base64ArrayBuffer(Memory.readByteArray(key, keyLength))
-      const strIV = iv === 0 ? 'null' : base64ArrayBuffer(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
+      const strKey = btoa(Memory.readByteArray(key, keyLength))
+      const strIV = iv === 0 ? 'null' : btoa(Memory.readByteArray(iv, CCAlgorithm[alg].blocksize))
 
-      const strDataIn = base64ArrayBuffer(Memory.readByteArray(dataIn, dataInLength))
+      const strDataIn = btoa(Memory.readByteArray(dataIn, dataInLength))
 
       const time = now()
       const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
@@ -123,7 +122,7 @@ const handlers = {
       const time = now()
       const { dataOut, dataOutMoved, operation } = this
       const len = Memory.readUInt(dataOutMoved)
-      const strDataOut = base64ArrayBuffer(Memory.readByteArray(dataOut, len))
+      const strDataOut = btoa(Memory.readByteArray(dataOut, len))
 
       send({
         subject,

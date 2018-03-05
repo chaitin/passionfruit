@@ -1,6 +1,3 @@
-import base64ArrayBuffer from './lib/base64'
-
-
 const { UIWindow, NSThread } = ObjC.classes
 
 const CGFloat = (Process.pointerSize === 4) ? 'float' : 'double'
@@ -54,6 +51,6 @@ export default function screenshot() {
     const png = new ObjC.Object(UIImagePNGRepresentation(image))
     const buffer = Memory.readByteArray(png.bytes(), png.length())
 
-    return base64ArrayBuffer(buffer)
+    return Duktape.enc('base64', buffer)
   })
 }
