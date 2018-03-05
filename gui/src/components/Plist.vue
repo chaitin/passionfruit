@@ -18,17 +18,17 @@
     </b-field>
 
     <ul class="is-marginless">
-      <tree-view :model="tree" :open="true" class="info-plist" ref="tree"></tree-view>
+      <plist-tree-view :model="tree" :open="true" class="info-plist" ref="tree"></plist-tree-view>
     </ul>
   </div>
 </template>
 
 <script>
 import { debounce } from '~/lib/utils'
-import TreeView from '~/components/TreeView.vue'
+import PlistTreeView from '~/components/PlistTreeView.vue'
 
 export default {
-  components: { TreeView },
+  components: { PlistTreeView },
   props: {
     content: Object,
     title: String,

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import io from 'socket.io-client'
 import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
+import TreeView from "vue-json-tree-view"
 import axios from 'axios'
 
 import App from '~/App.vue'
@@ -19,6 +20,7 @@ require('promise.prototype.finally').shim()
 axios.defaults.baseURL = '/api'
 
 
+Vue.use(TreeView)
 Vue.use(Buefy)
 Vue.filter('filesize', humanFileSize)
 Vue.filter('hex', hexAddr)

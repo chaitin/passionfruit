@@ -5,6 +5,10 @@
         <b-icon icon="play_arrow" size="is-medium" type="is-success"></b-icon>
         <span>Run</span>
       </button>
+      <button class="button" @click="clear">
+        <b-icon icon="clear" size="is-medium" type="is-danger"></b-icon>
+        <span>Clear Console</span>
+      </button>
     </nav>
 
     <div class="columns editor-body">
@@ -12,7 +16,17 @@
         <div class="editor" ref="editor"></div>
       </section>
       <section class="column">
-        <div class="console"></div>
+        <div class="console">
+          <ul class="messages">
+            <li v-for="(log, i) in logs" :key=i>
+              <b-message :type="'is' + log.level">
+                <div v-for="(arg, j) in log.args" :key=j>
+                  <tree-view :data="arg" :options="{maxDepth: 0}"></tree-view>
+                </div>
+              </b-message>
+            </li>
+          </ul>
+        </div>
       </section>
     </div>
 
@@ -22,8 +36,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
-
-import LoadingTab from '~/components/LoadingTab.vue'
 
 // DAMN HACK
 const loadScript = url => new Promise((resolve, reject) => {
@@ -83,12 +95,13 @@ async function initMonaco(container) {
 }
 
 export default {
-  components: { LoadingTab },
   data() {
     return {
       loading: false,
       editor: null,
       monacoReady: false,
+      uuid: null,
+      logs: [],
     }
   },
   computed: {
@@ -97,14 +110,37 @@ export default {
     })
   },
   methods: {
-    run(socket) {
+    clear() {
+      this.logs = []
+    },
+    async run(socket) {
       this.loading = true
-      this.socket.call('eval', this.editor.getValue())
-        .then(result => {
-          // if (typeof result === 'object')
-          console.log('eval', result)
-        })
-        .finally(() => this.loading = false)
+      
+      if (this.scriptId) {
+        // clean up previous script
+        try {
+          await this.socket.call('unload', scriptId)
+        } catch(_) {}
+      }
+
+      try {
+        const { result, uuid } = await this.socket.call('eval', this.editor.getValue())
+        this.scriptId = uuid
+        
+        // todo: log result
+      } catch(_) {
+        // todo: log error
+      } finally {
+        this.loading = false
+      }
+    },
+    onMessage(data) {
+      console.log(data)
+
+      const { hasData, payload, subject, type } = data
+      if (subject === 'message') {
+        this.logs.push(payload)
+      }
     },
   },
   mounted() {
@@ -112,14 +148,13 @@ export default {
       this.monacoReady = true
       this.editor = editor
     })
-
-    console.log(this.socket)
+    this.socket.on('userScript', this.onMessage)
   },
   beforeDestroy() {
+    this.socket.off('userScript', this.onMessage)
     if (this.editor) {
       this.editor.getModel().dispose()
       this.editor.dispose()
-
       // todo: save draft to localStorage
     }
   }
