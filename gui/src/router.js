@@ -73,7 +73,7 @@ const router = new VueRouter({
         children: [
           {
             path: 'output',
-            components: CodeView,
+            component: ConsoleView,
             name: 'output',
           },
           {

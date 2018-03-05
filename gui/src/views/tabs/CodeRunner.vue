@@ -29,51 +29,60 @@ async function initMonaco(container) {
     })
   }
 
-  window.require(['vs/editor/editor.main'], async () => {
-    const editor = monaco.editor.create(container, {
-      value: `// paste frida script here`,
-      language: 'javascript',
-    })
+  await new Promise((resolve) =>
+    window.require(['vs/editor/editor.main'], resolve))
 
-    // validation settings
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,
-      noSyntaxValidation: false
-    })
-
-    // remove browser object models
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ES5,
-        noLib : true,
-        lib : ['es5'],
-        allowNonTsExtensions: true
-    })
-
-    // auto complete
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(
-      await import('frida-gum-types/frida-gum/frida-gum.d.ts'), 'frida-gum.d.ts')
-    
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(
-      await import('~/assets/lib.es5.d.ts'), 'lib.es5.d.ts')
+  const editor = monaco.editor.create(container, {
+    value: `console.log(Process.enumerateModulesSync()); // list all modules\n`,
+    language: 'javascript',
   })
+
+  // validation settings
+  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    noSemanticValidation: true,
+    noSyntaxValidation: false
+  })
+
+  // remove browser object models
+  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+    target: monaco.languages.typescript.ScriptTarget.ES5,
+    noLib : true,
+    allowNonTsExtensions: true
+  })
+
+  // auto complete
+  monaco.languages.typescript.javascriptDefaults.addExtraLib(
+    await import('frida-gum-types/frida-gum/frida-gum.d.ts'), 'frida-gum.d.ts')
+  
+  monaco.languages.typescript.javascriptDefaults.addExtraLib(
+    await import('~/assets/duktape.d.ts'), 'duktape.d.ts')
+
+  return editor
 }
 
 export default {
   data() {
     return {
+      editor: null,
       monacoReady: false,
     }
   },
   mounted() {
-    initMonaco(this.$refs.editor).then(this.monacoReady = true)
+    initMonaco(this.$refs.editor).then(editor => {
+      this.monacoReady = true
+      this.editor = editor
+    })
   },
   beforeDestroy() {
-
+    if (this.editor) {
+      this.editor.getModel().dispose()
+      this.editor.dispose()
+    }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .editor {
   min-height: 360px;
 }
