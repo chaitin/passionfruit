@@ -210,7 +210,6 @@ export default {
           this.loading = false
           this.connected = true
         })
-        // .on('screenshot', buffer => console.log('screenshot', buffer))
         .on('err', err => {
           this.err = err
           this.loading = false

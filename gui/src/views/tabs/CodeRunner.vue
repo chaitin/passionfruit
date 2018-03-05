@@ -1,8 +1,8 @@
 <template>
   <div>
     <nav class="toolbar">
-      <button class="button">
-        <b-icon icon="play_arrow" size="is-large" type="is-success"></b-icon>
+      <button class="button" :disabled="!editor" @click="run">
+        <b-icon icon="play_arrow" size="is-medium" type="is-success"></b-icon>
         <span>Run</span>
       </button>
     </nav>
@@ -20,6 +20,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { GET_SOCKET } from '~/vuex/types'
+
+import LoadingTab from '~/components/LoadingTab.vue'
+
 // DAMN HACK
 const loadScript = url => new Promise((resolve, reject) => {
   const tag = document.createElement('script')
@@ -78,17 +83,37 @@ async function initMonaco(container) {
 }
 
 export default {
+  components: { LoadingTab },
   data() {
     return {
+      loading: false,
       editor: null,
       monacoReady: false,
     }
+  },
+  computed: {
+    ...mapGetters({
+      socket: GET_SOCKET,
+    })
+  },
+  methods: {
+    run(socket) {
+      this.loading = true
+      this.socket.call('eval', this.editor.getValue())
+        .then(result => {
+          // if (typeof result === 'object')
+          console.log('eval', result)
+        })
+        .finally(() => this.loading = false)
+    },
   },
   mounted() {
     initMonaco(this.$refs.editor).then(editor => {
       this.monacoReady = true
       this.editor = editor
     })
+
+    console.log(this.socket)
   },
   beforeDestroy() {
     if (this.editor) {
