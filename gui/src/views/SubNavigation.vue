@@ -1,7 +1,7 @@
 <template>
   <div class="container is-fluid">
-    <nav class="tabs is-centered">
-      <ul v-if="isStorage">
+    <nav class="tabs is-centered sub-nav" ref="nav">
+      <ul data-route="storage">
         <li>
           <router-link :to="{ name: 'keychain' }">
             <span>KeyChain</span>
@@ -19,7 +19,7 @@
         </li>
       </ul>
 
-      <ul v-if="isConsole">
+      <ul data-route="console">
         <li>
           <router-link :to="{ name: 'output' }">
             <span>Output</span>
@@ -40,18 +40,27 @@
 
 <script>
 export default {
-  computed: {
-    isStorage() {
-      return this.isChildOf('storage')
-    },
-    isConsole() {
-      return this.isChildOf('console')
-    }
+  mounted() {
+    this.updateSubNav()
   },
   methods: {
-    isChildOf(name) {
-      return this.$route.matched.some(route => route.name === name)
-    },
+    updateSubNav() {
+      for (let element of this.$refs.nav.children)
+        element.style.display = 
+          this.$route.matched.some(route => route.name === element.dataset.route) ?
+            'flex' : 'none'
+    }
+  },
+  watch: {
+    $route(val) {
+      this.updateSubNav()
+    }
   }
 }
 </script>
+
+<style scoped>
+.sub-nav > ul {
+  display: none;
+}
+</style>

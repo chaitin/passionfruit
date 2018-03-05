@@ -69,22 +69,24 @@ const router = new VueRouter({
         path: 'console',
         component: SubNavView,
         name: 'console',
+        redirect: { name: 'output' },
         children: [
+          {
+            path: 'output',
+            components: CodeView,
+            name: 'output',
+          },
           {
             path: 'runner',
             component: CodeView,
             name: 'runner',
-          },
-          {
-            path: 'output',
-            components: ConsoleView,
-            name: 'output',
           }
         ]
       }, {
         path: 'storage',
         component: SubNavView,
         name: 'storage',
+        redirect: { name: 'keychain' },
         children: [
           {
             path: 'keychain',

@@ -92,7 +92,7 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'output' }">
+              <router-link :to="{ name: 'console' }">
                 <b-icon icon="announcement"></b-icon>
                 <span>Console</span>
                 <b-tag rounded v-show="unreadMessage" type="is-info">{{ unreadMessage }}</b-tag>
@@ -105,7 +105,7 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'keychain' }">
+              <router-link :to="{ name: 'storage' }">
                 <b-icon icon="storage"></b-icon>
                 <span>Storage</span>
               </router-link>
