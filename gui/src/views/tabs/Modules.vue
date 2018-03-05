@@ -109,7 +109,7 @@ export default {
       } catch(ex) {
         this.$toast.open({
           duration: 10 * 1000,
-          message: ex,
+          message: `failed to dump module: ${ex}`,
           type: 'is-danger',
         })
       } finally {

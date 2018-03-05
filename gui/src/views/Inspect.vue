@@ -228,7 +228,7 @@ export default {
       event.preventDefault()
       this.$toast.open({
         duration: 10 * 1000,
-        message: event.reason,
+        message: `unhandled rejection: ${event.reason}`,
         type: 'is-danger',
       })
     },

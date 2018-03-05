@@ -1,6 +1,21 @@
 <template>
   <div>
-    <div ref="editor" class="editor"></div>
+    <nav class="toolbar">
+      <button class="button">
+        <b-icon icon="play_arrow" size="is-large" type="is-success"></b-icon>
+        <span>Run</span>
+      </button>
+    </nav>
+
+    <div class="columns editor-body">
+      <section class="column">
+        <div class="editor" ref="editor"></div>
+      </section>
+      <section class="column">
+        <div class="console"></div>
+      </section>
+    </div>
+
   </div>
 </template>
 
@@ -27,14 +42,23 @@ async function initMonaco(container) {
         'vs': '/static/vs'
       }
     })
-  }
 
-  await new Promise((resolve) =>
-    window.require(['vs/editor/editor.main'], resolve))
+    await new Promise((resolve) =>
+      window.require(['vs/editor/editor.main'], resolve))
+
+    // auto complete
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+      await import('frida-gum-types/frida-gum/frida-gum.d.ts'), 'frida-gum.d.ts')
+    
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+      await import('~/assets/duktape.d.ts'), 'duktape.d.ts')
+
+  }
 
   const editor = monaco.editor.create(container, {
     value: `console.log(Process.enumerateModulesSync()); // list all modules\n`,
     language: 'javascript',
+    automaticLayout: true,
   })
 
   // validation settings
@@ -49,13 +73,6 @@ async function initMonaco(container) {
     noLib : true,
     allowNonTsExtensions: true
   })
-
-  // auto complete
-  monaco.languages.typescript.javascriptDefaults.addExtraLib(
-    await import('frida-gum-types/frida-gum/frida-gum.d.ts'), 'frida-gum.d.ts')
-  
-  monaco.languages.typescript.javascriptDefaults.addExtraLib(
-    await import('~/assets/duktape.d.ts'), 'duktape.d.ts')
 
   return editor
 }
@@ -77,6 +94,8 @@ export default {
     if (this.editor) {
       this.editor.getModel().dispose()
       this.editor.dispose()
+
+      // todo: save draft to localStorage
     }
   }
 }
@@ -84,8 +103,13 @@ export default {
 
 <style lang="scss" scoped>
 .editor {
-  min-height: 360px;
+  min-height: 480px;
 }
+
+.editor-body {
+  margin-top: 10px;
+}
+
 .placeholder {
   display: none;
 }
