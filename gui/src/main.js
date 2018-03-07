@@ -2,7 +2,7 @@ import Vue from 'vue'
 import io from 'socket.io-client'
 import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
-import TreeView from "vue-json-tree-view"
+import TreeView from 'vue-json-tree-view'
 import axios from 'axios'
 
 import App from '~/App.vue'
