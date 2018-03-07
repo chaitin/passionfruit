@@ -60,6 +60,7 @@
   "dependencies": {
     "base64-js": "^1.2.1",
     "eslint": "^4.14.0",
+    "fatmacho": "^0.1.1",
     "frida": "^10.6.29",
     "frida-compile": "^5.2.1",
     "koa": "^2.4.1",
@@ -85,6 +86,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "macho": "^1.2.1",
+    "fatmacho": "^0.1.1",
     "nodemon": "^1.14.6"
   }
 }

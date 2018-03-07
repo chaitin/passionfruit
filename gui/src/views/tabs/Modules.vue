@@ -29,7 +29,7 @@
           {{ props.row.size }}
         </b-table-column>
 
-        <b-table-column field="path" label="Path" class="monospace">
+        <b-table-column field="path" label="Path" class="break-all" sortable>
           {{ props.row.path }}
         </b-table-column>
       </template>
