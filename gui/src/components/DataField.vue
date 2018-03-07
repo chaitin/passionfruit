@@ -49,11 +49,11 @@
   Credits to vue-devtools contributors
 */
 
-export function isPlainObject(obj) {
+function isPlainObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
-export function sortByKey(state) {
+function sortByKey(state) {
   return state && state.slice().sort((a, b) => {
     if (a.key < b.key) return -1
     if (a.key > b.key) return 1
@@ -72,7 +72,7 @@ function escapeChar(a) {
   return ESC[a] || a
 }
 
-export function escape(s) {
+function escape(s) {
   return s.replace(/[<>"&]/g, escapeChar)
 }
 
