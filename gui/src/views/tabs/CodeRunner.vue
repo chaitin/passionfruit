@@ -20,8 +20,13 @@
           <ul class="messages">
             <li v-for="(log, i) in logs" :key=i>
               <b-message :type="'is' + log.level">
-                <div v-for="(arg, j) in log.args" :key=j>
-                  <tree-view :data="arg" :options="{maxDepth: 0}"></tree-view>
+                <div>
+                  <data-field v-for="(value, key) in log.args" :key=key
+                    class="arg"
+                    :field="{ value, key: '' }"
+                    :depth="0"
+                    :path="key">
+                  </data-field>
                 </div>
               </b-message>
             </li>
@@ -36,6 +41,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { GET_SOCKET } from '~/vuex/types'
+
+import DataField from '~/components/DataField.vue'
 
 // DAMN HACK
 const loadScript = url => new Promise((resolve, reject) => {
@@ -95,6 +102,7 @@ async function initMonaco(container) {
 }
 
 export default {
+  components: { DataField },
   data() {
     return {
       loading: false,
@@ -135,7 +143,7 @@ export default {
       }
     },
     onMessage(data) {
-      console.log(data)
+      console.log('[debug onmessage]', data)
 
       const { hasData, payload, subject, type } = data
       if (subject === 'message') {
@@ -173,4 +181,10 @@ export default {
 .placeholder {
   display: none;
 }
+
+.console .arg {
+  display: inline-block;
+  margin-right: 20px;
+}
+
 </style>
