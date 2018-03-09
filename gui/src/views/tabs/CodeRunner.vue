@@ -161,12 +161,12 @@ export default {
       await this.cleanup()
 
       const source = this.editor.getValue()
-      this.logs.push({
-        subject: 'eval',
-        source: source.length > 40 ? 
-          source.substr(0, 40) + '...' :
+      if (source.indexOf('\n') === -1) {
+        this.logs.push({
+          subject: 'eval',
           source,
-      })
+        })
+      }
 
       try {
         const { status, uuid, error, type, value } = await this.socket.call('eval', source)
