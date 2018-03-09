@@ -1,0 +1,4 @@
+// list all modules
+console.log(Process.enumerateModulesSync());
+
+// See https://www.frida.re/docs/javascript-api/

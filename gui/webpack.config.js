@@ -35,7 +35,7 @@ module.exports = {
       exclude: /node_modules/
     },
     {
-      test: /\.d\.ts$/,
+      test: /\.(d\.ts|txt)$/,
       loader: 'raw-loader',
     },
     {
