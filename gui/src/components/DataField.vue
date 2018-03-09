@@ -1,6 +1,13 @@
 <template>
   <div class="data-field">
+    <div v-if="root && !isExpandableType">
+      <span
+        class="value"
+        :class="valueClass"
+        v-html="formattedValue" />
+    </div>
     <div
+      v-else
       class="self"
       :style="{ marginLeft: depth * 14 + 'px' }"
       @click="onClick"
