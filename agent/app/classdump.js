@@ -1,5 +1,10 @@
 /* eslint camelcase:0, no-cond-assign:0 */
 
+// looks like there's a bug in compiler
+// https://github.com/frida/frida-compile/issues/8
+// eslint-disable-next-line
+null;
+
 function getOwnClasses(sort) {
   const free = new NativeFunction(Module.findExportByName(null, 'free'), 'void', ['pointer'])
   const objc_copyClassNamesForImage = new NativeFunction(Module.findExportByName(null, 'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
