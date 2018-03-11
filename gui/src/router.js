@@ -93,6 +93,10 @@ const router = new VueRouter({
         path: 'uidump',
         component: UIDumpView,
         name: 'uidump',
+      }, {
+        path: 'dynamic',
+        component: UIDumpView,
+        name: 'dynamic',
       }]
     }
   ]

@@ -70,10 +70,12 @@
             </ul>
           </b-panel>
         </div>
+
+        <div class="column content" v-if="info.entitlements">
+          <plist title="Entitlements" :content="info.entitlements" rootName="Entitlements.plist"></plist>
+        </div>
       </div>
-      <div class="column content" v-if="info.entitlements">
-        <plist title="Entitlements" :content="info.entitlements" rootName="Entitlements.plist"></plist>
-      </div>
+      
 
       <div class="column content" v-if="metainfo">
         <plist title="Metainfo" :content="metainfo" rootName="Info.plist"></plist>

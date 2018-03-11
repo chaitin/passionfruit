@@ -110,6 +110,12 @@
                 <span>Storage</span>
               </router-link>
             </li>
+            <li>
+              <router-link :to="{ name: 'dynamic' }">
+                <b-icon icon="storage"></b-icon>
+                <span>Dynamic</span>
+              </router-link>
+            </li>
           </ul>
         </nav>
       </div>

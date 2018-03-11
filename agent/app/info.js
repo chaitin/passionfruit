@@ -1,6 +1,6 @@
 import { toJSON } from './lib/nsdict'
 import { NSTemporaryDirectory } from './lib/foundation'
-import { getEntitlementsFromMemory } from './entitlements'
+import { getEntitlementsFromCommand } from './entitlements'
 //var getEntitlementsFromMemory = require('./entitlements');
 const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
 
@@ -8,7 +8,8 @@ const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
 function info() {
   const mainBundle = NSBundle.mainBundle()
   const json = toJSON(mainBundle.infoDictionary())
-  const entitlements = toJSON(getEntitlementsFromMemory())
+  //const entitlements = toJSON(getEntitlementsFromMemory())
+  const entitlements = getEntitlementsFromCommand(mainBundle.executablePath())
   const data = NSProcessInfo.processInfo()
     .environment().objectForKey_('HOME').toString()
 
