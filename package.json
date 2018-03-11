@@ -57,16 +57,16 @@
   },
   "homepage": "https://github.com/chaitin/passionfruit#readme",
   "dependencies": {
-    "colors": "^1.1.2",
-    "frida": "^10.6.29",
+    "colors": "^1.2.0",
+    "frida": "^10.6.59",
     "frida-compile": "^5.3.6",
-    "koa": "^2.4.1",
+    "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compress": "^2.0.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.0.1",
-    "koa-router": "^7.3.0",
-    "koa-send": "^4.1.2",
+    "koa-router": "^7.4.0",
+    "koa-send": "^4.1.3",
     "plist": "^2.1.0",
     "promise.prototype.finally": "^3.1.0",
     "socket.io": "^2.0.4",
@@ -78,11 +78,11 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "babelify": "^8.0.0",
-    "cross-env": "^5.1.3",
-    "eslint": "^4.14.0",
+    "cross-env": "^5.1.4",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-import": "^2.9.0",
     "macho": "^1.2.1",
-    "nodemon": "^1.14.6"
+    "nodemon": "^1.17.1"
   }
 }
