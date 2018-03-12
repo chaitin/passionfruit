@@ -70,5 +70,6 @@ module.exports = {
     curly: ['error', 'multi', 'consistent'],
     'no-underscore-dangle': 0,
     'no-fallthrough': 0,
+    'func-names': 0,
   },
 };

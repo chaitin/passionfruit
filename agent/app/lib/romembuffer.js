@@ -1,3 +1,5 @@
+/* eslint prefer-template:0, no-multi-assign:0, no-buffer-constructor:0 */
+
 function ReadOnlyMemoryBuffer(address, size) {
   this.base = address
   this.length = size || 4096
@@ -20,7 +22,7 @@ const isLE = ((new Uint32Array((new Uint8Array([1, 2, 3, 4])).buffer))[0] === 0x
 const proto = ReadOnlyMemoryBuffer.prototype
 
 proto.slice = function(begin, end) {
-  const size = (typeof end === 'undefined' ? this.length : end ) - begin
+  const size = (typeof end === 'undefined' ? this.length : end) - begin
   return new ReadOnlyMemoryBuffer(this.base.add(begin), size)
 }
 
@@ -28,7 +30,7 @@ proto.toString = function() {
   return Memory.readUtf8String(this.base)
 }
 
-const stub = () => {
+const noImpl = () => {
   throw new Error('not implemented')
 }
 
@@ -40,15 +42,21 @@ mapping.forEach((type) => {
     return Memory['read' + fridaType](address)
   }
 
-  proto['write' + bufferType] = stub
+  proto['write' + bufferType] = noImpl
+
+  const inverse = function(offset) {
+    const address = this.base.add(offset)
+    const buf = new Buffer(Memory.readByteArray(address, size))
+    return buf['read' + bufferType + (isLE ? 'BE' : 'LE')]()
+  }
 
   if (size > 1) {
     // le, be
-    proto['read' + bufferType + 'LE'] = isLE ? proto['read' + bufferType] : stub
-    proto['read' + bufferType + 'BE'] = isLE ? stub : proto['read' + bufferType]
+    proto['read' + bufferType + 'LE'] = isLE ? proto['read' + bufferType] : inverse
+    proto['read' + bufferType + 'BE'] = isLE ? inverse : proto['read' + bufferType]
 
     // readonly
-    proto['write' + bufferType + 'LE'] = proto['write' + bufferType + 'BE'] = stub
+    proto['write' + bufferType + 'LE'] = proto['write' + bufferType + 'BE'] = noImpl
   }
 })
 

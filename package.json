@@ -82,6 +82,7 @@
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.9.0",
+    "fatmacho": "^0.1.1",
     "macho": "^1.2.1",
     "nodemon": "^1.17.1"
   }
