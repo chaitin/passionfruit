@@ -5,7 +5,6 @@ import ReadOnlyMemoryBuffer from './lib/romembuffer'
 
 module.exports = () => new Promise((resolve, reject) => {
   const result = {}
-  return result
   const [appModule, ] = Process.enumerateModulesSync()
   const buffer = new ReadOnlyMemoryBuffer(appModule.base, appModule.size)
   const headers = macho.parse(buffer)
