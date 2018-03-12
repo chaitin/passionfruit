@@ -1,6 +1,6 @@
 import { arrayFromNSArray, toJSON } from './lib/nsdict'
 import uuidv4 from './lib/uuid'
-import libc from './lib/libc'
+import { open } from './lib/libc'
 import { getDataAttrForPath } from './lib/foundation'
 
 
@@ -52,7 +52,7 @@ function text(path) {
   const size = 10 * 1024 // max read size: 10k
 
   return new Promise((resolve, reject) => {
-    const fd = libc.open(name, 0, 0)
+    const fd = open(name, 0, 0)
     if (fd === -1)
       reject(new Error(`unable to open file ${path}`))
 
@@ -69,7 +69,7 @@ function download(path) {
   const subject = 'download'
   const { size } = getDataAttrForPath(path)
 
-  const fd = libc.open(name, 0, 0)
+  const fd = open(name, 0, 0)
   if (fd === -1)
     throw new Error(`unable to open file ${path}`)
 
