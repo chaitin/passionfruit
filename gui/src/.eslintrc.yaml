@@ -1,0 +1,13 @@
+parserOptions:
+  parser: babel-eslint
+  ecmaVersion: 2017
+  sourceType: module
+  ecmaFeatures:
+    modules: true
+
+extends:
+  - plugin:vue/recommended
+
+rules:
+  import/no-webpack-loader-syntax: 0
+  semi: 0

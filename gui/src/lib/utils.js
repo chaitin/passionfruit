@@ -1,10 +1,9 @@
 import socketStream from 'socket.io-stream'
 
-const SearchWorker = require('worker-loader!./worker.js')
-
 import { DOWNLOADING, SET_DOWNLOAD_TOTAL, UPDATE_BYTES } from '~/vuex/types'
 import state from '~/vuex'
 
+const SearchWorker = require('worker-loader!./worker.js')
 
 export class AsyncSearch {
   constructor(list, key) {
