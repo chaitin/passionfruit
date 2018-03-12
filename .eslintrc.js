@@ -13,7 +13,7 @@ module.exports = {
     'no-plusplus': 0,
     'import/no-unresolved': 0,
     'no-bitwise': 0,
-    curly: ['error', 'multi', 'multi-or-nest', 'consistent'],
+    curly: ['error', 'multi-or-nest', 'consistent'],
     'no-underscore-dangle': 0,
     'no-fallthrough': 0,
     'func-names': 0,

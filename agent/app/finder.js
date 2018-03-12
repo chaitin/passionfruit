@@ -40,10 +40,8 @@ function plist(path) {
     const info = ObjC.classes.NSDictionary.dictionaryWithContentsOfFile_(path)
     return toJSON(info)
   } catch (ex) {
-    console.debug('agent internal error')
-    console.error(ex)
     throw new Error(`unable to parse file ${path} as plist,
-      please make sure it does exist and is in valid format`)
+      please make sure it does exist and is in valid format (${ex.stack})`)
   }
 }
 
@@ -82,14 +80,15 @@ function download(path) {
         session,
       }, buffer)
 
-      if (buffer.byteLength === watermark)
+      if (buffer.byteLength === watermark) {
         setImmediate(read)
-      else
+      } else {
         send({
           subject,
           event: 'end',
           session,
         })
+      }
     }).catch((error) => {
       send({
         subject,

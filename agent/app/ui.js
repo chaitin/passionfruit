@@ -9,11 +9,12 @@ let originalImplementation = null
 
 function toggleTouchID(enable) {
   const subject = 'touchid'
-  if (!LAContext)
+  if (!LAContext) {
     return {
       status: 'error',
       reason: 'Touch ID may not be supported by this device',
     }
+  }
 
   const method = LAContext['- evaluatePolicy:localizedReason:reply:']
   if (originalImplementation && !enable) {

@@ -29,12 +29,13 @@ function info() {
   }
 
   /* eslint dot-notation: 0 */
-  if (Object.prototype.hasOwnProperty.call(json, 'CFBundleURLTypes'))
+  if (Object.prototype.hasOwnProperty.call(json, 'CFBundleURLTypes')) {
     result.urls = json['CFBundleURLTypes'].map(item => ({
       name: item['CFBundleURLName'],
       schemes: item['CFBundleURLSchemes'],
       role: item['CFBundleTypeRole'],
     }))
+  }
 
   /* eslint guard-for-in: 0 */
   for (const key in map)

@@ -2,6 +2,7 @@
 import { hasOwnProperty } from './utils'
 
 // workaround for #17
+// eslint-disable-next-line
 null;
 
 
@@ -62,10 +63,8 @@ function dictFromPlistCharArray(address, size) {
   )
 
   const desc = Memory.readPointer(err)
-  if (!desc.isNull()) {
-    console.debug(Memory.readByteArray(address, size))
+  if (!desc.isNull())
     throw new Error(new ObjC.Object(desc))
-  }
 
   return dictFromNSDictionary(dict)
 }
@@ -101,11 +100,12 @@ function toNSObject(obj) {
   }
 
   const mutableDict = NSMutableDictionary.alloc().init()
-  for (const key in obj)
+  for (const key in obj) {
     if (hasOwnProperty(obj, key)) {
       const val = toNSObject(obj[key])
       mutableDict.setObject_forKey_(val, key)
     }
+  }
 
   return mutableDict
 }

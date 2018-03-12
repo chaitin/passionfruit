@@ -3,7 +3,7 @@ rules:
   no-console: ["error"]
 globals:
   Duktape: true
-  NULL: true
+  'NULL': true // wow, NULL is a preversed keyword in yaml
   rpc: true
   ptr: true
   hexdump: true

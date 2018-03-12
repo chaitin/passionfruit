@@ -120,7 +120,7 @@ function decodeOd(item, flags) {
   const constraints = item
   const constraintEnumerator = constraints.keyEnumerator()
 
-  for (let constraintKey; constraintKey !== null; constraintEnumerator.nextObject())
+  for (let constraintKey; constraintKey !== null; constraintEnumerator.nextObject()) {
     switch (odas(constraintKey)) {
       case 'cpo':
         flags.push('kSecAccessControlUserPresence')
@@ -143,6 +143,7 @@ function decodeOd(item, flags) {
       default:
         break
     }
+  }
 }
 
 function decodeAcl(entry) {

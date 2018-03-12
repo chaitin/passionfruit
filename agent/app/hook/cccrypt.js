@@ -40,8 +40,6 @@ const handlers = {
         operation = 'encrypt'
       else if (operation === 'kCCDecrypt')
         operation = 'decrypt'
-      else
-        console.error('unknown operation', op)
 
       send({
         subject,
@@ -97,8 +95,6 @@ const handlers = {
         operation = 'encrypt'
       else if (operation === 'kCCDecrypt')
         operation = 'decrypt'
-      else
-        console.error('unknown operation', op)
 
       this.operation = operation
       send({
@@ -139,10 +135,12 @@ const handlers = {
 
 let hooks = []
 export default function toggle(on) {
-  if (on && !hooks.length)
-    for (const func in handlers)
+  if (on && !hooks.length) {
+    for (const func in handlers) {
       if (({}).hasOwnProperty.call(handlers, func))
         hooks.push(Interceptor.attach(Module.findExportByName(null, func), handlers[func]))
+    }
+  }
 
   if (!on && hooks.length) {
     hooks.forEach(hook => hook.detach())

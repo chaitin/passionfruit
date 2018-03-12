@@ -1,23 +1,27 @@
-const { UIWindow, NSThread, UIScreen, UIApplication } = ObjC.classes
+const { NSThread, UIScreen, UIApplication } = ObjC.classes
 
 const CGFloat = (Process.pointerSize === 4) ? 'float' : 'double'
 const CGSize = [CGFloat, CGFloat]
 
 const UIGraphicsBeginImageContextWithOptions = new NativeFunction(
   Module.findExportByName('UIKit', 'UIGraphicsBeginImageContextWithOptions'),
-  'void', [CGSize, 'bool', CGFloat])
+  'void', [CGSize, 'bool', CGFloat],
+)
 
 const UIGraphicsEndImageContext = new NativeFunction(
   Module.findExportByName('UIKit', 'UIGraphicsEndImageContext'),
-  'void', [])
+  'void', [],
+)
 
 const UIGraphicsGetImageFromCurrentImageContext = new NativeFunction(
   Module.findExportByName('UIKit', 'UIGraphicsGetImageFromCurrentImageContext'),
-  'pointer', [])
+  'pointer', [],
+)
 
 const UIImagePNGRepresentation = new NativeFunction(
   Module.findExportByName('UIKit', 'UIImagePNGRepresentation'),
-  'pointer', ['pointer'])
+  'pointer', ['pointer'],
+)
 
 function performOnMainThread(action) {
   return new Promise((resolve, reject) => {

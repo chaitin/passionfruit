@@ -29,9 +29,10 @@ function getDataAttrForPath(path) {
     modification: 'NSFileModificationDate',
     protection: 'NSFileProtectionKey',
   }
-  for (const key in lookup)
+  for (const key in lookup) {
     if (hasOwnProperty(lookup, key) && lookup[key] in info)
       result[key] = info[lookup[key]]
+  }
 
   return result
 }

@@ -104,7 +104,7 @@ function swizzle(clazz, sel, traceResult = true) {
 
   const method = ObjC.classes[clazz][sel]
   let onLeave
-  if (traceResult)
+  if (traceResult) {
     onLeave = (retVal) => {
       const time = now()
       let ret = retVal
@@ -122,21 +122,24 @@ function swizzle(clazz, sel, traceResult = true) {
         time,
       })
     }
+  }
 
   const intercept = Interceptor.attach(method.implementation, {
     onEnter(args) {
       const time = now()
       const readableArgs = []
-      for (let i = 2; i < method.argumentTypes.length; i++)
-        if (method.argumentTypes[i] === 'pointer')
+      for (let i = 2; i < method.argumentTypes.length; i++) {
+        if (method.argumentTypes[i] === 'pointer') {
           try {
             const obj = ObjC.Object(args[i]).toString()
             readableArgs.push(obj)
           } catch (ex) {
             readableArgs.push(args[i])
           }
-        else
+        } else {
           readableArgs.push(args[i])
+        }
+      }
 
       // Objective C's backtrace does not contain valuable information,
       // so I removed it

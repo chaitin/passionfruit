@@ -38,7 +38,7 @@ export default function checksec() {
   // todo: refactor me
 
   let entitlements = null
-  for (const cmd of info.cmds)
+  for (const cmd of info.cmds) {
     // shoot, this command isn't mapped in memory for 3rd-party apps
     if (cmd.type === 'code_signature') {
       const fd = open(Memory.allocUtf8String(appModule.path), O_RDONLY, 0)
@@ -50,6 +50,7 @@ export default function checksec() {
       close(fd)
       break
     }
+  }
 
   const importNames = Module.enumerateImportsSync(appModule.path).reduce((names, imp) => {
     names.add(imp.name)

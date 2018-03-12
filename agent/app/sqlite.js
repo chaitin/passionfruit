@@ -35,17 +35,18 @@ class Database {
     for (let i = 0; i < args.length; i++) {
       const index = i + 1
       const arg = args[i]
-      if (typeof arg === 'number')
+      if (typeof arg === 'number') {
         if (Math.floor(arg) === arg)
           statement.bindInteger(index, arg)
         else
           statement.bindFloat(index, arg)
-      else if (arg === null || typeof arg === 'undefined')
+      } else if (arg === null || typeof arg === 'undefined') {
         statement.bindNull(index)
-      else if (arg instanceof ArrayBuffer)
+      } else if (arg instanceof ArrayBuffer) {
         statement.bindBlob(index, arg)
-      else
+      } else {
         statement.bindText(index)
+      }
     }
     return statement
   }

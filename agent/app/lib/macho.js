@@ -28,7 +28,7 @@ export function parseFat(data) {
     const size = u32(cursor + 8)
     const align = u32(cursor + 12)
 
-    if (offset && size)
+    if (offset && size) {
       cmds.push({
         arch: cpuType[cpu] || 'N/A',
         cpu,
@@ -36,6 +36,7 @@ export function parseFat(data) {
         size,
         align,
       })
+    }
   }
 
   return cmds
