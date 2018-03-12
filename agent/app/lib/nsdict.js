@@ -4,13 +4,17 @@ import { hasOwnProperty } from './utils'
 const {
   NSMutableDictionary,
   NSArray,
+  NSData,
   NSDictionary,
   NSMutableArray,
   NSNumber,
   NSString,
   NSNull,
+  NSPropertyListSerialization,
   __NSCFBoolean,
 } = ObjC.classes
+
+const NSPropertyListImmutable = 0
 
 
 function toJSON(value) {
@@ -38,6 +42,29 @@ function dictFromNSDictionary(nsDict) {
   }
 
   return jsDict
+}
+
+function dictFromPlistCharArray(address, size) {
+  const format = Memory.alloc(Process.pointerSize)
+  const err = Memory.alloc(Process.pointerSize)
+  const data = NSData.dataWithBytesNoCopy_length_(address, size)
+  // it is ObjectiveC's fault for the long line
+  // eslint-disable-next-line
+  const dict = NSPropertyListSerialization.propertyListFromData_mutabilityOption_format_errorDescription_(
+    data,
+    NSPropertyListImmutable,
+    format,
+    err,
+  )
+
+  console.log('read', address, size)
+  const desc = Memory.readPointer(err)
+  if (!desc.isNull()) {
+    console.debug(Memory.readByteArray(address, size))
+    throw new Error(new ObjC.Object(desc))
+  }
+
+  return dictFromNSDictionary(dict)
 }
 
 function arrayFromNSArray(nsArray) {
@@ -80,9 +107,9 @@ function toNSObject(obj) {
   return mutableDict
 }
 
-
 module.exports = {
   dictFromNSDictionary,
+  dictFromPlistCharArray,
   arrayFromNSArray,
   toJSON,
   toNSObject,

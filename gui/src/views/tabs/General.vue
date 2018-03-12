@@ -54,6 +54,10 @@
         <b-field label="Version">
           <p>{{ info.semVer }}</p>
         </b-field>
+        <b-field label="Entitlement Group" v-if="sec.entitlements">
+          <data-field :field="{ key: 'entitlements', value: sec.entitlements }" :depth="0">
+          </data-field>
+        </b-field>
 
         <hr>
 
@@ -82,13 +86,15 @@
 <script>
 import { mapGetters } from 'vuex'
 import { GET_SOCKET, GET_DEVICE } from '~/vuex/types'
+
+import DataField from '~/components/DataField.vue'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
 import Url from '~/components/URLScheme.vue'
 
 
 export default {
-  components: { LoadingTab, Plist, Url },
+  components: { DataField, LoadingTab, Plist, Url },
   data() {
     return {
       loading: true,

@@ -1,13 +1,8 @@
-import { open, close, write, lseek } from './lib/libc'
+import { open, close, write, lseek, O_RDONLY, O_RDWR, SEEK_SET } from './lib/libc'
 import { NSTemporaryDirectory } from './lib/foundation'
 import { parse } from './lib/macho'
 
 import ReadOnlyMemoryBuffer from './lib/romembuffer'
-
-const O_RDONLY = 0
-const O_RDWR = 2
-
-const SEEK_SET = 0
 
 
 function dump(name) {
