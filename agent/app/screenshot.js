@@ -1,4 +1,4 @@
-const { UIWindow, NSThread } = ObjC.classes
+const { UIWindow, NSThread, UIScreen, UIApplication } = ObjC.classes
 
 const CGFloat = (Process.pointerSize === 4) ? 'float' : 'double'
 const CGSize = [CGFloat, CGFloat]
@@ -37,13 +37,17 @@ function performOnMainThread(action) {
   })
 }
 
+
 export default function screenshot() {
   return performOnMainThread(() => {
-    const view = UIWindow.keyWindow()
-    const bounds = view.bounds()
-    const size = bounds[1]
-    UIGraphicsBeginImageContextWithOptions(size, 0, 0)
-    view.drawViewHierarchyInRect_afterScreenUpdates_(bounds, true)
+    const bounds = UIScreen.mainScreen().bounds()
+    const cgsize = bounds[1]
+    UIGraphicsBeginImageContextWithOptions(cgsize, 0, 0)
+    const windows = UIApplication.sharedApplication().windows()
+    for (let index = 0; index < windows.count(); index++) {
+      const currentwindow = windows.objectAtIndex_(index)
+      currentwindow.drawViewHierarchyInRect_afterScreenUpdates_(currentwindow.bounds(), true)
+    }
 
     const image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
