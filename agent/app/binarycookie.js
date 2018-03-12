@@ -1,13 +1,12 @@
 const { NSHTTPCookieStorage } = ObjC.classes
 
-const store = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-const jar = store.cookies()
-
 function str(obj, def) {
   return obj ? obj.toString() : (def || 'N/A')
 }
 
 module.exports = function binaryCookies() {
+  const store = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+  const jar = store.cookies()
   const cookies = []
 
   for (let i = 0; i < jar.count(); i++) {
