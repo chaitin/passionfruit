@@ -57,7 +57,6 @@ function dictFromPlistCharArray(address, size) {
     err,
   )
 
-  console.log('read', address, size)
   const desc = Memory.readPointer(err)
   if (!desc.isNull()) {
     console.debug(Memory.readByteArray(address, size))

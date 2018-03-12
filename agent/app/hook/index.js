@@ -84,7 +84,6 @@ function unhook(lib, func) {
     if (intercept) {
       intercept.detach()
       delete hooked[lib][func]
-      console.log('unhook', lib, func)
       return true
     }
   }
