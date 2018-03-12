@@ -1,16 +1,20 @@
-const CAFEBABE = 3405691582;
+import macho from 'macho'
+
+
+const CAFEBABE = 3405691582
 
 const cpuType = {
-  0x00000003: 'i386',
-  0x80000003: 'x86_64',
+  0x00000003: 'ia32', // same with Frida
+  0x80000003: 'x64',
   0x00000009: 'arm',
   0x80000009: 'arm64',
   0x00000000: 'arm64',
-  0x0000000a: 'ppc_32',
-  0x8000000a: 'ppc_64',
+  // drop support for these cpus
+  // 0x0000000a: 'ppc_32',
+  // 0x8000000a: 'ppc_64',
 }
 
-export default function parse(data) {
+export function parseFat(data) {
   const u32 = x => data.readUInt32BE(x)
   const magic = u32(0)
   if (magic !== CAFEBABE)
@@ -35,4 +39,13 @@ export default function parse(data) {
   }
 
   return cmds
+}
+
+export function parse(data) {
+  try {
+    const bins = parseFat(data).filter(bin => bin.cpu === Process.arch)
+    return macho.parse(bins[0])
+  } catch (e) {
+    return macho.parse(data)
+  }
 }

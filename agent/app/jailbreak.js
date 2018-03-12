@@ -33,7 +33,7 @@ const paths = `/Applications/Cydia.app
 const subject = 'jailbreak'
 
 export default function bypassJailbreak() {
-  /* eslint no-param-reassign: 0, camelcase: 0, eqeqeq: 0, prefer-destructuring: 0 */
+  /* eslint no-param-reassign: 0, camelcase: 0, prefer-destructuring: 0 */
   Interceptor.attach(Module.findExportByName(null, 'open'), {
     onEnter(args) {
       if (!args[0])
@@ -120,7 +120,7 @@ export default function bypassJailbreak() {
   const canOpenURL_publicURLsOnly_ = UIApplication['- _canOpenURL:publicURLsOnly:']
   Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
     onEnter(args) {
-      if (args[2] == '0x0')
+      if (args[2].isNull())
         return
 
       const url = ObjC.Object(args[2]).toString()
@@ -142,13 +142,13 @@ export default function bypassJailbreak() {
     },
     onLeave(retVal) {
       if (this.shouldOverride)
-        retVal.replace(ptr('0x00'))
+        retVal.replace(ptr(0))
     },
   })
 
   Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
     onEnter(args) {
-      if (args[2] == '0x0')
+      if (args[2].isNull())
         return
 
       const path = new ObjC.Object(args[2]).toString()
@@ -175,7 +175,7 @@ export default function bypassJailbreak() {
 
   Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implementation, {
     onEnter(args) {
-      if (args[2] == '0x0')
+      if (args[2].isNull())
         return
 
       const path = ObjC.Object(args[2]).toString()
