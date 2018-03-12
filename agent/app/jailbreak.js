@@ -39,8 +39,8 @@ export default function bypassJailbreak() {
       if (!args[0])
         return
 
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       const path = Memory.readUtf8String(args[0])
       if (paths.indexOf(path) > -1) {
         send({
@@ -64,8 +64,8 @@ export default function bypassJailbreak() {
         return
 
       const path = Memory.readUtf8String(args[0])
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       if (paths.indexOf(path) > -1) {
         send({
           subject,
@@ -85,8 +85,8 @@ export default function bypassJailbreak() {
   Interceptor.attach(Module.findExportByName(null, 'getenv'), {
     onEnter(args) {
       const key = Memory.readUtf8String(args[0])
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       if (key === 'DYLD_INSERT_LIBRARIES') {
         send({
           subject,
@@ -124,8 +124,8 @@ export default function bypassJailbreak() {
         return
 
       const url = ObjC.Object(args[2]).toString()
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       if (/^cydia:\/\//i.exec(url)) {
         args[2] = NSURL.URLWithString_('invalid://')
         this.shouldOverride = true
@@ -152,8 +152,8 @@ export default function bypassJailbreak() {
         return
 
       const path = new ObjC.Object(args[2]).toString()
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       if (paths.indexOf(path) > -1) {
         send({
           subject,
@@ -179,8 +179,8 @@ export default function bypassJailbreak() {
         return
 
       const path = ObjC.Object(args[2]).toString()
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE).map(
-        DebugSymbol.fromAddress).filter(e => e.name)
+      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).filter(e => e.name)
       if (path.match(/^\/private/)) {
         send({
           subject,
