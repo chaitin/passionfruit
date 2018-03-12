@@ -1,6 +1,10 @@
 /* eslint no-use-before-define:0 */
 import { hasOwnProperty } from './utils'
 
+// workaround for #17
+null;
+
+
 const {
   NSMutableDictionary,
   NSArray,
