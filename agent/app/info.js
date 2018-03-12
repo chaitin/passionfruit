@@ -9,7 +9,7 @@ function info() {
   const mainBundle = NSBundle.mainBundle()
   const json = toJSON(mainBundle.infoDictionary())
   //const entitlements = toJSON(getEntitlementsFromMemory())
-  const entitlements = getEntitlementsFromCommand(mainBundle.executablePath())
+  //const entitlements = getEntitlementsFromCommand(mainBundle.executablePath())
   const data = NSProcessInfo.processInfo()
     .environment().objectForKey_('HOME').toString()
 
@@ -29,7 +29,7 @@ function info() {
     tmp,
     data,
     json,
-    entitlements,
+    //entitlements,
   }
 
   /* eslint dot-notation: 0 */
@@ -57,4 +57,5 @@ module.exports = {
   info,
   userDefaults,
 }
+
 

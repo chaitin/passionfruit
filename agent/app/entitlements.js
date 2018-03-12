@@ -1,15 +1,12 @@
 'use strict';
 
-const fatmacho = require('fatmacho');
+/*const fatmacho = require('fatmacho');
 const macho = require('macho');
 import ReadOnlyMemoryBuffer from './lib/romembuffer'
-//const fs = require('fs');
-
-const cpuArch = (Process.pointerSize === 4) ? '32' : '64'
 
 const CSSLOT_CODEDIRECTORY = 0;
 const CSSLOT_REQUIREMENTS = 2;
-const CSSLOT_ENTITLEMENTS = 5;
+const CSSLOT_ENTITLEMENTS = 5;*/
 
 function turnToBigEndian(value){
   var bytes = new Uint8Array(4);
@@ -39,7 +36,7 @@ function turnToBigEndian(value){
     }
   }
   return null;
-}*/
+}
 
 function parseEntitlements(data) {
   const count = data.readUInt32BE(8)
@@ -81,7 +78,7 @@ function getEntitlementsFromBuffer (data) {
   }
 }
 
-/*function getEntitlementsFromMemory () {
+function getEntitlementsFromMemory () {
   const [appModule, ] = Process.enumerateModulesSync()
   const data = new ReadOnlyMemoryBuffer(appModule.base, appModule.size)
   return getEntitlementsFromBuffer(data);
@@ -108,12 +105,13 @@ NSLog (@"grep returned:\n%@", grepOutput);
 */
 
 function getEntitlementsFromCommand(path){
+  //return null
   const pipe = NSPipe.pipe()
   const file = pipe.fileHandleForReading()
   const task = NSTask.alloc().init()
   const launchpath = "/usr/bin/ldid"
   task.setLaunchPath_(NSString.stringWithString_(launchpath))
-  task.setArguments_(NSArray.arrayWithObjects_(NSString.stringWithString_("-e"), path))
+  task.setArguments_(NSArray.arrayWithObjects_(NSString.stringWithString_("-e")), path, 0)
   task.setStandardOutput_(pipe)
   task.launch()
   const data = file.readDataToEndOfFile()
@@ -123,6 +121,6 @@ function getEntitlementsFromCommand(path){
 
 
 module.exports = {
-  getEntitlementsFromMemory,
+  //getEntitlementsFromMemory,
   getEntitlementsFromCommand,
 }
