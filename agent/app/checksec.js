@@ -7,8 +7,6 @@ import fatmacho from 'fatmacho'
 import ReadOnlyMemoryBuffer from './lib/romembuffer'
 
 
-// const CSSLOT_CODEDIRECTORY = 0
-// const CSSLOT_REQUIREMENTS = 2
 const CSSLOT_ENTITLEMENTS = 5
 
 
