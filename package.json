@@ -48,7 +48,8 @@
     "gui/static",
     "lib/",
     "bin/",
-    "agent/*.bundle.js"
+    "agent/*.bundle.js",
+    "agent/*.bundle.bin"
   ],
   "author": "CodeColorist",
   "license": "MIT",

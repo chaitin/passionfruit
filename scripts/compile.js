@@ -5,13 +5,16 @@ const tasks = require('./agents.json')
 
 const watch = process.argv.indexOf('watch') > -1
 const opt = {
-  bytecode: false,
-  compress: !watch,
+  bytecode: !watch,
+  compress: false,
   babelify: true,
+  sourcemap: !watch,
+  typeroots: true,
+  useAbsolutePaths: false,
 }
 
 if (watch)
-  tasks.forEach(task => compiler.watch(task.src, task.dest, opt)
+  tasks.forEach(task => compiler.watch(task.src, `${task.dest}.bin`, opt)
     .on('compile', (details) => {
       const count = details.files.length
       const { duration } = details
@@ -19,6 +22,6 @@ if (watch)
     }))
 else
   Promise
-    .all(tasks.map(task => compiler.build(task.src, task.dest, opt)))
+    .all(tasks.map(task => compiler.build(task.src, `${task.dest}.bin`, opt)))
     .catch(err => console.error(err))
 

@@ -1,7 +1,7 @@
 [{
   "src": "agent/app/index.js",
-  "dest": "agent/app.bundle.js"
+  "dest": "agent/app.bundle"
 }, {
   "src": "agent/app/springboard.js",
-  "dest": "agent/springboard.bundle.js"
+  "dest": "agent/springboard.bundle"
 }]
