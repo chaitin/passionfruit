@@ -18,7 +18,7 @@ const opt = {
   babelify: true,
 }
 
-tasks.forEach(task => compiler.watch(task.src, task.dest, opt)
+tasks.forEach(task => compiler.watch(task.src, `${task.dest}.js`, opt)
   .on('compile', (details) => {
     const count = details.files.length
     const { duration } = details
