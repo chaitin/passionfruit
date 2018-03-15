@@ -42,6 +42,10 @@ export function parseFat(data) {
   return cmds
 }
 
+/*
+  todo: delete me
+  looks like fat macho will only map current arch image to memory
+*/
 export function parse(data) {
   try {
     const bins = parseFat(data).filter(bin => bin.cpu === Process.arch)
