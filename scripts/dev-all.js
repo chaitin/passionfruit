@@ -1,29 +1,15 @@
 #!/usr/bin/env node
 
 require('colors')
-const tasks = require('./agents.json')
 
 const { spawn } = require('child_process')
-const compiler = require('frida-compile')
+const compile = require('./lib/compile')
 const nodemon = require('nodemon')
 
 process.env.NODE_ENV = 'development'
 
 // start frida compiler
-
-const TAG_FRIDA = '[Frida]'.yellow
-const opt = {
-  bytecode: false,
-  compress: false,
-  babelify: true,
-}
-
-tasks.forEach(task => compiler.watch(task.src, `${task.dest}.js`, opt)
-  .on('compile', (details) => {
-    const count = details.files.length
-    const { duration } = details
-    console.log(TAG_FRIDA, `compiled ${count} file(s) in ${duration} ms`)
-  }))
+compile.run(true)
 
 // server side
 
