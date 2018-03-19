@@ -1,7 +1,7 @@
 /* eslint import/no-extraneous-dependencies: 0 */
 
+import macho from 'macho'
 import ReadOnlyMemoryBuffer from './lib/romembuffer'
-import { parse } from './lib/macho'
 import { dictFromPlistCharArray } from './lib/nsdict'
 
 
@@ -30,7 +30,7 @@ function parseEntitlements(data) {
 export default function checksec() {
   const appModule = Process.enumerateModulesSync()[0]
   const buffer = new ReadOnlyMemoryBuffer(appModule.base, appModule.size)
-  const info = parse(buffer)
+  const info = macho.parse(buffer)
 
   let entitlements = null
 

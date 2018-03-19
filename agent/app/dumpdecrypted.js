@@ -1,7 +1,7 @@
+import macho from 'macho'
+
 import { open, close, write, lseek, O_RDONLY, O_RDWR, SEEK_SET } from './lib/libc'
 import { NSTemporaryDirectory } from './lib/foundation'
-import { parse } from './lib/macho'
-
 import ReadOnlyMemoryBuffer from './lib/romembuffer'
 
 
@@ -11,7 +11,7 @@ function dump(name) {
     throw new Error(`${name} is not a valid module name`)
 
   const buffer = new ReadOnlyMemoryBuffer(module.base, module.size)
-  const info = parse(buffer)
+  const info = macho.parse(buffer)
   const matches = info.cmds.filter(cmd => /^encryption_info(_64)?$/.test(cmd.type) && cmd.id === 1)
   if (!matches.length)
     throw new Error(`Module ${name} is not encrypted`)
@@ -37,8 +37,11 @@ function dump(name) {
 
   const outfd = open(output, O_RDWR, 0)
 
+  // skip fat header
+  const fatOffset = Process.findRangeByAddress(module.base).file.offset
+
   // dump decrypted
-  lseek(outfd, encryptionInfo.offset, SEEK_SET)
+  lseek(outfd, fatOffset + encryptionInfo.offset, SEEK_SET)
   write(outfd, module.base.add(encryptionInfo.offset), encryptionInfo.size)
 
   /*
@@ -48,7 +51,7 @@ function dump(name) {
 
   // erase cryptoff, cryptsize and cryptid
   const zeros = Memory.alloc(12)
-  lseek(outfd, encryptionInfo.fileoff + 8, SEEK_SET) // skip cmd and cmdsize
+  lseek(outfd, fatOffset + encryptionInfo.fileoff + 8, SEEK_SET) // skip cmd and cmdsize
   write(outfd, zeros, 12)
   close(outfd)
 
