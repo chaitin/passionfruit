@@ -156,7 +156,7 @@ export default {
     },
     async load() {
       if (this.loading)
-        this.$toast.open('busy...')
+        return this.$toast.open('busy...')
 
       this.loading = true
       const { cwd, list } = await this.socket.call('ls', {
