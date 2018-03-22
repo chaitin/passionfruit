@@ -4,8 +4,13 @@
       <section class="dialog section">
         <loading-tab v-if="loading"></loading-tab>
         <template v-else>
-          <b-message type="is-danger" v-if="error">{{ error }}</b-message>
-          <article class="content" v-if="content">
+          <template v-if="error">
+            <b-message type="is-danger" has-icon>
+              <p>Failed to open file {{ file.name }}: </p>
+              <pre class="exception">{{ error }}</pre>
+            </b-message>
+          </template>
+          <article class="content" v-else>
             <plist v-if="type == 'plist'" title="Plist Reader" :content="content" :rootName="file.name"></plist>
             <hex-view v-if="type == 'text'" :raw="content"></hex-view>
             <database v-if="type == 'sql'" :file="file" :content="content"></database>
@@ -67,7 +72,7 @@ export default {
     }
   },
   mounted() {
-    if (this.file && this.file.path)
+    if (this.file && this.file.path && this.open)
       this.view(this.file.path)
   },
   beforeDestroy() {
@@ -96,3 +101,11 @@ export default {
   }
 }
 </script>
+
+<style>
+pre.exception {
+  background: none;
+  padding: 0;
+  white-space: pre-line;
+}
+</style>

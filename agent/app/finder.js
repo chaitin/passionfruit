@@ -38,13 +38,10 @@ function ls(path, root) {
 
 
 function plist(path) {
-  try {
-    const info = NSDictionary.dictionaryWithContentsOfFile_(path)
-    return toJSON(info)
-  } catch (ex) {
-    throw new Error(`unable to parse file ${path} as plist,
-      please make sure it does exist and is in valid format (${ex.stack})`)
-  }
+  const info = NSDictionary.dictionaryWithContentsOfFile_(path)
+  if (info === null)
+    throw new Error(`malformed plist file: ${path}`)
+  return toJSON(info)
 }
 
 function text(path) {
