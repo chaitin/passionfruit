@@ -74,7 +74,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { GET_SOCKET, FINDER_ROOT } from '~/vuex/types'
+import { GET_SOCKET } from '~/vuex/types'
 import FileViewer from '~/components/FileViewer.vue'
 import { download, save } from '~/lib/utils'
 
