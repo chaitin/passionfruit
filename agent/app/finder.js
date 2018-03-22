@@ -13,11 +13,12 @@ function ls(path, root) {
     NSBundle.mainBundle().bundlePath().toString() :
     NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
 
-  const nsArray = fileManager.directoryContentsAtPath_([prefix, path].join('/'))
+  const cwd = [prefix, path].join('/')
+  const nsArray = fileManager.directoryContentsAtPath_(cwd)
   const isDir = Memory.alloc(Process.pointerSize)
 
   if (!nsArray)
-    return []
+    return { cwd, list: [] }
 
   const list = arrayFromNSArray(nsArray).map((filename) => {
     const fullPath = [prefix, path, filename].join('/')
@@ -32,7 +33,7 @@ function ls(path, root) {
     }
   })
 
-  return list
+  return { cwd, list }
 }
 
 

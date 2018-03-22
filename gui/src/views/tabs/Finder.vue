@@ -159,7 +159,7 @@ export default {
         this.$toast.open('busy...')
 
       this.loading = true
-      const list = await this.socket.call('ls', {
+      const { cwd, list } = await this.socket.call('ls', {
         pathName: this.components.join('/'), root: this.root
       })
 
