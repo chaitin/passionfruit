@@ -21,12 +21,15 @@
 
     <div class="columns">
       <div class="column is-three-quarter">
-        <b-table class="fixed finder" :data="list" narrowed :loading="loading" default-sort="name" :selected.sync="selected" @dblclick="open">
+        <b-table class="fixed finder" :data="list" narrowed :loading="loading"
+            default-sort="name" :selected.sync="selected" @dblclick="open">
           <template slot-scope="props">
             <b-table-column field="name" label="Name" sortable class="ellipsis">
-              <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
-              <b-icon icon="insert_drive_file" v-else></b-icon>
-              <span> {{ props.row.name }}</span>
+              <a class="filename" @click="open(props.row)">
+                <b-icon icon="folder" v-if="props.row.type == 'directory' "></b-icon>
+                <b-icon icon="insert_drive_file" v-else></b-icon>
+                <span> {{ props.row.name }}</span>
+              </a>
             </b-table-column>
 
             <b-table-column field="owner" label="Owner" sortable width="120">
@@ -130,6 +133,10 @@ export default {
       this.type = type
       this.viewerOpen = true
     },
+    relative(tail) {
+      // todo: shall we support ".." ?
+      return this.cwd.length ? [this.cwd, tail].join('/') : tail
+    },
     cd(path, newRoot) {
       if (this.loading)
         return this.$toast.open('busy...')
@@ -170,7 +177,7 @@ export default {
     },
     open(item) {
       if (item.type === 'directory') {
-        this.cd(this.cwd.length ? [this.cwd, item.name].join('/') : item.name)
+        this.cd(this.relative(item.name))
       } else {
         let ext = item.name.split('.').slice(-1).pop()
         const mapping = {
@@ -198,8 +205,8 @@ export default {
 <style lang="scss">
 .finder {
   user-select: none;
-  span {
-    cursor: default;
+  a.filename {
+    cursor: pointer;
   }
 }
 
