@@ -10,7 +10,7 @@ import bypassJailbreak from './jailbreak'
 import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
-import { ls, home, plist, text, download } from './finder'
+import { ls, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 
@@ -49,7 +49,6 @@ rpc.exports = {
   imports,
 
   ls,
-  home,
   plist,
   text,
   download,

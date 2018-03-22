@@ -3,18 +3,24 @@ import uuidv4 from './lib/uuid'
 import { open } from './lib/libc'
 import { getDataAttrForPath } from './lib/foundation'
 
+const { NSFileManager, NSProcessInfo, NSDictionary, NSBundle } = ObjC.classes
 
-const fileManager = ObjC.classes.NSFileManager.defaultManager()
+const fileManager = NSFileManager.defaultManager()
 
 
-function ls(path) {
-  let list = fileManager.directoryContentsAtPath_(path)
+function ls(path, root) {
+  const prefix = root === 'bundle' ?
+    NSBundle.mainBundle().bundlePath().toString() :
+    NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
+
+  const nsArray = fileManager.directoryContentsAtPath_([prefix, path].join('/'))
   const isDir = Memory.alloc(Process.pointerSize)
 
-  if (!list)
-    return { path, list: [] }
-  list = arrayFromNSArray(list).map((filename) => {
-    const fullPath = `${path}/${filename}`
+  if (!nsArray)
+    return []
+
+  const list = arrayFromNSArray(nsArray).map((filename) => {
+    const fullPath = [prefix, path, filename].join('/')
     fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)
 
     return {
@@ -26,18 +32,13 @@ function ls(path) {
     }
   })
 
-  return { path, list }
-}
-
-function home() {
-  const path = ObjC.classes.NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
-  return ls(path)
+  return list
 }
 
 
 function plist(path) {
   try {
-    const info = ObjC.classes.NSDictionary.dictionaryWithContentsOfFile_(path)
+    const info = NSDictionary.dictionaryWithContentsOfFile_(path)
     return toJSON(info)
   } catch (ex) {
     throw new Error(`unable to parse file ${path} as plist,
@@ -112,7 +113,6 @@ function download(path) {
 
 module.exports = {
   ls,
-  home,
   plist,
   text,
   download,

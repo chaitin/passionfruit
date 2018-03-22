@@ -97,8 +97,7 @@ export default {
   data() {
     return {
       loading: false,
-      root: null,
-      path: null,
+      root: 'home',
       components: [],
       list: [],
       selected: null,
@@ -109,6 +108,11 @@ export default {
   },
   mounted() {
     this.home()
+  },
+  watch: {
+    $route(val) {
+      this.root = ['root', 'bundle'].indexOf(val.root) > -1 ? val.root : 'home'
+    },
   },
   methods: {
     view(type) {
@@ -123,19 +127,19 @@ export default {
     },
     home() {
       this.components = []
-      this.load(this.root)
+      this.load()
     },
     up(index) {
       if (index === this.components.length - 1)
         return
 
       this.components = this.components.slice(0, index + 1)
-      this.load(this.root + '/' + this.components.join('/'))
+      this.load()
     },
     open(item) {
       if (item.type === 'directory') {
         this.components.push(item.name)
-        this.load(item.path)
+        this.load()
       } else {
         let ext = item.name.split('.').slice(-1).pop()
         const mapping = {
@@ -150,19 +154,17 @@ export default {
         this.view(mapping[ext] || 'text')
       }
     },
-    async load(directory) {
+    async load() {
       if (this.loading)
         this.$toast.open('busy...')
 
       this.loading = true
-      const { path, list } = await this.socket.call('ls', directory)
-      if (!directory)
-        this.root = path
+      const list = await this.socket.call('ls', {
+        pathName: this.components.join('/'), root: this.root
+      })
 
-      this.path = path
       this.list = list
       this.selected = null
-
       this.loading = false
     },
   }
