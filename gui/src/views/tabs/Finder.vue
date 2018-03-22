@@ -2,9 +2,12 @@
   <div>
     <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
       <ul class="level-item">
-        <li>
-          <a @click="home">
-            <b-icon icon="home"></b-icon>
+        <li class="root-indicator">
+          <a @click="home" title="Home" :class="{ on: root === 'home'}">
+            <b-icon icon="home"></b-icon> <span>Data</span>
+          </a>
+          <a @click="bundle" title="App Bundle" :class="{ on: root === 'bundle'}">
+            <b-icon icon="work"></b-icon> <span>App Bundle</span>
           </a>
         </li>
         <li v-for="(name, index) in components" :key="name">
@@ -90,15 +93,18 @@ const FILE_TYPE_MAPPING = {
 export default {
   components: { FileViewer },
   computed: {
+    components() {
+      return this.cwd ? this.cwd.split('/') : []
+    },
     ...mapGetters({
       socket: GET_SOCKET,
-    })
+    }),
   },
   data() {
     return {
       loading: false,
       root: 'home',
-      components: [],
+      cwd: '',
       list: [],
       selected: null,
       typesMapping: FILE_TYPE_MAPPING,
@@ -107,11 +113,11 @@ export default {
     }
   },
   mounted() {
-    this.home()
+    this.load(this.$route.query)
   },
   watch: {
     $route(val) {
-      this.root = ['root', 'bundle'].indexOf(val.root) > -1 ? val.root : 'home'
+      this.load(val.query)
     },
   },
   methods: {
@@ -121,25 +127,50 @@ export default {
         download(this.socket, this.selected).then(save(name))
         return
       }
-
       this.type = type
       this.viewerOpen = true
     },
-    home() {
-      this.components = []
-      this.load()
+    cd(path, newRoot) {
+      if (this.loading)
+        return this.$toast.open('busy...')
+
+      this.$router.push({
+        query: {
+          root: newRoot || this.root,
+          path,
+        }
+      })
+    },
+    async load({ root, path }) {
+      this.root = ['root', 'bundle'].indexOf(root) > -1 ? root : 'home'
+      this.cwd = path || ''
+
+      this.loading = true
+      try {
+        const { cwd, list } = await this.socket.call('ls', {
+          pathName: this.cwd,
+          root: this.root,
+        })
+        this.list = list
+      } catch(ex) {
+        this.$toast.open({
+          message: `failed to change current directory: ${ex}`,
+          type: 'is-danger',
+        })
+        console.error(ex.stack || ex)
+      }
+      
+      this.selected = null
+      this.loading = false
     },
     up(index) {
-      if (index === this.components.length - 1)
-        return
-
-      this.components = this.components.slice(0, index + 1)
-      this.load()
+      const { components } = this
+      if (index === components.length - 1) return
+      this.cd(components.slice(0, index + 1).join('/'))
     },
     open(item) {
       if (item.type === 'directory') {
-        this.components.push(item.name)
-        this.load()
+        this.cd(this.cwd.length ? [this.cwd, item.name].join('/') : item.name)
       } else {
         let ext = item.name.split('.').slice(-1).pop()
         const mapping = {
@@ -154,18 +185,11 @@ export default {
         this.view(mapping[ext] || 'text')
       }
     },
-    async load() {
-      if (this.loading)
-        return this.$toast.open('busy...')
-
-      this.loading = true
-      const { cwd, list } = await this.socket.call('ls', {
-        pathName: this.components.join('/'), root: this.root
-      })
-
-      this.list = list
-      this.selected = null
-      this.loading = false
+    home() {
+      this.cd('', 'home')
+    },
+    bundle() {
+      this.cd('', 'bundle')
     },
   }
 }
@@ -177,5 +201,10 @@ export default {
   span {
     cursor: default;
   }
+}
+
+.root-indicator a.on {
+  color: #222;
+  font-weight: bold;
 }
 </style>

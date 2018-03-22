@@ -41,7 +41,10 @@
           <p>{{ info.id }}</p>
         </b-field>
         <b-field label="Bundle">
-          <p>{{ info.bundle }}</p>
+          <p>
+            <router-link class="has-text-info" :to="{ name: 'files', query: { root: 'bundle' } }">
+              {{ info.bundle }}</router-link>
+          </p>
         </b-field>
         <b-field label="Executable">
           <p>{{ info.binary }}</p>
