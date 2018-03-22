@@ -1,4 +1,4 @@
-# ![Passionfruit](gui/src/assets/logo.svg)
+# ![Passionfruit](images/logo.png)
 
 [![npm version](https://badge.fury.io/js/passionfruit.svg)](https://badge.fury.io/js/passionfruit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -17,6 +17,7 @@ passionfruit
 * **Cross plarform web GUI!**
 * Also supports non-jailbroken device (see [Non-jailbroken device](#non-jailbroken-device)).
 * List all url schemes.
+* Check signature entitlements.
 * List human readable app meta info (Info.plist).
 * Capture screenshot.
 * Checksec: see if target app is encrypted, and has enabled PIE, ARC and stack canary.
@@ -25,40 +26,35 @@ passionfruit
 * Log SQLite operations.
 * Log and try to bypass jailbreak detection.
 * List Objective-C classes from app, hook the methods and inspect the arguments and stack trace.
-* Read keychain items.
-* Read cookies.
-* Read UserDefaults.
-* Simple ui dump.
+* Dump KeyChain, BinaryCookies and UserDefaults.
 
 ## Screenshots
 
-![General](screenshot/metainfo.png)
+![General](images/metainfo.png)
 
 Checksec, url schemes and metainfo.
 
-![Finder](screenshot/finder.png)
+![Finder](images/finder.png)
 
 File browser with hex viewer, image viewer, plist viewer and SQLite database reader.
 
-![Modules](screenshot/modules.png)
+![Modules](images/modules.png)
 
 Loaded frameworks and their exported symbols.
 
-![Classes](screenshot/classes.png)
-
-![Methods](screenshot/methods.png)
+![Classes](images/classes.png)
 
 Objective C classes and methods.
 
-![Console](screenshot/console.png)
+![Console](images/console.png)
 
 Intercepted calls, arguments and stack trace.
 
-![UIDump](screenshot/uidump.png)
+![UIDump](images/uidump.png)
 
 Dump ui description of the key window.
 
-![keychain](screenshot/keychain.png)
+![keychain](images/keychain.png)
 
 KeyChain reader.
 
@@ -119,8 +115,6 @@ npm install
 ```
 
 For those who wants to contribute, you may probably need to restart the api server and reload webpage each time you make a change. The following steps enable livereload.
-
-**Will start three shells simultaneously.**
 
 ```shell
 npm run dev
