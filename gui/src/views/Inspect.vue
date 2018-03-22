@@ -203,9 +203,14 @@ export default {
           }
         })
         .on('console', this.consoleAppend)
-        .on('connect', () => this.err = null)
-        .on('device', dev => this.device = dev)
-        .on('app', app => this.app = app)
+        .on('app', ({ app, device }) => {
+          this.device = device 
+          this.app = app
+
+          // todo: store in vuex
+          // this.storeDeviceId(device.id)
+          // this.storeAppId(app.identifier)
+        })
         .on('ready', () => {
           this.loading = false
           this.connected = true
