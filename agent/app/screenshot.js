@@ -42,13 +42,15 @@ export default function screenshot() {
   return performOnMainThread(() => {
     const bounds = UIScreen.mainScreen().bounds()
     const cgsize = bounds[1]
+    const statusbar = UIApplication.sharedApplication().valueForKey_('statusBarWindow').valueForKey_('statusBar')
     UIGraphicsBeginImageContextWithOptions(cgsize, 0, 0)
     const windows = UIApplication.sharedApplication().windows()
     for (let index = 0; index < windows.count(); index++) {
       const currentwindow = windows.objectAtIndex_(index)
       currentwindow.drawViewHierarchyInRect_afterScreenUpdates_(currentwindow.bounds(), true)
     }
-
+    
+    statusbar.drawViewHierarchyInRect_afterScreenUpdates_(statusbar.bounds(), true)
     const image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
 
