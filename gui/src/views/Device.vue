@@ -36,21 +36,7 @@
         </div>
 
         <b-field class="level-right">
-          <b-dropdown v-model="view" is-align="right">
-            <button class="button is-light" slot="trigger">
-              <b-icon v-if="isGrid" icon="view_comfy"></b-icon>
-              <b-icon v-if="isLargeIcon" icon="hdr_strong"></b-icon>
-              <b-icon v-if="isSmallIcon" icon="hdr_weak"></b-icon>
-              <span>Display</span>
-              <b-icon icon="arrow_drop_down"></b-icon>
-            </button>
-            <b-dropdown-item value="grid">
-              <b-icon icon="view_comfy"></b-icon> Grid</b-dropdown-item>
-            <b-dropdown-item value="large">
-              <b-icon icon="hdr_strong"></b-icon> Large</b-dropdown-item>
-            <b-dropdown-item value="small">
-              <b-icon icon="hdr_weak"></b-icon> Small</b-dropdown-item>
-          </b-dropdown>
+          <b-switch v-model="isGrid">Grid</b-switch>
         </b-field>
       </header>
 
@@ -71,14 +57,9 @@
           </li>
         </ul>
 
-        <b-table v-else :data="apps" :narrowed="isSmallIcon" :hasDetails="false" :loading="loadingApps" default-sort="name">
-
+        <b-table v-else :data="apps" :hasDetails="false" :loading="loadingApps" default-sort="name">
           <template slot-scope="props">
-            <b-table-column field="smallIcon" width="16" label="" v-show="isSmallIcon">
-              <icon :icon="props.row.smallIcon"></icon>
-            </b-table-column>
-
-            <b-table-column field="largeIcon" width="32" label="" v-show="isLargeIcon">
+            <b-table-column field="largeIcon" width="32" label="">
               <icon :icon="props.row.largeIcon"></icon>
             </b-table-column>
 
@@ -146,15 +127,6 @@ export default {
     }
   },
   computed: {
-    isGrid() {
-      return this.view == 'grid'
-    },
-    isSmallIcon() {
-      return this.view == 'small'
-    },
-    isLargeIcon() {
-      return this.view == 'large'
-    },
     ...mapGetters({
       device: GET_DEVICE,
       deviceErr: DEVICE_ERROR,
@@ -172,7 +144,7 @@ export default {
     return {
       deviceId: '',
       largeIcon: true,
-      view: 'grid',
+      isGrid: true,
     }
   },
   mounted() {
