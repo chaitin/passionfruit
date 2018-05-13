@@ -62,8 +62,8 @@
   },
   "homepage": "https://github.com/chaitin/passionfruit#readme",
   "dependencies": {
-    "colors": "^1.2.4",
-    "frida": "^11.0.0",
+    "colors": "^1.2.5",
+    "frida": "^11.0.2",
     "frida-compile": "^5.3.7",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.0",
