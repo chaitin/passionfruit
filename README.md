@@ -28,35 +28,12 @@ passionfruit
 * List Objective-C classes from app, hook the methods and inspect the arguments and stack trace.
 * Dump KeyChain, BinaryCookies and UserDefaults.
 
-## Screenshots
-
 ![General](images/metainfo.png)
 
-Checksec, url schemes and metainfo.
+Please check out Wiki for more information.
 
-![Finder](images/finder.png)
-
-File browser with hex viewer, image viewer, plist viewer and SQLite database reader.
-
-![Modules](images/modules.png)
-
-Loaded frameworks and their exported symbols.
-
-![Classes](images/classes.png)
-
-Objective C classes and methods.
-
-![Console](images/console.png)
-
-Intercepted calls, arguments and stack trace.
-
-![UIDump](images/uidump.png)
-
-Dump ui description of the key window.
-
-![keychain](images/keychain.png)
-
-KeyChain reader.
+* [Screenshots](https://github.com/chaitin/passionfruit/wiki/Screenshots)
+* [FAQ](https://github.com/chaitin/passionfruit/wiki/FAQ)
 
 ## Setup
 
@@ -121,26 +98,6 @@ npm run dev
 ```
 
 Browser will be open (http://localhost:8080)
-
-## FAQ
-
-### Why node.js is complaining about syntax error?
-
-This project uses the lastest ECMAScript feature in server side. You need nodejs v7.10.1 at least, but v8.x and above is recommended.
-
-### "Device is not an iOS device, or you have not installed frida on it"
-
-Make sure you have frida.re successfully installed. Also, check if the version on of frida on device matches. Frida offers both 32bit and 64bit version, wrong architecture will not work.
-
-### Have problem with `npm install`?
-
-Users from China mainland may encounter network problem. Try npm mirrors like [cnpm](https://npm.taobao.org/). But some prebuilt packages may still need to be downloaded from GitHub, a reliable proxy would help.
-
-Besides, after updating source with `git pull`, or having nodejs engine upgraded, you may need to remove `node_modules` directory and re-run `npm install`.
-
-### "Error: Ambiguous name; it matches: ..."
-
-The app you're trying to attach has multiple processes, and frida couldn't decide which one to inject. You can try terminate the app via device gesture.
 
 ## LICENCE
 
