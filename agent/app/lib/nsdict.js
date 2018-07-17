@@ -69,10 +69,11 @@ function dictFromPlistCharArray(address, size) {
   return dictFromNSDictionary(dict)
 }
 
-function arrayFromNSArray(nsArray) {
+function arrayFromNSArray(nsArray, max) {
   const arr = []
   const count = nsArray.count()
-  for (let i = 0; i < count; i++) {
+  const len = Number.isNaN(max) ? Math.min(count, max) : count
+  for (let i = 0; i < len; i++) {
     const val = nsArray.objectAtIndex_(i)
     arr.push(toJSON(val))
   }

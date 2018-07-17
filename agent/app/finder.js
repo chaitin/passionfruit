@@ -20,7 +20,7 @@ function ls(path, root) {
   if (!nsArray)
     return { cwd, list: [] }
 
-  const list = arrayFromNSArray(nsArray).map((filename) => {
+  const list = arrayFromNSArray(nsArray, 100).map((filename) => {
     const fullPath = [prefix, path, filename].join('/')
     fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)
 
