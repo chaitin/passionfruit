@@ -7,7 +7,8 @@ null;
 
 function getOwnClasses(sort) {
   const free = new NativeFunction(Module.findExportByName(null, 'free'), 'void', ['pointer'])
-  const objc_copyClassNamesForImage = new NativeFunction(Module.findExportByName(null, 'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
+  const objc_copyClassNamesForImage = new NativeFunction(
+    Module.findExportByName(null, 'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
   const p = Memory.alloc(Process.pointerSize)
   Memory.writeUInt(p, 0)
   const path = ObjC.classes.NSBundle.mainBundle().executablePath().UTF8String()
@@ -43,6 +44,10 @@ exports.classes = () => {
 
   return globalClasses
 }
+
+exports.modules = () => Process.enumerateModulesSync()
+
+exports.exports = name => Module.enumerateExportsSync(name)
 
 exports.inspect = (clazz) => {
   const proto = []

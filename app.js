@@ -31,7 +31,7 @@ Buffer.prototype.toJSON = function() {
 router
   .get('/devices', async (ctx) => {
     const list = await frida.enumerateDevices()
-    ctx.body = list.filter(dev => dev.type === 'tether').map(serializeDevice)
+    ctx.body = list.filter(FridaUtil.isUSB).map(serializeDevice)
   })
   .get('/device/:device/apps', async (ctx) => {
     const id = ctx.params.device

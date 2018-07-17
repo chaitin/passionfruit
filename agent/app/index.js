@@ -8,7 +8,7 @@ import bypassJailbreak from './jailbreak'
 
 
 import { info, userDefaults } from './info'
-import { classes, ownClasses, methods, inspect } from './classdump'
+import { classes, ownClasses, methods, inspect, modules, exports } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
@@ -42,6 +42,8 @@ rpc.exports = {
   info,
   userDefaults,
 
+  modules,
+  exports,
   classes,
   ownClasses,
   methods,

@@ -11,10 +11,10 @@
   "dependencies": {
     "axios": "^0.16.2",
     "buefy": "^0.5.4",
-    "frida-gum-types": "^1.0.5",
+    "frida-gum-types": "^1.2.3",
     "material-design-icons": "^3.0.1",
     "monaco-editor": "^0.10.1",
-    "socket.io-client": "^2.1.0",
+    "socket.io-client": "^2.1.1",
     "socket.io-stream": "^0.9.1",
     "vue": "^2.5.16",
     "vue-router": "^2.8.1",
@@ -23,24 +23,24 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^6.4.1",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "copy-webpack-plugin": "^4.5.1",
+    "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^3.0.0",
     "css-loader": "^0.25.0",
     "file-loader": "^0.9.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.2",
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.7",
     "scss-loader": "^0.0.1",
     "style-loader": "^0.18.2",
-    "uglifyjs-webpack-plugin": "^1.2.5",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "vue-loader": "^12.2.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.11.2",
     "worker-loader": "^0.8.1",
-    "write-file-webpack-plugin": "^4.2.0"
+    "write-file-webpack-plugin": "^4.3.2"
   }
 }
