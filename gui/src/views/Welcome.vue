@@ -5,6 +5,9 @@
         <h1 class="title has-text-grey-darker"><img class="logo" src="../assets/logo.svg" alt="Passionfruit"></h1>
         <aside class="menu">
           <p class="menu-label">
+            Frida version: {{ version }} 
+          </p>
+          <p class="menu-label">
             Devices <loading v-if="loadingDevices" class="is-pulled-right"></loading>
           </p>
           <ul class="menu-list">
@@ -19,7 +22,7 @@
             General
           </p>
           <ul class="menu-list">
-            <li><a><b-icon icon="settings"></b-icon> <span>Preference</span></a></li>
+            <!-- <li><a><b-icon icon="settings"></b-icon> <span>Preference</span></a></li> -->
             <li><a target="_blank" href="http://github.com/chaitin/passionfruit"><b-icon icon="open_in_browser"></b-icon> <span>Github</span></a></li>
           </ul>
         </aside>
@@ -36,7 +39,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { GET_DEVICES, LOAD_DEVICES, DEVICES_LOADING } from '~/vuex/types'
+import { GET_VERSION, GET_DEVICES, LOAD_DEVICES, DEVICES_LOADING } from '~/vuex/types'
 import Icon from '~/components/Icon.vue'
 import Loading from '~/components/Loading.vue'
 
@@ -47,16 +50,19 @@ export default {
   },
   computed: {
     ...mapGetters({
+      version: GET_VERSION,
       devices: GET_DEVICES,
       loadingDevices: DEVICES_LOADING,
     })
   },
   methods: {
     ...mapActions({
+      getFridaVersion: GET_VERSION,
       refresh: LOAD_DEVICES
     })
   },
   mounted() {
+    this.getFridaVersion()
     this.refresh()
   }
 }

@@ -7,6 +7,7 @@ export const state = {
   list: [],
   selected: {},
   loading: false,
+  version: 'N/A',
 
   device: {
     selected: {},
@@ -23,6 +24,7 @@ export const state = {
 }
 
 export const getters = {
+  [types.GET_VERSION]: state => state.version,
   [types.GET_DEVICES]: state => state.list,
   [types.GET_DEVICE]: state => state.selected,
   [types.DEVICES_LOADING]: state => state.loading,
@@ -44,7 +46,10 @@ export const mutations = {
     state.list = state.list.filter(dev => dev.id !== device.id)
   },
   [types.DEVICES_LOADING]: (state, loading) => state.loading = loading,
-  [types.UPDATE_DEVICES]: (state, list) => state.list = list,
+  [types.UPDATE_DEVICES]: (state, { list, version }) => {
+    state.list = list
+    state.version = version
+  },
   [types.SELECT_DEVICE]: (state, id) => {
     let dev = state.list.find(dev => dev.id == id)
     if (dev) {

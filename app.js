@@ -5,6 +5,7 @@ const { Z_SYNC_FLUSH } = require('zlib')
 require('colors')
 
 const frida = require('frida')
+const FRIDA_VERSION = require('frida/package.json').version
 const Koa = require('koa')
 
 const logger = require('koa-logger')
@@ -31,7 +32,10 @@ Buffer.prototype.toJSON = function() {
 router
   .get('/devices', async (ctx) => {
     const list = await frida.enumerateDevices()
-    ctx.body = list.filter(FridaUtil.isUSB).map(serializeDevice)
+    ctx.body = {
+      version: FRIDA_VERSION,
+      list: list.filter(FridaUtil.isUSB).map(serializeDevice),
+    }
   })
   .get('/device/:device/apps', async (ctx) => {
     const id = ctx.params.device
@@ -39,10 +43,8 @@ router
     try {
       ctx.body = await dev.enumerateApplications()
     } catch (ex) {
-      if (ex.message.indexOf('Unable to connect to remote frida-server') === 0)
-        throw new InvalidDeviceError(id)
-      else
-        throw ex
+      throw ex.message.indexOf('Unable to connect to remote frida-server') === 0 ? 
+        new InvalidDeviceError(id) : ex
     }
   })
   .post('/device/spawn', async (ctx) => {
@@ -69,13 +71,10 @@ app
     try {
       await next()
     } catch (e) {
-      if (e instanceof KnownError)
-        ctx.throw(404, e.message)
+      if (e instanceof KnownError) ctx.throw(404, e.message)
 
-      if (process.env.NODE_ENV === 'development')
-        throw e
-      else
-        ctx.throw(500, e.message)
+      if (process.env.NODE_ENV === 'development') throw e
+      else ctx.throw(500, e.message)
     }
   })
   .use(router.routes())
@@ -90,10 +89,8 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   app.use(async (ctx, next) => {
     const opt = { root: path.join(__dirname, 'gui') }
-    if (ctx.path.startsWith('/static/'))
-      await send(ctx, ctx.path, opt)
-    else // SPA
-      await send(ctx, '/index.html', opt)
+    if (ctx.path.startsWith('/static/')) await send(ctx, ctx.path, opt)
+    else await send(ctx, '/index.html', opt)
 
     next()
   })

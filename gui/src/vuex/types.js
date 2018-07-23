@@ -1,5 +1,7 @@
 // devices
 
+export const GET_VERSION = 'GET_VERSION'
+
 export const GET_DEVICES = 'GET_DEVICES'
 export const GET_DEVICE = 'GET_DEVICE'
 export const GET_APPS = 'GET_APPS'
