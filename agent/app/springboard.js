@@ -36,9 +36,9 @@ rpc.exports = {
   activate(bundle) {
     perform(() => {
       const controller = SBApplicationController.sharedInstance()
-      const app = typeof controller.applicationWithBundleIdentifier_ === 'function' ?
-        controller.applicationWithBundleIdentifier_(bundle) : // iOS 8+
-        controller.applicationWithDisplayIdentifier_(bundle) // iOS 7-
+      const app = typeof controller.applicationWithBundleIdentifier_ === 'function'
+        ? controller.applicationWithBundleIdentifier_(bundle) // iOS 8+
+        : controller.applicationWithDisplayIdentifier_(bundle) // iOS 7-
       SBUIController.sharedInstanceIfExists().activateApplication_(app)
     })
   },
