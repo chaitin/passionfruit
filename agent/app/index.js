@@ -1,12 +1,13 @@
 import checksec from './checksec'
 import imports from './imports'
 import cookies from './binarycookie'
-import keychain from './keychain'
 import dumpdecrypted from './dumpdecrypted'
 import screenshot from './screenshot'
 import bypassJailbreak from './jailbreak'
 
 
+import { start as startPasteboardMonitor } from './pasteboard'
+import { list as dumpKeyChain } from './keychain'
 import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect, modules, exports } from './classdump'
 import { tables, data, query } from './sqlite'
@@ -17,13 +18,12 @@ import { hook, unhook, swizzle, unswizzle } from './hook'
 
 // todo: add options
 
-require('./pasteboard') // monitor pasteboard
-
 Module.ensureInitialized('Foundation')
 
-setTimeout(() => {
-  toggleTouchID(false) // try bypass jailbreak
-  bypassJailbreak(true)
+setImmediate(() => {
+  toggleTouchID(false)
+  bypassJailbreak(true) // try to bypass jailbreak
+  startPasteboardMonitor()
 
   // todo: common function template
   hook('libSystem.B.dylib', 'open', { args: ['char *', 'int'] })
@@ -35,8 +35,9 @@ setTimeout(() => {
 
   swizzle('NSURL', 'URLWithString_', false)
   swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
-}, 1000)
+})
 
+// todo: decorator?
 rpc.exports = {
   checksec,
   info,
@@ -65,7 +66,7 @@ rpc.exports = {
   toggleTouchID,
   toggleDebugOverlay,
 
-  dumpKeyChain: keychain.list,
+  dumpKeyChain,
 
   hook,
   unhook,
