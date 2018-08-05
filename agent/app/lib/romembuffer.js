@@ -22,8 +22,8 @@ const isLE = ((new Uint32Array((new Uint8Array([1, 2, 3, 4])).buffer))[0] === 0x
 const proto = ReadOnlyMemoryBuffer.prototype
 
 proto.slice = function(begin, end) {
-  const size = typeof end === 'undefined' ?
-    this.length : Math.min(end, this.length) - begin
+  const size = typeof end === 'undefined'
+    ? this.length : Math.min(end, this.length) - begin
   return new ReadOnlyMemoryBuffer(this.base.add(begin), size)
 }
 

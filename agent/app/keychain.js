@@ -135,9 +135,9 @@ function decodeOd(item, flags) {
         break
 
       case 'cbio':
-        flags.push(constraints.objectForKey_('cbio').count() === 1 ?
-          'kSecAccessControlTouchIDAny' :
-          'kSecAccessControlTouchIDCurrentSet')
+        flags.push(constraints.objectForKey_('cbio').count() === 1
+          ? 'kSecAccessControlTouchIDAny'
+          : 'kSecAccessControlTouchIDCurrentSet')
         break
 
       default:
@@ -180,7 +180,7 @@ function decodeAcl(entry) {
 }
 
 
-function list() {
+export function list() {
   const result = []
 
   const query = NSMutableDictionary.alloc().init()
@@ -230,7 +230,7 @@ function list() {
   return result
 }
 
-function clear() {
+export function clear() {
   // keychain item times to query for
   kSecClasses.forEach((clazz) => {
     const query = NSMutableDictionary.alloc().init()
@@ -239,9 +239,4 @@ function clear() {
   })
 
   return true
-}
-
-module.exports = {
-  clear,
-  list,
 }

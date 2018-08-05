@@ -8,10 +8,10 @@ const { NSFileManager, NSProcessInfo, NSDictionary, NSBundle } = ObjC.classes
 const fileManager = NSFileManager.defaultManager()
 
 
-function ls(path, root) {
-  const prefix = root === 'bundle' ?
-    NSBundle.mainBundle().bundlePath().toString() :
-    NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
+export function ls(path, root) {
+  const prefix = root === 'bundle'
+    ? NSBundle.mainBundle().bundlePath().toString()
+    : NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
 
   const cwd = [prefix, path].join('/')
   const nsArray = fileManager.directoryContentsAtPath_(cwd)
@@ -37,14 +37,14 @@ function ls(path, root) {
 }
 
 
-function plist(path) {
+export function plist(path) {
   const info = NSDictionary.dictionaryWithContentsOfFile_(path)
   if (info === null)
     throw new Error(`malformed plist file: ${path}`)
   return toJSON(info)
 }
 
-function text(path) {
+export function text(path) {
   const name = Memory.allocUtf8String(path)
   const size = 10 * 1024 // max read size: 10k
 
@@ -59,7 +59,7 @@ function text(path) {
 }
 
 
-function download(path) {
+export function download(path) {
   const session = uuidv4()
   const name = Memory.allocUtf8String(path)
   const watermark = 10 * 1024 * 1024
@@ -107,11 +107,4 @@ function download(path) {
     size,
     session,
   }
-}
-
-module.exports = {
-  ls,
-  plist,
-  text,
-  download,
 }

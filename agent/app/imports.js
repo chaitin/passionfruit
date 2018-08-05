@@ -1,4 +1,4 @@
-module.exports = function imports(name) {
+export default function imports(name) {
   return new Promise((resolve, reject) => {
     Process.enumerateModules({
       onMatch(module) {

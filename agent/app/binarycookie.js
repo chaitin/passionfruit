@@ -4,7 +4,7 @@ function str(obj, def) {
   return obj ? obj.toString() : (def || 'N/A')
 }
 
-module.exports = function binaryCookies() {
+export default function binaryCookies() {
   const store = NSHTTPCookieStorage.sharedHTTPCookieStorage()
   const jar = store.cookies()
   const cookies = []

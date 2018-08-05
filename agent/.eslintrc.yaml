@@ -1,6 +1,9 @@
 rules:
   import/no-extraneous-dependencies: [error, { devDependencies: true }]
-  no-console: ["error"]
+  no-console: [error]
+  nonblock-statement-body-position: [error, "below"]
+  function-paren-newline: [error, consistent]
+  
 globals:
   Duktape: true
   'NULL': true // wow, NULL is a preversed keyword in yaml

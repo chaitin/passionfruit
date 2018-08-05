@@ -53,7 +53,7 @@ export default function screenshot() {
       const currentwindow = windows.objectAtIndex_(index)
       currentwindow.drawViewHierarchyInRect_afterScreenUpdates_(currentwindow.bounds(), true)
     }
-    
+
     statusbar.drawViewHierarchyInRect_afterScreenUpdates_(statusbar.bounds(), true)
     const image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()

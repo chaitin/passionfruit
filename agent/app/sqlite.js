@@ -2,7 +2,7 @@ function quote(table) {
   return `"${table.replace(/"/g, '')}"`
 }
 
-class Database {
+export class Database {
   constructor(filename) {
     this.db = SqliteDatabase.open(filename)
   }
@@ -56,7 +56,7 @@ class Database {
   }
 }
 
-function data({ path, table }) {
+export function data({ path, table }) {
   const db = new Database(path)
   const sql = `select * from ${quote(table)} limit 500`
   const result = {
@@ -67,7 +67,7 @@ function data({ path, table }) {
   return result
 }
 
-function query({ path, sql }) {
+export function query({ path, sql }) {
   const db = new Database(path)
   const statement = db.prepare(sql)
   const result = db.all(statement)
@@ -75,17 +75,9 @@ function query({ path, sql }) {
   return result
 }
 
-function tables(path) {
+export function tables(path) {
   const db = new Database(path)
   const list = db.tables()
   db.close()
   return list
-}
-
-module.exports = {
-  tables,
-  query,
-
-  Database,
-  data,
 }

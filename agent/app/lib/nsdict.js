@@ -22,21 +22,19 @@ const {
 const NSPropertyListImmutable = 0
 
 
-function toJSON(value) {
+export function toJSON(value) {
   if (value === null || typeof value !== 'object')
     return value
-
   if (value.isKindOfClass_(NSArray))
     return arrayFromNSArray(value)
-  else if (value.isKindOfClass_(NSDictionary))
+  if (value.isKindOfClass_(NSDictionary))
     return dictFromNSDictionary(value)
-  else if (value.isKindOfClass_(NSNumber))
+  if (value.isKindOfClass_(NSNumber))
     return value.floatValue()
-
   return value.toString()
 }
 
-function dictFromNSDictionary(nsDict) {
+export function dictFromNSDictionary(nsDict) {
   const jsDict = {}
   const keys = nsDict.allKeys()
   const count = keys.count()
@@ -49,7 +47,7 @@ function dictFromNSDictionary(nsDict) {
   return jsDict
 }
 
-function dictFromPlistCharArray(address, size) {
+export function dictFromPlistCharArray(address, size) {
   const format = Memory.alloc(Process.pointerSize)
   const err = Memory.alloc(Process.pointerSize)
   const data = NSData.dataWithBytesNoCopy_length_(address, size)
@@ -69,7 +67,7 @@ function dictFromPlistCharArray(address, size) {
   return dictFromNSDictionary(dict)
 }
 
-function arrayFromNSArray(nsArray, max) {
+export function arrayFromNSArray(nsArray, max) {
   const arr = []
   const count = nsArray.count()
   const len = Number.isNaN(max) ? Math.min(count, max) : count
@@ -80,17 +78,14 @@ function arrayFromNSArray(nsArray, max) {
   return arr
 }
 
-function toNSObject(obj) {
+export function toNSObject(obj) {
   // not tested, may be buggy
   if ('isKindOfClass_' in obj)
     return obj
-
   if (typeof obj === 'boolean')
     return __NSCFBoolean.numberWithBool_(obj)
-
   if (typeof obj === 'undefined' || obj === null)
     return NSNull.null()
-
   if (typeof obj === 'string')
     return NSString.stringWithString_(obj)
 
@@ -109,12 +104,4 @@ function toNSObject(obj) {
   }
 
   return mutableDict
-}
-
-module.exports = {
-  dictFromNSDictionary,
-  dictFromPlistCharArray,
-  arrayFromNSArray,
-  toJSON,
-  toNSObject,
 }

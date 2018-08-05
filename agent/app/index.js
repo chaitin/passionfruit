@@ -19,9 +19,9 @@ import { hook, unhook, swizzle, unswizzle } from './hook'
 
 require('./pasteboard') // monitor pasteboard
 
-setTimeout(() => {
-  Module.ensureInitialized('Foundation')
+Module.ensureInitialized('Foundation')
 
+setTimeout(() => {
   toggleTouchID(false) // try bypass jailbreak
   bypassJailbreak(true)
 

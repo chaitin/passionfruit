@@ -1,55 +1,49 @@
-/* eslint camelcase:0, no-cond-assign:0 */
+/* eslint no-cond-assign:0 */
 
-// looks like there's a bug in compiler
-// https://github.com/frida/frida-compile/issues/8
-// eslint-disable-next-line
-null;
-
-function getOwnClasses(sort) {
+export function getOwnClasses(sort) {
   const free = new NativeFunction(Module.findExportByName(null, 'free'), 'void', ['pointer'])
-  const objc_copyClassNamesForImage = new NativeFunction(
-    Module.findExportByName(null, 'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
+  const copyClassNamesForImage = new NativeFunction(Module.findExportByName(null,
+    'objc_copyClassNamesForImage'), 'pointer', ['pointer', 'pointer'])
   const p = Memory.alloc(Process.pointerSize)
   Memory.writeUInt(p, 0)
   const path = ObjC.classes.NSBundle.mainBundle().executablePath().UTF8String()
   const pPath = Memory.allocUtf8String(path)
-  const pClasses = objc_copyClassNamesForImage(pPath, p)
+  const pClasses = copyClassNamesForImage(pPath, p)
   const count = Memory.readUInt(p)
-  const classes = new Array(count)
+  const classesArray = new Array(count)
   for (let i = 0; i < count; i++) {
     const pClassName = Memory.readPointer(pClasses.add(i * Process.pointerSize))
-    classes[i] = Memory.readUtf8String(pClassName)
+    classesArray[i] = Memory.readUtf8String(pClassName)
   }
   free(pClasses)
-  return sort ? classes.sort() : classes
+  return sort ? classesArray.sort() : classesArray
 }
 
 function getGlobalClasses(sort) {
-  const classes = Object.keys(ObjC.classes)
-  return sort ? classes.sort() : classes
+  const classesArray = Object.keys(ObjC.classes)
+  return sort ? classesArray.sort() : classesArray
 }
 
-let ownClasses = null
-let globalClasses = null
+let cachedOwnClasses = null
+let cachedGlobalClasses = null
 
-exports.ownClasses = () => {
-  if (!ownClasses)
-    ownClasses = getOwnClasses(true)
-  return ownClasses
+export function ownClasses() {
+  if (!cachedOwnClasses)
+    cachedOwnClasses = getOwnClasses(true)
+  return cachedOwnClasses
 }
 
-exports.classes = () => {
-  if (!globalClasses)
-    globalClasses = getGlobalClasses(true)
+export function classes() {
+  if (!cachedGlobalClasses)
+    cachedGlobalClasses = getGlobalClasses(true)
 
-  return globalClasses
+  return cachedGlobalClasses
 }
 
-exports.modules = () => Process.enumerateModulesSync()
+export const modules = () => Process.enumerateModulesSync()
+export const exports = name => Module.enumerateExportsSync(name)
 
-exports.exports = name => Module.enumerateExportsSync(name)
-
-exports.inspect = (clazz) => {
+export function inspect(clazz) {
   const proto = []
   let clz = ObjC.classes[clazz]
   if (!clz)

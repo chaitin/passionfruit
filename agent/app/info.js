@@ -4,7 +4,7 @@ import { NSTemporaryDirectory } from './lib/foundation'
 const { NSBundle, NSProcessInfo, NSUserDefaults } = ObjC.classes
 
 
-function info() {
+export function info() {
   const mainBundle = NSBundle.mainBundle()
   const json = toJSON(mainBundle.infoDictionary())
   const data = NSProcessInfo.processInfo()
@@ -45,13 +45,6 @@ function info() {
 }
 
 
-function userDefaults() {
+export function userDefaults() {
   return toJSON(NSUserDefaults.alloc().init().dictionaryRepresentation())
 }
-
-
-module.exports = {
-  info,
-  userDefaults,
-}
-
