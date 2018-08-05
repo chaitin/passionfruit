@@ -40,9 +40,6 @@ export function classes() {
   return cachedGlobalClasses
 }
 
-export const modules = () => Process.enumerateModulesSync()
-export const exports = name => Module.enumerateExportsSync(name)
-
 export function inspect(clazz) {
   const proto = []
   let clz = ObjC.classes[clazz]

@@ -1,15 +1,15 @@
 import checksec from './checksec'
-import imports from './imports'
 import cookies from './binarycookie'
 import dumpdecrypted from './dumpdecrypted'
 import screenshot from './screenshot'
 import bypassJailbreak from './jailbreak'
 
 
+import { imports, exports, modules } from './symbols'
 import { start as startPasteboardMonitor } from './pasteboard'
 import { list as dumpKeyChain } from './keychain'
 import { info, userDefaults } from './info'
-import { classes, ownClasses, methods, inspect, modules, exports } from './classdump'
+import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'

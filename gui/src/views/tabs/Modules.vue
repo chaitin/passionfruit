@@ -21,12 +21,12 @@
           <span>{{ props.row.name }}</span>
         </b-table-column>
 
-        <b-table-column field="baseAddress" label="Base" class="monospace" sortable width="120">
-          {{ props.row.baseAddress | hex }}
+        <b-table-column field="base" label="Base" class="monospace" sortable width="120">
+          {{ props.row.base }}
         </b-table-column>
 
         <b-table-column field="size" label="Size" class="monospace" sortable width="120">
-          {{ props.row.size }}
+          {{ props.row.size | hex }}
         </b-table-column>
 
         <b-table-column field="path" label="Path" class="break-all">
