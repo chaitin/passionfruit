@@ -18,8 +18,6 @@ import { hook, unhook, swizzle, unswizzle } from './hook'
 
 // todo: add options
 
-Module.ensureInitialized('Foundation')
-
 setImmediate(() => {
   toggleTouchID(false)
   bypassJailbreak(true) // try to bypass jailbreak
