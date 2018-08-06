@@ -23,12 +23,6 @@ const { KnownError, InvalidDeviceError } = require('./lib/error')
 const app = new Koa()
 const router = new Router({ prefix: '/api' })
 
-// hack: convert buffer to base64 string
-/* eslint func-names:0 */
-Buffer.prototype.toJSON = function() {
-  return this.toString('base64')
-}
-
 router
   .get('/devices', async (ctx) => {
     const list = await frida.enumerateDevices()
