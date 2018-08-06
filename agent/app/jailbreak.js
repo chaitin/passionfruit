@@ -31,9 +31,6 @@ const paths = `/Applications/Cydia.app
 /var/lib/cydia`.split('\n')
 
 const subject = 'jailbreak'
-const NSPOSIXErrorDomain = new ObjC.Object(Memory.readPointer(
-  Module.findExportByName('Foundation', 'NSPOSIXErrorDomain')
-))
 
 export default function bypassJailbreak() {
   /* eslint no-param-reassign: 0, camelcase: 0, prefer-destructuring: 0 */
@@ -61,7 +58,7 @@ export default function bypassJailbreak() {
     }
   })
 
-  Interceptor.attach(Module.findExportByName(null, 'stat'), {
+  const statHandler = {
     onEnter(args) {
       if (!args[0])
         return
@@ -83,7 +80,9 @@ export default function bypassJailbreak() {
         args[0] = NULL
       }
     }
-  })
+  }
+  Interceptor.attach(Module.findExportByName(null, 'stat'), statHandler)
+  Interceptor.attach(Module.findExportByName(null, 'stat64'), statHandler)
 
   Interceptor.attach(Module.findExportByName(null, 'getenv'), {
     onEnter(args) {
@@ -119,7 +118,7 @@ export default function bypassJailbreak() {
     }
   })
 
-  const { UIApplication, NSURL, NSString, NSError, NSFileManager } = ObjC.classes
+  const { UIApplication, NSURL, NSFileManager } = ObjC.classes
   const canOpenURL_publicURLsOnly_ = UIApplication['- _canOpenURL:publicURLsOnly:']
   Interceptor.attach(canOpenURL_publicURLsOnly_.implementation, {
     onEnter(args) {
@@ -173,39 +172,6 @@ export default function bypassJailbreak() {
     onLeave(retVal) {
       if (this.shouldOverride)
         retVal.replace(ptr('0x00'))
-    }
-  })
-
-  Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implementation, {
-    onEnter(args) {
-      if (args[2].isNull())
-        return
-
-      const path = ObjC.Object(args[2]).toString()
-      const backtrace = Thread.backtrace(this.context, Backtracer.ACCURATE)
-        .map(DebugSymbol.fromAddress).filter(e => e.name)
-      if (path.match(/^\/private/)) {
-        send({
-          subject,
-          time: new Date().getTime(),
-          event: 'detect',
-          backtrace,
-          arguments: {
-            path
-          }
-        })
-        this.shouldOverride = true
-        this.error = args[5]
-      }
-    },
-    onLeave() {
-      if (this.shouldOverride) {
-        const NSFileWriteNoPermissionError = 513
-        const newError = ObjC.classes.NSError['+ errorWithDomain:code:userInfo:']
-        const err = newError(NSPOSIXErrorDomain, NSFileWriteNoPermissionError, NULL)
-        console.log('wtf', err)
-        Memory.writePointer(this.error, err)
-      }
     }
   })
 }
