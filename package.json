@@ -33,9 +33,9 @@
     "lint:agent": "eslint agent/app",
     "lint:server": "eslint *.js && eslint lib",
     "lint:frontend": "eslint gui/src",
-    "dev": "./scripts/dev-all.js",
-    "compile": "./scripts/compile.js compile",
-    "watch": "./scripts/compile.js watch",
+    "dev": "node ./scripts/dev-all.js",
+    "compile": "node ./scripts/compile.js compile",
+    "watch": "node ./scripts/compile.js watch",
     "start": "cross-env NODE_ENV=development nodemon ."
   },
   "repository": {
