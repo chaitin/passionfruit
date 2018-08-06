@@ -40,5 +40,8 @@ socket
   .on('deviceAdd', (dev) => {
     store.commit(ADD_DEVICE, dev)
     v.$toast.open(`New device ${dev.name} has been connected`)
+
+    if (v.$route.name === 'welcome')
+      v.$router.push({ name: 'apps', params: { device: dev.id }})
   })
   .on('warning', msg => v.$toast.open(msg))
