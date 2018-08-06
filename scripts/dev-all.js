@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 require('colors')
+const nodemon = require('nodemon')
 
 const { spawn } = require('child_process')
 const compile = require('./lib/compile')
-const nodemon = require('nodemon')
 
 process.env.NODE_ENV = 'development'
 
@@ -12,13 +12,12 @@ process.env.NODE_ENV = 'development'
 compile.run(true)
 
 // server side
-
 const TAG_SERVER = '[Server]'.magenta
 
 nodemon({
   script: 'app.js',
   ext: 'js json',
-  watch: ['lib', 'app.js'],
+  watch: ['lib', 'app.js', 'scripts'],
 })
 
 nodemon
@@ -42,7 +41,6 @@ webpack.on('exit', () => {
   process.exit()
 })
 
-process.on('SIGINT', () => {
-  if (!webpack.killed)
-    webpack.kill()
+process.on('exit', () => {
+  if (!webpack.killed) webpack.kill()
 })
