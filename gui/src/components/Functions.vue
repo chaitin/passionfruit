@@ -5,9 +5,9 @@
     </b-field>
 
     <ul class="functions content column">
-      <li v-for="symbol in slice" :key="symbol.name">
+      <li v-for="symbol in slice" :key="symbol.address">
         <b-icon icon="functions"></b-icon>
-        <span class="name" @click="openSymbolDetail(symbol)">{{ symbol.name }}</span>
+        <span class="name" @click="openSymbolDetail(symbol)">{{ symbol.demangled || symbol.name }}</span>
       </li>
     </ul>
 
@@ -16,10 +16,11 @@
     <b-modal :active.sync="symbolDialogActive" :width="640">
       <div class="modal-card" v-if="symbol">
         <header class="modal-card-head">
-          <p class="modal-card-title">{{ module }}!{{ symbol.name }}</p>
+          <p class="modal-card-title">{{ module }}!{{ symbol.demangled || symbol.name }}</p>
         </header>
 
         <section class="modal-card-body">
+          <p>{{ symbol.demangled }}<code>{{ symbol.name }}</code></p>
           <p>Address:
             <span v-if="symbol.address.value">
               0x{{ symbol.address.value.toString(16) }}</span>

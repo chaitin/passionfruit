@@ -1,3 +1,21 @@
-export const modules = () => Process.enumerateModules()
-export const imports = name => Module.enumerateImportsSync(name)
-export const exports = name => Module.enumerateExportsSync(name)
+function unique(list) {
+  const set = {}
+  return list.filter((symbol) => {
+    const key = symbol.address
+    if (({}).hasOwnProperty.call(set, key))
+      return false
+    set[key] = true
+    return true
+  }).map((symbol) => {
+    if (symbol.name.startsWith('_Z')) {
+      const demangled = DebugSymbol.fromAddress(symbol.address).name
+      return Object.assign(symbol, { demangled })
+    }
+    return symbol
+  })
+}
+
+export const modules = () => Process.enumerateModulesSync()
+export const imports = name => unique(Module.enumerateImportsSync(name
+  || Process.enumerateModulesSync()[0].name))
+export const exports = name => unique(Module.enumerateExportsSync(name))
