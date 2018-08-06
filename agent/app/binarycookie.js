@@ -17,7 +17,7 @@ export default function binaryCookies() {
       value: cookie.value().toString(),
       domain: cookie.domain().toString(),
       path: cookie.path().toString(),
-      isSecure: str(cookie.isSecure(), 'false'),
+      isSecure: str(cookie.isSecure(), 'false')
     }
     cookies.push(item)
   }

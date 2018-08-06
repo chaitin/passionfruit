@@ -7,7 +7,7 @@ const CCAlgorithm = [
   { name: 'kCCAlgorithm3DES', blocksize: 8 },
   { name: 'kCCAlgorithmCAST', blocksize: 8 },
   { name: 'kCCAlgorithmRC4', blocksize: 8 },
-  { name: 'kCCAlgorithmRC2', blocksize: 8 },
+  { name: 'kCCAlgorithmRC2', blocksize: 8 }
 ]
 
 const subject = 'crypto'
@@ -49,12 +49,12 @@ const handlers = {
           operation,
           algorithm: CCAlgorithm[alg].name,
           key: strKey,
-          iv: strIV,
+          iv: strIV
         },
         time,
-        backtrace,
+        backtrace
       })
-    },
+    }
   },
 
   // CCCryptorStatus
@@ -105,10 +105,10 @@ const handlers = {
           algorithm: CCAlgorithm[alg].name,
           key: strKey,
           iv: strIV,
-          in: strDataIn,
+          in: strDataIn
         },
         time,
-        backtrace,
+        backtrace
       })
     },
     onLeave(retVal) {
@@ -124,12 +124,12 @@ const handlers = {
         subject,
         event: operation,
         arguments: {
-          out: strDataOut,
+          out: strDataOut
         },
-        time,
+        time
       })
-    },
-  },
+    }
+  }
 }
 
 

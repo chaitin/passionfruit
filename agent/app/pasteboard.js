@@ -19,7 +19,7 @@ export function start() {
       subject,
       timestamp: new Date().getTime(),
       event: 'copy',
-      arguments: str,
+      arguments: str
     })
   }, 5 * 1000)
 }

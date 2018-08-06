@@ -16,7 +16,7 @@ export function info() {
     name: 'CFBundleDisplayName',
     version: 'CFBundleVersion',
     semVer: 'CFBundleShortVersionString',
-    minOS: 'MinimumOSVersion',
+    minOS: 'MinimumOSVersion'
   }
 
   const result = {
@@ -25,7 +25,7 @@ export function info() {
     binary: mainBundle.executablePath().toString(),
     tmp,
     data,
-    json,
+    json
   }
 
   /* eslint dot-notation: 0 */
@@ -33,7 +33,7 @@ export function info() {
     result.urls = json['CFBundleURLTypes'].map(item => ({
       name: item['CFBundleURLName'],
       schemes: item['CFBundleURLSchemes'],
-      role: item['CFBundleTypeRole'],
+      role: item['CFBundleTypeRole']
     }))
   }
 

@@ -27,7 +27,7 @@ export function getDataAttrForPath(path) {
     type: 'NSFileType',
     group: 'NSFileGroupOwnerAccountName',
     modification: 'NSFileModificationDate',
-    protection: 'NSFileProtectionKey',
+    protection: 'NSFileProtectionKey'
   }
 
   for (const key in lookup) {

@@ -7,7 +7,7 @@ const {
   SBUIController,
 
   LSApplicationWorkspace,
-  NSURL,
+  NSURL
 } = ObjC.classes
 
 const perform = f => ObjC.schedule(ObjC.mainQueue, f)
@@ -29,7 +29,7 @@ rpc.exports = {
   urls() {
     return {
       public: arrayFromNSArray(workspace.publicURLSchemes()),
-      private: arrayFromNSArray(workspace.privateURLSchemes()),
+      private: arrayFromNSArray(workspace.privateURLSchemes())
     }
   },
 
@@ -41,5 +41,5 @@ rpc.exports = {
         : controller.applicationWithDisplayIdentifier_(bundle) // iOS 7-
       SBUIController.sharedInstanceIfExists().activateApplication_(app)
     })
-  },
+  }
 }

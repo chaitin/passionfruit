@@ -16,7 +16,7 @@ const {
   NSString,
   NSNull,
   NSPropertyListSerialization,
-  __NSCFBoolean,
+  __NSCFBoolean
 } = ObjC.classes
 
 const NSPropertyListImmutable = 0

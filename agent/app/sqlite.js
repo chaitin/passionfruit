@@ -61,7 +61,7 @@ export function data({ path, table }) {
   const sql = `select * from ${quote(table)} limit 500`
   const result = {
     header: db.columns(table),
-    data: db.all(db.prepare(sql)),
+    data: db.all(db.prepare(sql))
   }
   db.close()
   return result

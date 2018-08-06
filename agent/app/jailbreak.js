@@ -31,6 +31,9 @@ const paths = `/Applications/Cydia.app
 /var/lib/cydia`.split('\n')
 
 const subject = 'jailbreak'
+const NSPOSIXErrorDomain = new ObjC.Object(Memory.readPointer(
+  Module.findExportByName('Foundation', 'NSPOSIXErrorDomain')
+))
 
 export default function bypassJailbreak() {
   /* eslint no-param-reassign: 0, camelcase: 0, prefer-destructuring: 0 */
@@ -50,12 +53,12 @@ export default function bypassJailbreak() {
           backtrace,
           arguments: {
             path,
-            method: 'open',
-          },
+            method: 'open'
+          }
         })
         args[0] = NULL
       }
-    },
+    }
   })
 
   Interceptor.attach(Module.findExportByName(null, 'stat'), {
@@ -74,12 +77,12 @@ export default function bypassJailbreak() {
           backtrace,
           arguments: {
             path,
-            method: 'stat',
-          },
+            method: 'stat'
+          }
         })
         args[0] = NULL
       }
-    },
+    }
   })
 
   Interceptor.attach(Module.findExportByName(null, 'getenv'), {
@@ -94,26 +97,26 @@ export default function bypassJailbreak() {
           event: 'detect',
           backtrace,
           arguments: {
-            env: 'DYLD_INSERT_LIBRARIES',
-          },
+            env: 'DYLD_INSERT_LIBRARIES'
+          }
         })
         args[0] = NULL
       }
-    },
+    }
   })
 
   Interceptor.attach(Module.findExportByName(null, '_dyld_get_image_name'), {
     onLeave(retVal) {
       if (Memory.readUtf8String(retVal).indexOf('MobileSubstrate') > -1)
         retVal.replace(ptr(0x00))
-    },
+    }
   })
 
   Interceptor.attach(Module.findExportByName(null, 'fork'), {
     onLeave(retVal) {
       retVal.replace(ptr(-1))
       // todo: send
-    },
+    }
   })
 
   const { UIApplication, NSURL, NSString, NSError, NSFileManager } = ObjC.classes
@@ -135,15 +138,15 @@ export default function bypassJailbreak() {
           event: 'detect',
           backtrace,
           arguments: {
-            url,
-          },
+            url
+          }
         })
       }
     },
     onLeave(retVal) {
       if (this.shouldOverride)
         retVal.replace(ptr(0))
-    },
+    }
   })
 
   Interceptor.attach(NSFileManager['- fileExistsAtPath:'].implementation, {
@@ -161,8 +164,8 @@ export default function bypassJailbreak() {
           event: 'detect',
           backtrace,
           arguments: {
-            path,
-          },
+            path
+          }
         })
         this.shouldOverride = true
       }
@@ -170,7 +173,7 @@ export default function bypassJailbreak() {
     onLeave(retVal) {
       if (this.shouldOverride)
         retVal.replace(ptr('0x00'))
-    },
+    }
   })
 
   Interceptor.attach(NSString['- writeToFile:atomically:encoding:error:'].implementation, {
@@ -188,16 +191,21 @@ export default function bypassJailbreak() {
           event: 'detect',
           backtrace,
           arguments: {
-            path,
-          },
+            path
+          }
         })
         this.shouldOverride = true
         this.error = args[5]
       }
     },
     onLeave() {
-      if (this.shouldOverride)
-        Memory.writePointer(this.error, NSError.alloc())
-    },
+      if (this.shouldOverride) {
+        const NSFileWriteNoPermissionError = 513
+        const newError = ObjC.classes.NSError['+ errorWithDomain:code:userInfo:']
+        const err = newError(NSPOSIXErrorDomain, NSFileWriteNoPermissionError, NULL)
+        console.log('wtf', err)
+        Memory.writePointer(this.error, err)
+      }
+    }
   })
 }

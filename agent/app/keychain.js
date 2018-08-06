@@ -89,7 +89,7 @@ const kSecConstantReverse = {
   dk: 'kSecAttrAccessibleAlways',
   aku: 'kSecAttrAccessibleWhenUnlockedThisDeviceOnly',
   cku: 'kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly',
-  dku: 'kSecAttrAccessibleAlwaysThisDeviceOnly',
+  dku: 'kSecAttrAccessibleAlwaysThisDeviceOnly'
 }
 
 const constantLookup = v => kSecConstantReverse[v] || v
@@ -99,7 +99,7 @@ const kSecClasses = [
   kSecClassIdentity,
   kSecClassCertificate,
   kSecClassGenericPassword,
-  kSecClassInternetPassword,
+  kSecClassInternetPassword
 ]
 
 
@@ -222,7 +222,7 @@ export function list() {
         service: odas(item.objectForKey_(kSecAttrService)),
         account: odas(item.objectForKey_(kSecAttrAccount)),
         label: odas(item.objectForKey_(kSecAttrLabel)),
-        data: odas(item.objectForKey_('v_Data')),
+        data: odas(item.objectForKey_('v_Data'))
       })
     }
   })

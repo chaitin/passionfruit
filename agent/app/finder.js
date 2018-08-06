@@ -29,7 +29,7 @@ export function ls(path, root) {
       type: Memory.readPointer(isDir) == 0 ? 'file' : 'directory',
       name: filename,
       path: fullPath,
-      attribute: getDataAttrForPath(fullPath) || {},
+      attribute: getDataAttrForPath(fullPath) || {}
     }
   })
 
@@ -76,7 +76,7 @@ export function download(path) {
       send({
         subject,
         event: 'data',
-        session,
+        session
       }, buffer)
 
       if (buffer.byteLength === watermark) {
@@ -85,7 +85,7 @@ export function download(path) {
         send({
           subject,
           event: 'end',
-          session,
+          session
         })
       }
     }).catch((error) => {
@@ -93,18 +93,18 @@ export function download(path) {
         subject,
         event: 'error',
         session,
-        error: error.message,
+        error: error.message
       })
     })
   }
   send({
     subject,
     event: 'start',
-    session,
+    session
   })
   setImmediate(read)
   return {
     size,
-    session,
+    session
   }
 }

@@ -72,5 +72,5 @@ rpc.exports = {
   unswizzle,
 
   dumpdecrypted,
-  screenshot,
+  screenshot
 }

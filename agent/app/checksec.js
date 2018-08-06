@@ -61,7 +61,7 @@ export default function checksec() {
 
           return ''
         },
-        onComplete() {},
+        onComplete() {}
       })
 
       break
@@ -78,6 +78,6 @@ export default function checksec() {
     pie: Boolean(info.flags.pie),
     encrypted: info.cmds.some(cmd => /^encryption_info_(32|64)$/.test(cmd.type) && cmd.id === 1),
     canary: importNames.has('__stack_chk_guard'),
-    arc: importNames.has('objc_release'),
+    arc: importNames.has('objc_release')
   }
 }

@@ -21,7 +21,7 @@ function toggleTouchID(enable) {
       subject,
       event: 'on',
       reason: 're-eanbled touch id',
-      date: new Date(),
+      date: new Date()
     })
   } else if (!originalImplementation && !enable) {
     originalImplementation = method.implementation
@@ -30,7 +30,7 @@ function toggleTouchID(enable) {
         subject,
         event: 'request',
         reason,
-        date: new Date(),
+        date: new Date()
       })
 
       // dismiss the dialog
@@ -42,7 +42,7 @@ function toggleTouchID(enable) {
       subject,
       event: 'off',
       reason: 'successfully disabled touch id',
-      date: new Date(),
+      date: new Date()
     })
   } else {
     throw new Error('invalid on/off argument')
@@ -69,5 +69,5 @@ function toggleDebugOverlay() {
 module.exports = {
   dumpWindow,
   toggleTouchID,
-  toggleDebugOverlay,
+  toggleDebugOverlay
 }

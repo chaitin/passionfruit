@@ -51,6 +51,6 @@ export function inspect(clazz) {
 
   return {
     methods: ObjC.classes[clazz].$ownMethods,
-    proto,
+    proto
   }
 }

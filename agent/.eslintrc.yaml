@@ -3,6 +3,7 @@ rules:
   no-console: [error]
   nonblock-statement-body-position: [error, "below"]
   function-paren-newline: [error, consistent]
+  comma-dangle: [error, never]
   
 globals:
   Duktape: true

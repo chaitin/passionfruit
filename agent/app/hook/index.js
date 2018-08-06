@@ -48,7 +48,7 @@ function hook(library, func, signature) {
         lib,
         func,
         backtrace,
-        time,
+        time
       })
     },
     onLeave(retVal) {
@@ -65,9 +65,9 @@ function hook(library, func, signature) {
         func,
         time,
         backtrace: this.backtrace,
-        ret,
+        ret
       })
-    },
+    }
   })
 
   if (!hooked[lib])
@@ -119,7 +119,7 @@ function swizzle(clazz, sel, traceResult = true) {
         clazz,
         sel,
         ret,
-        time,
+        time
       })
     }
   }
@@ -150,10 +150,10 @@ function swizzle(clazz, sel, traceResult = true) {
         args: readableArgs,
         clazz,
         sel,
-        time,
+        time
       })
     },
-    onLeave,
+    onLeave
   })
 
   if (!swizzled[clazz])
@@ -181,5 +181,5 @@ module.exports = {
   hook,
   unhook,
   swizzle,
-  unswizzle,
+  unswizzle
 }
