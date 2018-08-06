@@ -17,7 +17,7 @@ const Router = require('koa-router')
 
 const { FridaUtil, serializeDevice } = require('./lib/utils')
 const channels = require('./lib/channels.js')
-const { KnownError, InvalidDeviceError } = require('./lib/error')
+const { KnownError, InvalidDeviceError, VersionMismatchError } = require('./lib/error')
 
 
 const app = new Koa()
@@ -33,12 +33,17 @@ router
   })
   .get('/device/:device/apps', async (ctx) => {
     const id = ctx.params.device
-    const dev = await FridaUtil.getDevice(id)
+    // todo: refactor me
     try {
+      const dev = await FridaUtil.getDevice(id)
       ctx.body = await dev.enumerateApplications()
     } catch (ex) {
-      throw ex.message.indexOf('Unable to connect to remote frida-server') === 0 ? 
-        new InvalidDeviceError(id) : ex
+      if (ex.message.startsWith('Unable to connect to remote frida-server'))
+        throw new InvalidDeviceError(id)
+      if (ex.message.startsWith('Unable to communicate with remote frida-server'))
+        throw new VersionMismatchError(ex.message)
+      else
+        throw ex
     }
   })
   .post('/device/spawn', async (ctx) => {
