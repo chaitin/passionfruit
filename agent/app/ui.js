@@ -1,7 +1,11 @@
 const { UIDebuggingInformationOverlay, LAContext, UIWindow } = ObjC.classes
 
 function dumpWindow() {
-  return UIWindow.keyWindow().recursiveDescription().toString()
+  try {
+    return UIWindow.keyWindow().recursiveDescription().toString()
+  } catch (e) {
+    return 'Error: unable to fetch UIWindow description, please wait for few seconds and retry'
+  }
 }
 
 let originalImplementation = null
