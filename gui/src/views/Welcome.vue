@@ -57,12 +57,10 @@ export default {
   },
   methods: {
     ...mapActions({
-      getFridaVersion: GET_VERSION,
       refresh: LOAD_DEVICES
     })
   },
   mounted() {
-    this.getFridaVersion()
     this.refresh()
   }
 }
