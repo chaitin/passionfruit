@@ -1,4 +1,4 @@
-function unique(list) {
+function uniqueAndDemangle(list) {
   const set = {}
   return list.filter((symbol) => {
     const key = symbol.address
@@ -16,6 +16,6 @@ function unique(list) {
 }
 
 export const modules = () => Process.enumerateModulesSync()
-export const imports = name => unique(Module.enumerateImportsSync(name
+export const imports = name => uniqueAndDemangle(Module.enumerateImportsSync(name
   || Process.enumerateModulesSync()[0].name))
-export const exports = name => unique(Module.enumerateExportsSync(name))
+export const exports = name => uniqueAndDemangle(Module.enumerateExportsSync(name))
