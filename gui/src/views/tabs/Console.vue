@@ -10,6 +10,9 @@
           <span>Clear</span>
         </button>
       </p>
+      <p class="control">Use
+        <code>nc localhost {{ port }}</code> or
+        <code>passionfruit syslog {{ port }}</code> in terminal to view NSLog</p>
     </b-field>
     <ul class="console">
       <li v-for="(item, i) in list" :key="i">
@@ -51,7 +54,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import {
-  CONSOLE_ACTIVE, CONSOLE_CLEAR,
+  CONSOLE_ACTIVE, CONSOLE_CLEAR, GET_SYSLOG_SERVER_PORT,
   CONSOLE_LIST, CONSOLE_UNREAD, CONSOLE_RUNNING
 } from '~/vuex/types'
 
@@ -66,6 +69,7 @@ export default {
       }
     },
     ...mapGetters({
+      port: GET_SYSLOG_SERVER_PORT,
       list: CONSOLE_LIST,
       unread: CONSOLE_UNREAD,
     })

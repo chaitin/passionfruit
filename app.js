@@ -54,10 +54,6 @@ router
     ctx.body = { status: 'ok', pid }
   })
 
-const port = parseInt(process.env.PORT, 10) || 31337
-const host = process.env.HOST || 'localhost'
-
-
 app
   .use(compress({
     filter(contentType) {
@@ -97,21 +93,24 @@ if (process.env.NODE_ENV === 'development') {
   app.use(logger())
 }
 
-console.info(`listening on http://${host}:${port}`.green)
-const server = http.createServer(app.callback())
-channels.attach(server)
-server.listen(port, host)
+function start({ host, port }) {
+  console.info(`listening on http://${host}:${port}`.green)
+  const server = http.createServer(app.callback())
+  channels.attach(server)
+  server.listen(port, host)
+  process.on('unhandledRejection', (err) => {
+    console.error('An unhandledRejection occurred: '.red)
+    console.error(`Rejection: ${err}`.red)
+    console.error(err.stack)
 
-
-process.on('unhandledRejection', (err) => {
-  console.error('An unhandledRejection occurred: ')
-  console.error(`Rejection: ${err}`)
-  console.error(err.stack)
-
-  channels.broadcast('unhandledRejection', {
-    err: err.toString(),
-    stack: err.stack,
+    channels.broadcast('unhandledRejection', {
+      err: err.toString(),
+      stack: err.stack,
+    })
   })
-})
+}
 
-module.exports = app
+module.exports = {
+  app,
+  start,
+}

@@ -15,7 +15,7 @@ compile.run(true)
 const TAG_SERVER = '[Server]'.magenta
 
 nodemon({
-  script: 'app.js',
+  script: 'bin/cli.js',
   ext: 'js json',
   watch: ['lib', 'app.js', 'scripts'],
 })

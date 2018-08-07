@@ -135,6 +135,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
 import {
   GET_SOCKET, STORE_SOCKET,
+  STORE_SYSLOG_SERVER_PORT,
   CONSOLE_UNREAD, CONSOLE_APPEND, CONSOLE_CLEAR,
   DOWNLOADING, PROGRESS,
   ALL_HOOKS, DELETE_HOOK,
@@ -202,6 +203,7 @@ export default {
             this.$toast.open(`an exception has occured: ${err}`)
           }
         })
+        .on('syslog-port', this.setSyslogServerPort)
         .on('console', this.consoleAppend)
         .on('app', ({ app, device }) => {
           this.device = device 
@@ -241,6 +243,7 @@ export default {
     }),
     ...mapMutations({
       storeSocket: STORE_SOCKET,
+      setSyslogServerPort: STORE_SYSLOG_SERVER_PORT,
       consoleAppend: CONSOLE_APPEND,
       consoleClear: CONSOLE_CLEAR,
     })

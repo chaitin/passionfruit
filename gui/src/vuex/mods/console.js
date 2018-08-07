@@ -7,9 +7,13 @@ export const state = {
   unread: 0,
   active: false,
   logging: true,
+  syslogServerPort: 0,
 }
 
 export const mutations = {
+  [types.STORE_SYSLOG_SERVER_PORT](state, port) {
+    state.syslogServerPort = port
+  },
   [types.CONSOLE_RUNNING](state, on) {
     state.logging = on
   },
@@ -40,4 +44,5 @@ export const getters = {
   [types.CONSOLE_LIST]: state => state.list,
   [types.CONSOLE_UNREAD]: state => state.unread,
   [types.CONSOLE_RUNNING]: state => state.loggine,
+  [types.GET_SYSLOG_SERVER_PORT]: state => state.syslogServerPort,
 }
