@@ -15,7 +15,7 @@ const bodyParser = require('koa-bodyparser')
 const send = require('koa-send')
 const Router = require('koa-router')
 
-const { FridaUtil, serializeDevice } = require('./lib/utils')
+const { FridaUtil, serializeDevice, serializeApp } = require('./lib/utils')
 const channels = require('./lib/channels.js')
 const { KnownError, InvalidDeviceError, VersionMismatchError } = require('./lib/error')
 
@@ -36,7 +36,8 @@ router
     // todo: refactor me
     try {
       const dev = await FridaUtil.getDevice(id)
-      ctx.body = await dev.enumerateApplications()
+      const apps = await dev.enumerateApplications()
+      ctx.body = apps.map(serializeApp)
     } catch (ex) {
       if (ex.message.startsWith('Unable to connect to remote frida-server'))
         throw new InvalidDeviceError(id)

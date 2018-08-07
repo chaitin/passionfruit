@@ -183,7 +183,7 @@ export default {
     },
     createSocket() {
       let { device, bundle } = this.$route.params
-      return io('/session', { path: '/msg', query: { device, bundle } })
+      return io('/session', { path: '/msg', query: { device, bundle }, transports: ['websocket'] })
         .on('attached', console.info.bind(console))
         .on('close', console.warn.bind(console))
         .on('disconnect', () => {
