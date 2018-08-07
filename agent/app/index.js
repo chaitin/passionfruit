@@ -14,13 +14,15 @@ import { tables, data, query } from './sqlite'
 import { ls, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
+import { start as startSyslog, stop as stopSyslog } from './syslog'
 
 
 // todo: add options
 
 setImmediate(() => {
+  startSyslog()
   toggleTouchID(false)
-  bypassJailbreak(true) // try to bypass jailbreak
+  bypassJailbreak(true)
   startPasteboardMonitor()
 
   // todo: common function template
@@ -34,6 +36,11 @@ setImmediate(() => {
   swizzle('NSURL', 'URLWithString_', false)
   swizzle('NSString', 'stringWithContentsOfFile_usedEncoding_error_')
 })
+
+function unload() {
+  // todo: destructor
+  stopSyslog()
+}
 
 // todo: decorator?
 rpc.exports = {
@@ -72,5 +79,7 @@ rpc.exports = {
   unswizzle,
 
   dumpdecrypted,
-  screenshot
+  screenshot,
+
+  unload
 }

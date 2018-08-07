@@ -8,6 +8,9 @@ export const write = wrap('write', 'int', ['int', 'pointer', 'int'])
 export const lseek = wrap('lseek', 'int64', ['int', 'int64', 'int'])
 export const mmap = wrap('mmap', 'pointer', ['pointer', 'uint', 'int', 'int', 'int', 'long'])
 export const munmap = wrap('munmap', 'int', ['pointer', 'uint'])
+export const pipe = wrap('pipe', 'int', ['pointer'])
+export const dup2 = wrap('dup2', 'int', ['int', 'int'])
+export const fcntl = wrap('fcntl', 'int', ['int', 'int', 'int'])
 
 
 export const O_RDONLY = 0
