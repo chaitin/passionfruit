@@ -1,10 +1,9 @@
-const { NSHTTPCookieStorage } = ObjC.classes
-
 function str(obj, def) {
   return obj ? obj.toString() : (def || 'N/A')
 }
 
 export default function binaryCookies() {
+  const { NSHTTPCookieStorage } = ObjC.classes
   const store = NSHTTPCookieStorage.sharedHTTPCookieStorage()
   const jar = store.cookies()
   const cookies = []
