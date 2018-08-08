@@ -50,6 +50,9 @@ export const mutations = {
     state.list = list
     state.version = version
   },
+  [types.STORE_DEVICE]: (state, device) => {
+    state.selected = device
+  },
   [types.SELECT_DEVICE]: (state, id) => {
     let dev = state.list.find(dev => dev.id == id)
     if (dev) {

@@ -47,10 +47,11 @@ router
         throw ex
     }
   })
-  .post('/device/spawn', async (ctx) => {
-    const { device, bundle } = ctx.params
+  .post('/url/start', async (ctx) => {
+    const { device, bundle, url } = ctx.request.body
     const dev = await FridaUtil.getDevice(device)
-    const pid = await dev.spawn([bundle])
+    const pid = await dev.spawn([bundle], { url })
+    await dev.resume(pid)
     ctx.body = { status: 'ok', pid }
   })
 
