@@ -5,7 +5,7 @@
         <nav class="breadcrumb" aria-label="breadcrumbs">
           <ul>
             <li><a href="/"><b-icon icon="home"></b-icon><span>Passionfruit</span></a></li>
-            <li class="is-active"><a>Url Launcher</a></li>
+            <li class="is-active"><a>URL Scheme Test</a></li>
           </ul>
         </nav>
       </h1>
@@ -21,9 +21,9 @@
           </optgroup>
         </b-select>
         <b-input placeholder="" expanded tabindex="2" v-model="url"
-          @keyup.enter="open" :disabled="!connected"></b-input>
+          @keyup.enter="open"></b-input>
         <p class="control">
-          <button class="button is-success" @click="open" :disabled="!connected">Start</button>
+          <button class="button is-success" @click="open">Start</button>
         </p>
       </b-field>
 
@@ -40,14 +40,12 @@
 </template>
 
 <script>
-import io from 'socket.io-client'
-import { mapGetters, mapMutations } from 'vuex'
-
-import {
-  GET_SOCKET, STORE_SOCKET,
-} from '~/vuex/types'
 
 export default {
+  mounted() {
+    let { device, bundle, scheme } = this.$route.params
+    console.log('args', device, bundle, scheme)
+  },
   data() {
     return {
       schemes: {
@@ -59,70 +57,14 @@ export default {
       url: '',
       device: '',
       loading: false,
-      socket: null,
-
-      connected: false,
       err: null,
     }
   },
-  mounted() {
-    const socket = this.socket = this.createSocket()
-    this.storeSocket(socket)
-    window.addEventListener('unhandledrejection', this.rejectionHandler)
-  },
-  beforeDestroy() {
-    if (this.socket)
-      this.socket.call('detach')
-    window.removeEventListener('unhandledrejection', this.rejectionHandler)
-  },
   methods: {
-    ...mapMutations({
-      storeSocket: STORE_SOCKET,
-    }),
-    rejectionHandler(event) {
-      event.preventDefault()
-      this.$toast.open({
-        duration: 10 * 1000,
-        message: event.reason,
-        type: 'is-danger',
-      })
-    },
-    createSocket() {
-      let { device, scheme } = this.$route.params
-      this.device = device
-      this.loading = true
-
-      if (scheme)
-        this.scheme = scheme
-
-      return io('/springboard', { path: '/msg', query: { device } })
-        .on('disconnect', () => {
-          this.$toast.open(`disconnected from ${device}`)
-          this.err = 'Device disconnected. Reload the page to retry.'
-          this.connected = false
-          this.loading = false
-        })
-        .on('ready', () => {
-          this.loading = false
-          this.connected = true
-          this.fetch()
-        })
-        .on('err', err => {
-          this.err = err
-          this.connected = false
-          this.loading = false
-        })
-    },
-    async fetch() {
-      this.schemes = await this.socket.call('urls')
-    },
     async open() {
-      const url = [this.scheme, encodeURIComponent(this.url)].join('://')
+      const url = new URL([this.scheme, this.body].join(':')).href
       this.history.push(url)
-      return this.start(url)
-    },
-    async start(url) {
-      return this.socket.call('uiopen', url)
+      // todo: post
     },
   },
 }
@@ -130,7 +72,7 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
-  margin-top: 100px;
+  margin-top: 40px;
 }
 
 .prefix {

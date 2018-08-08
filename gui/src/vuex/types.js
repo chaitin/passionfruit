@@ -30,6 +30,9 @@ export const LOAD_APPS = 'LOAD_APPS'
 export const GET_SOCKET = 'GET_SOCKET'
 export const STORE_SOCKET = 'STORE_SOCKET'
 
+export const GET_APP = 'GET_APP'
+export const STORE_APP = 'STORE_APP'
+
 export const HOOK_OBJC = 'HOOK_OBJC'
 export const UNHOOK_OBJC = 'UNHOOK_OBJC'
 export const IS_OBJC_HOOKED = 'IS_OBJC_HOOKED'

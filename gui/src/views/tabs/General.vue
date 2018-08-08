@@ -57,7 +57,7 @@
         <b-field label="Version">
           <p>{{ info.semVer }}</p>
         </b-field>
-        <b-field label="Entitlement Group" v-if="sec.entitlements">
+        <b-field label="Entitlements" v-if="sec.entitlements">
           <data-field :field="{ key: 'entitlements', value: sec.entitlements }" :depth="0">
           </data-field>
         </b-field>
@@ -70,7 +70,12 @@
             <span slot="header">{{ url.name || '(empty name)' }}</span>
             <ul>
               <li v-for="scheme in url.schemes" :key="scheme">
-                <router-link :to="{ name: 'uiopen', params: { device: device.id, scheme } }">
+                <router-link :to="{ name: 'uiopen', params: {
+                    device: device.id,
+                    bundle: app.identifier,
+                    scheme
+                  }
+                }">
                   {{ scheme }}://
                 </router-link>
               </li>
@@ -88,16 +93,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { GET_SOCKET, GET_DEVICE } from '~/vuex/types'
+import { GET_SOCKET, GET_DEVICE, GET_ALL, GET_APP } from '~/vuex/types'
 
 import DataField from '~/components/DataField.vue'
 import LoadingTab from '~/components/LoadingTab.vue'
 import Plist from '~/components/Plist.vue'
-import Url from '~/components/URLScheme.vue'
 
 
 export default {
-  components: { DataField, LoadingTab, Plist, Url },
+  components: { DataField, LoadingTab, Plist },
   data() {
     return {
       loading: true,
@@ -108,6 +112,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      app: GET_APP,
       socket: GET_SOCKET,
       device: GET_DEVICE,
     })

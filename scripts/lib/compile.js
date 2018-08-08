@@ -4,9 +4,6 @@ const TAG_FRIDA = '[Frida]'.yellow
 const tasks = [{
   src: 'agent/app/index.js',
   dest: 'agent/app.bundle',
-}, {
-  src: 'agent/app/springboard.js',
-  dest: 'agent/springboard.bundle',
 }]
 
 

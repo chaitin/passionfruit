@@ -37,11 +37,7 @@ const router = new VueRouter({
       }]
     },
     {
-      path: '/url/:device/',
-      component: URLTestView,
-    },
-    {
-      path: '/url/:device/:scheme',
+      path: '/url/:device/:bundle/:scheme',
       component: URLTestView,
       name: 'uiopen',
     },

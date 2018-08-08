@@ -135,6 +135,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { AsyncSearch, debounce } from '~/lib/utils'
 import {
   GET_SOCKET, STORE_SOCKET,
+  GET_APP, STORE_APP,
   STORE_SYSLOG_SERVER_PORT,
   CONSOLE_UNREAD, CONSOLE_APPEND, CONSOLE_CLEAR,
   DOWNLOADING, PROGRESS,
@@ -154,6 +155,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      app: GET_APP,
       socket: GET_SOCKET,
       hooks: ALL_HOOKS,
       unreadMessage: CONSOLE_UNREAD,
@@ -206,12 +208,11 @@ export default {
         .on('syslog-port', this.setSyslogServerPort)
         .on('console', this.consoleAppend)
         .on('app', ({ app, device }) => {
-          this.device = device 
-          this.app = app
+          this.device = device
+          this.storeApp(app)
 
           // todo: store in vuex
           // this.storeDeviceId(device.id)
-          // this.storeAppId(app.identifier)
         })
         .on('ready', () => {
           this.loading = false
@@ -242,6 +243,7 @@ export default {
       removeHook: DELETE_HOOK,
     }),
     ...mapMutations({
+      storeApp: STORE_APP,
       storeSocket: STORE_SOCKET,
       setSyslogServerPort: STORE_SYSLOG_SERVER_PORT,
       consoleAppend: CONSOLE_APPEND,
@@ -253,7 +255,6 @@ export default {
       err: '',
       loading: true,
       connected: false,
-      app: {},
       device: {},
     }
   },

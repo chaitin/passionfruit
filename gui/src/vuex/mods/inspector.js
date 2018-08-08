@@ -3,6 +3,7 @@ import * as types from '~/vuex/types'
 
 export const state = {
   socket: null,
+  app: {},
 
   // hooks
   objc: {},
@@ -12,6 +13,7 @@ export const state = {
 
 
 export const getters = {
+  [types.GET_APP]: state => state.app,
   [types.GET_SOCKET]: state => state.socket,
   [types.IS_OBJC_HOOKED]: state =>
     (clazz, method) => // todo: one more lambda
@@ -59,6 +61,9 @@ export const actions = {
 }
 
 export const mutations = {
+  [types.STORE_APP](state, app) {
+    state.app = app
+  },
   [types.HOOK_OBJC](state, { clazz, method }) {
     const item = { type: 'objc', clazz, method }
     if (state.objc.hasOwnProperty(clazz))
