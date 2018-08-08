@@ -1,8 +1,6 @@
-const { UIDebuggingInformationOverlay, LAContext, UIWindow } = ObjC.classes
-
 function dumpWindow() {
   try {
-    return UIWindow.keyWindow().recursiveDescription().toString()
+    return ObjC.classes.UIWindow.keyWindow().recursiveDescription().toString()
   } catch (e) {
     return 'Error: unable to fetch UIWindow description, please wait for few seconds and retry'
   }
@@ -12,6 +10,7 @@ let originalImplementation = null
 
 
 function toggleTouchID(enable) {
+  const { LAContext } = ObjC.classes
   const subject = 'touchid'
   if (!LAContext)
     throw new Error('Touch ID may not be supported by this device')
@@ -55,6 +54,7 @@ function toggleTouchID(enable) {
 
 let overlay = null
 function toggleDebugOverlay() {
+  const { UIDebuggingInformationOverlay } = ObjC.classes
   const p = Module.findExportByName('CoreFoundation', 'kCFCoreFoundationVersionNumber')
   const version = Memory.readDouble(p)
 
