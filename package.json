@@ -53,6 +53,7 @@
     "gui/static",
     "lib/",
     "bin/",
+    "scripts/post-install.js",
     "agent/*.bundle.js",
     "agent/*.bundle.bin"
   ],
