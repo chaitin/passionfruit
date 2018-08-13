@@ -41,77 +41,66 @@ export default {
     }
   },
   mounted() {
-    this.updateTree(this.content)
+    this.updateTree(this.root)
   },
   watch: {
-    content(val) {
+    root(val) {
       this.filter = ''
       this.updateTree(val)
     },
     filter: debounce(function(val, old) {
-      this.updateTree(this.content, val)
+      this.updateTree(this.root, val)
     }),
   },
-  methods: {
-    updateTree(root, filter) {
-      let isMatch, needle
-      if (filter && filter.length) {
-        needle = filter.toLowerCase()
-        isMatch = haystack => {
-          if (!haystack) return false
-          haystack = haystack.toLowerCase()
-
-          let j = -1
-          for (let i = 0; i < needle.length; i++) {
-            let ch = needle.charAt(i)
-            if (!ch || ch.match(/\s/)) continue
-
-            j = haystack.indexOf(ch, j + 1)
-            if (j === -1)
-              return false
-          }
-          return true
-        }
-      }
-
-      const expand = (node, preserve) => {
-        if (Array.isArray(node) || typeof node === 'object') {
-          let array = []
-
-          for (let name in node) {
-            if (node.hasOwnProperty(name)) {
-              let val = node[name]
-              let item = { name }
-              let add = true
-
-              switch (typeof val) {
-                case 'string':
-                  if (!preserve && needle) add = isMatch(val)
-                // THERE IS NO BREAK ON PURPOSE
-                case 'number':
-                  item.val = val
-                  break
-                default:
-                  // force not skipping first level children
-                  let nameMatches = needle && isMatch(name)
-                  item.children = expand(val, nameMatches)
-                  if (needle) {
-                    item.open = true
-                    add = preserve || item.children.length || nameMatches
-                  }
-              }
-              if (add)
-                array.push(item)
+  computed: {
+    root() {
+      function expand(name, node) {
+        const result = { name }
+        if (Array.isArray(node)) {
+          result.children = node.map((val, index) => expand(index, val))
+        } else if (node && typeof node === 'object') {
+          result.children = []
+          for (let key in node) {
+            if (node.hasOwnProperty(key)) {
+              result.children.push(expand(key, node[key]))
             }
           }
-
-          return array
+        } else {
+          result.val = node
         }
-        console.warn('argument not supported', node)
+        return result
       }
 
-      let children = expand(root)
-      this.tree = { name: this.rootName, children }
+      const node = expand('', this.content)
+      if (!node.name)
+        node.name = this.rootName
+      return node
+    }
+  },
+  methods: {
+    updateTree(root, keyword) {
+      function match(text) {
+        if (!text) return false
+        const haystack = text.toString().toLowerCase()
+        const needle = keyword.toLowerCase()
+        return haystack.indexOf(needle) > -1
+      }
+
+      function visit(node) {
+        if (match(node.name) || (node.val && match(node.val)))
+          return node
+
+        if (node.children) {
+          const children = node.children.map(visit).filter(child => child)
+          if (children.length)
+            return Object.assign({}, node, { children })
+        }
+      }
+
+      if (keyword && keyword.length)
+        this.tree = visit(root) || {}
+      else
+        this.tree = root
     },
     expandAll() {
       this.$refs.tree.toggleAll(true)
