@@ -61,13 +61,19 @@ function toggleDebugOverlay() {
   if (version < 1300)
     throw new Error(`iOS version ${version} lower than expected, the feature is unavailable`)
 
-  ObjC.schedule(ObjC.mainQueue, () => {
-    if (overlay === null) {
-      UIDebuggingInformationOverlay.prepareDebuggingOverlay()
-      overlay = UIDebuggingInformationOverlay.overlay()
-    }
-    overlay.toggleVisibility()
-  })
+  // iOS 11
+  if (version > 1400) {
+    throw new Error('iOS 11 not implemented')
+  } else {
+    // iOS 10
+    ObjC.schedule(ObjC.mainQueue, () => {
+      if (overlay === null) {
+        UIDebuggingInformationOverlay.prepareDebuggingOverlay()
+        overlay = UIDebuggingInformationOverlay.overlay()
+      }
+      overlay.toggleVisibility()
+    })
+  }
 }
 
 module.exports = {
