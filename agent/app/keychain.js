@@ -1,5 +1,3 @@
-import { access } from "fs";
-
 const { NSMutableDictionary } = ObjC.classes
 
 
