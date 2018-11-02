@@ -159,6 +159,12 @@ export default {
           root: this.root,
         })
         this.list = list
+        if(this.list.length === 0 && path === 'Library/Caches/Snapshots') {
+          this.$toast.open({
+          message: `Operation not permitted`,
+          type: 'is-danger',
+          })
+        }
       } catch(ex) {
         this.$toast.open({
           message: `failed to change current directory: ${ex}`,
