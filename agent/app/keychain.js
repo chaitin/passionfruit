@@ -1,3 +1,5 @@
+import { access } from "fs";
+
 const { NSMutableDictionary } = ObjC.classes
 
 
@@ -152,10 +154,10 @@ function decodeAcl(entry) {
     return []
 
   const constraints = SecAccessControlGetConstraints(entry.objectForKey_(kSecAttrAccessControl))
-  const accessControls = ObjC.Object(constraints)
-  if (accessControls.handle === NULL)
+  if (constraints.isNull())
     return []
 
+  const accessControls = ObjC.Object(constraints)
   const flags = []
   const enumerator = accessControls.keyEnumerator()
   for (let key = enumerator.nextObject(); key !== null; key = enumerator.nextObject()) {
