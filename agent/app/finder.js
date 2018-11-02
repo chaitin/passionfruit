@@ -13,13 +13,21 @@ export function ls(path, root) {
     ? NSBundle.mainBundle().bundlePath().toString()
     : NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
 
+  const pErr = Memory.alloc(Process.pointerSize)
+  Memory.writePointer(pErr, NULL)
   const cwd = [prefix, path].join('/')
-  const nsArray = fileManager.directoryContentsAtPath_(cwd)
-  const isDir = Memory.alloc(Process.pointerSize)
+  const nsArray = fileManager.contentsOfDirectoryAtPath_error_(cwd, pErr)
+  const err = Memory.readPointer(pErr)
+
+  if (!err.isNull()) {
+    const description = new ObjC.Object(err).localizedDescription()
+    throw new Error(description)
+  }
 
   if (!nsArray)
     return { cwd, list: [] }
 
+  const isDir = Memory.alloc(Process.pointerSize)
   const list = arrayFromNSArray(nsArray, 100).map((filename) => {
     const fullPath = [prefix, path, filename].join('/')
     fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)

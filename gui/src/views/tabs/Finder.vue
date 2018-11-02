@@ -151,8 +151,8 @@ export default {
     async load({ root, path }) {
       this.root = ['root', 'bundle'].indexOf(root) > -1 ? root : 'home'
       this.cwd = path || ''
-
       this.loading = true
+
       try {
         const { cwd, list } = await this.socket.call('ls', {
           pathName: this.cwd,
@@ -165,6 +165,7 @@ export default {
           type: 'is-danger',
         })
         console.error(ex.stack || ex)
+        setImmediate(() => this.$router.go(-1))
       }
       
       this.selected = null
