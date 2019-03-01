@@ -8,6 +8,7 @@
     </b-modal>
 
     <screenshot-viewer :open.sync="showScreenshotDialog"></screenshot-viewer>
+    <ui-dump-viewer :open.sync="showUIDumpDialog"></ui-dump-viewer>
 
     <header class="hero">
       <div class="level container is-fluid">
@@ -160,10 +161,12 @@ import {
 
 import Loading from "~/components/Loading.vue";
 import Icon from "~/components/Icon.vue";
+
 import ScreenshotViewer from '~/views/dialogs/Screenshot.vue';
+import UiDumpViewer from '~/views/dialogs/UIDump.vue';
 
 export default {
-  components: { Icon, Loading, ScreenshotViewer },
+  components: { Icon, Loading, ScreenshotViewer, UiDumpViewer },
   watch: {
     app(val, old) {
       if (val.name) document.title = `Passionfruit: ${val.name}`;
@@ -247,7 +250,7 @@ export default {
       this.showScreenshotDialog = true;
     },
     uidump() {
-      
+      this.showUIDumpDialog = true;
     },
     rejectionHandler(event) {
       event.preventDefault();
@@ -276,6 +279,7 @@ export default {
       connected: false,
 
       showScreenshotDialog: false,
+      showUIDumpDialog: false,
     };
   },
   mounted() {

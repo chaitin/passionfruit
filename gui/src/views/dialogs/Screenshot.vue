@@ -42,6 +42,8 @@ export default {
   },
   methods: {
     async refresh() {
+      if (!this.socket || this.loading) return;
+
       this.loading = true;
       const b64 = await this.socket.call("screenshot");
       this.loading = false
