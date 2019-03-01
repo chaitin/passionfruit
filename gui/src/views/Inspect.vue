@@ -7,22 +7,30 @@
       </article>
     </b-modal>
 
+    <screenshot-viewer :open.sync="showScreenshotDialog"></screenshot-viewer>
+
     <header class="hero">
       <div class="level container is-fluid">
         <nav class="breadcrumb nav-bar level-left" aria-label="breadcrumbs">
           <ul class="level-item">
             <li>
-              <a href="/"><img width="133.33" height="32" src="../assets/logo.svg" alt="Passionfruit"></a>
+              <a href="/">
+                <img width="133.33" height="32" src="../assets/logo.svg" alt="Passionfruit">
+              </a>
             </li>
             <li v-if="err">Unknown device</li>
             <li v-else>
               <router-link v-if="device.id" :to="{name: 'apps', params: {device: device.id}}">
-                <icon :icon="device.icon"></icon> {{ device.name }}</router-link>
+                <icon :icon="device.icon"></icon>
+                {{ device.name }}
+              </router-link>
             </li>
             <li v-if="err">Unknown App</li>
             <li v-else class="is-active">
               <a href="#" v-if="app" aria-current="page">
-                <icon :icon="app.smallIcon"></icon> {{ app.name }}</a>
+                <icon :icon="app.smallIcon"></icon>
+                {{ app.name }}
+              </a>
               <div class="tags has-addons">
                 <span class="tag is-dark">{{ app.identifier }}</span>
                 <span class="tag is-success" v-if="app.pid">pid: {{ app.pid }}</span>
@@ -30,8 +38,15 @@
             </li>
           </ul>
 
-          <a class="button is-small" @click="screenshot"><b-icon icon="camera"
-            title="Capture screen"></b-icon></a>
+          <a class="button is-small" @click="screenshot">
+            <b-icon icon="camera" title="Capture screen"></b-icon>
+            <span>Screenshot</span>
+          </a>
+          
+          <a class="button is-small" @click="uidump">
+            <b-icon icon="visibility" title="UI Dump"></b-icon>
+            <span>UIDump</span>
+          </a>
         </nav>
 
         <div class="level-right">
@@ -99,12 +114,6 @@
               </router-link>
             </li>
             <li>
-              <router-link :to="{ name: 'uidump' }">
-                <b-icon icon="visibility"></b-icon>
-                <span>UIDump</span>
-              </router-link>
-            </li>
-            <li>
               <router-link :to="{ name: 'storage' }">
                 <b-icon icon="storage"></b-icon>
                 <span>Storage</span>
@@ -129,30 +138,36 @@
 </template>
 
 <script>
-
-import io from 'socket.io-client'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { AsyncSearch, debounce } from '~/lib/utils'
+import io from "socket.io-client";
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import { AsyncSearch, debounce } from "~/lib/utils";
 import {
-  GET_SOCKET, STORE_SOCKET,
-  GET_APP, STORE_APP,
-  GET_DEVICE, STORE_DEVICE,
+  GET_SOCKET,
+  STORE_SOCKET,
+  GET_APP,
+  STORE_APP,
+  GET_DEVICE,
+  STORE_DEVICE,
   STORE_SYSLOG_SERVER_PORT,
-  CONSOLE_UNREAD, CONSOLE_APPEND, CONSOLE_CLEAR,
-  DOWNLOADING, PROGRESS,
-  ALL_HOOKS, DELETE_HOOK,
-} from '~/vuex/types'
+  CONSOLE_UNREAD,
+  CONSOLE_APPEND,
+  CONSOLE_CLEAR,
+  DOWNLOADING,
+  PROGRESS,
+  ALL_HOOKS,
+  DELETE_HOOK
+} from "~/vuex/types";
 
-import Loading from '~/components/Loading.vue'
-import Icon from '~/components/Icon.vue'
+import Loading from "~/components/Loading.vue";
+import Icon from "~/components/Icon.vue";
+import ScreenshotViewer from '~/views/dialogs/Screenshot.vue';
 
 export default {
-  components: { Icon, Loading },
+  components: { Icon, Loading, ScreenshotViewer },
   watch: {
     app(val, old) {
-      if (val.name)
-        document.title = `Passionfruit: ${val.name}`
-    },
+      if (val.name) document.title = `Passionfruit: ${val.name}`;
+    }
   },
   computed: {
     ...mapGetters({
@@ -162,84 +177,88 @@ export default {
       hooks: ALL_HOOKS,
       unreadMessage: CONSOLE_UNREAD,
       isDownloading: DOWNLOADING,
-      downloadProgress: PROGRESS,
+      downloadProgress: PROGRESS
     })
   },
   methods: {
     home() {
-      this.$route.push({ name: 'welcome' })
+      this.$route.push({ name: "welcome" });
     },
     kill() {
       this.$dialog.confirm({
-        title: 'Kill App',
-        message: 'Are you sure you want to <b>kill</b> the process? The session will end.',
-        confirmText: 'Kill',
-        type: 'is-danger',
+        title: "Kill App",
+        message:
+          "Are you sure you want to <b>kill</b> the process? The session will end.",
+        confirmText: "Kill",
+        type: "is-danger",
         hasIcon: true,
         onConfirm: () => {
-          this.$router.push({ name: 'apps', params: this.$route.params })
-          this.socket.call('kill').then(result => {
+          this.$router.push({ name: "apps", params: this.$route.params });
+          this.socket.call("kill").then(result => {
             if (result) {
-              this.$toast.open(`${bundle} has been terminiated`)
+              this.$toast.open(`${bundle} has been terminiated`);
             }
-          })
+          });
         }
-      })
+      });
     },
     createSocket() {
-      let { device, bundle } = this.$route.params
-      return io('/session', { path: '/msg', query: { device, bundle }, transports: ['websocket'] })
-        .on('attached', console.info.bind(console))
-        .on('close', console.warn.bind(console))
-        .on('disconnect', () => {
-          this.$toast.open(`disconnected from ${bundle}`)
-          this.err = 'Application disconnected. Reload the page to retry, or select another app in main menu.'
-          this.connected = false
-          this.loading = false
+      let { device, bundle } = this.$route.params;
+      return io("/session", {
+        path: "/msg",
+        query: { device, bundle },
+        transports: ["websocket"]
+      })
+        .on("attached", console.info.bind(console))
+        .on("close", console.warn.bind(console))
+        .on("disconnect", () => {
+          this.$toast.open(`disconnected from ${bundle}`);
+          this.err =
+            "Application disconnected. Reload the page to retry, or select another app in main menu.";
+          this.connected = false;
+          this.loading = false;
         })
-        .on('unhandledRejection', ({ err, stack }) => {
+        .on("unhandledRejection", ({ err, stack }) => {
           if (this.loading) {
-            this.$toast.open(`disconnected from ${bundle}`)
-            this.connected = false
-            this.loading = false
-            this.err = err
+            this.$toast.open(`disconnected from ${bundle}`);
+            this.connected = false;
+            this.loading = false;
+            this.err = err;
           } else {
-            this.$toast.open(`an exception has occured: ${err}`)
+            this.$toast.open(`an exception has occured: ${err}`);
           }
         })
-        .on('syslog-port', this.setSyslogServerPort)
-        .on('console', this.consoleAppend)
-        .on('app', ({ app, device }) => {
-          this.storeDevice(device)
-          this.storeApp(app)
+        .on("syslog-port", this.setSyslogServerPort)
+        .on("console", this.consoleAppend)
+        .on("app", ({ app, device }) => {
+          this.storeDevice(device);
+          this.storeApp(app);
         })
-        .on('ready', () => {
-          this.loading = false
-          this.connected = true
+        .on("ready", () => {
+          this.loading = false;
+          this.connected = true;
         })
-        .on('err', err => {
-          this.err = err
-          this.loading = false
-        })
+        .on("err", err => {
+          this.err = err;
+          this.loading = false;
+        });
     },
-    async screenshot() {
-      const b64 = await this.socket.call('screenshot')
-      const url = `data:image/png;base64,${b64}`
-      let link = document.createElement('a')
-      link.setAttribute('href', url)
-      link.setAttribute('download', name)
-      link.click()
+    screenshot() {
+      this.showScreenshotDialog = true;
+    },
+    uidump() {
+      
     },
     rejectionHandler(event) {
-      event.preventDefault()
+      event.preventDefault();
       this.$toast.open({
         duration: 10 * 1000,
         message: `unhandled rejection: ${event.reason}`,
-        type: 'is-danger',
-      })
+        type: "is-danger"
+      });
     },
     ...mapActions({
-      removeHook: DELETE_HOOK,
+      removeHook: DELETE_HOOK
     }),
     ...mapMutations({
       storeDevice: STORE_DEVICE,
@@ -247,28 +266,29 @@ export default {
       storeSocket: STORE_SOCKET,
       setSyslogServerPort: STORE_SYSLOG_SERVER_PORT,
       consoleAppend: CONSOLE_APPEND,
-      consoleClear: CONSOLE_CLEAR,
+      consoleClear: CONSOLE_CLEAR
     })
   },
   data() {
     return {
-      err: '',
+      err: "",
       loading: true,
       connected: false,
-    }
+
+      showScreenshotDialog: false,
+    };
   },
   mounted() {
-    const socket = this.createSocket()
-    this.storeSocket(socket)
-    window.addEventListener('unhandledrejection', this.rejectionHandler)
-    this.consoleClear()
+    const socket = this.createSocket();
+    this.storeSocket(socket);
+    window.addEventListener("unhandledrejection", this.rejectionHandler);
+    this.consoleClear();
   },
   beforeDestroy() {
-    if (this.socket)
-      this.socket.call('detach')
-    window.removeEventListener('unhandledrejection', this.rejectionHandler)
-  },
-}
+    if (this.socket) this.socket.call("detach");
+    window.removeEventListener("unhandledrejection", this.rejectionHandler);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
