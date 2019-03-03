@@ -5,7 +5,7 @@
       "targets": {
         "browsers": ["last 2 Chrome versions"]
       }
-    }],
+    }]
   ],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],

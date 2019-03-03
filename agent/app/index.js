@@ -45,7 +45,7 @@ function unload() {
   stopSyslog()
 }
 
-// todo: decorator?
+// todo: decorator!
 rpc.exports = {
   checksec,
   info,
