@@ -126,9 +126,6 @@ export default {
       this.socket.call('info').then(({ info, sec }) => {
         this.loading = false
         this.info = info
-        // Object.assign(info, {
-        //   urls: info.urls.map((url, index) => Object.assign(url, { id: index }))
-        // })
         this.metainfo = info.json
         this.sec = sec
       })
