@@ -2,8 +2,8 @@
   <div>
     <loading-tab v-if="loading"></loading-tab>
 
-    <section class="columns" v-else>
-      <div class="column content">
+    <section class="columns is-mobile" v-else>
+      <div class="column content is-half-desktop is-one-third-fullhd">
         <h3 class="title">Binary</h3>
         <b-field grouped group-multiline>
           <div class="control">
@@ -62,29 +62,29 @@
           </data-field>
         </b-field>
 
-        <hr>
-
-        <div v-if="info.urls">
-          <h3>URL Scheme</h3>
-          <b-panel collapsible v-for="(url, index) in info.urls" :key="index">
-            <span slot="header">{{ url.name || '(empty name)' }}</span>
-            <ul>
-              <li v-for="scheme in url.schemes" :key="scheme">
-                <router-link :to="{ name: 'uiopen', params: {
-                    device: device.id,
-                    bundle: app.identifier,
-                    scheme
-                  }
-                }">
-                  {{ scheme }}://
-                </router-link>
-              </li>
-            </ul>
-          </b-panel>
-        </div>
       </div>
 
-      <div class="column content" v-if="metainfo">
+      <div class="column content is-half-desktop is-one-third-fullhd" v-if="info.urls">
+        <h3>URL Scheme</h3>
+        <b-panel collapsible v-for="(url, index) in info.urls" :key="index">
+          <span slot="header">{{ url.name || '(empty name)' }}</span>
+          <ul>
+            <li v-for="scheme in url.schemes" :key="scheme">
+              <router-link :to="{ name: 'uiopen', params: {
+                  device: device.id,
+                  bundle: app.identifier,
+                  scheme
+                }
+              }">
+                {{ scheme }}://
+              </router-link>
+            </li>
+          </ul>
+        </b-panel>
+
+      </div>
+
+      <div class="column content is-half-desktop is-one-third-fullhd" v-if="metainfo">
         <plist title="Metainfo" :content="metainfo" rootName="Info.plist"></plist>
       </div>
     </section>
