@@ -9,6 +9,7 @@ import router from '~/router'
 import store from '~/vuex'
 import { humanFileSize, hexAddr } from '~/lib/utils'
 
+import RPC from '~/lib/wsrpc'
 
 import 'material-design-icons/iconfont/material-icons.css'
 
@@ -20,6 +21,7 @@ axios.defaults.baseURL = '/api'
 
 
 Vue.use(Buefy)
+Vue.use(RPC)
 Vue.filter('filesize', humanFileSize)
 Vue.filter('hex', hexAddr)
 
