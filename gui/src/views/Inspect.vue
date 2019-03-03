@@ -39,12 +39,12 @@
             </li>
           </ul>
 
-          <a class="button is-small" @click="screenshot">
+          <a class="button is-small" @click="showScreenshotDialog = true">
             <b-icon icon="camera" title="Capture screen"></b-icon>
             <span>Screenshot</span>
           </a>
           
-          <a class="button is-small" @click="uidump">
+          <a class="button is-small" @click="showUIDumpDialog = true">
             <b-icon icon="visibility" title="UI Dump"></b-icon>
             <span>UIDump</span>
           </a>
@@ -245,12 +245,6 @@ export default {
           this.err = err;
           this.loading = false;
         });
-    },
-    screenshot() {
-      this.showScreenshotDialog = true;
-    },
-    uidump() {
-      this.showUIDumpDialog = true;
     },
     rejectionHandler(event) {
       event.preventDefault();
