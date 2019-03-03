@@ -11,7 +11,6 @@ const GeneralView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Ge
 const ModulesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Modules.vue')
 const ClassesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Classes.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
-const UIDumpView = () => import('~/views/tabs/UIDump.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
 const CodeView = () => import(/** webpackChunkName: "editor" */'~/views/tabs/CodeRunner.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
@@ -100,10 +99,6 @@ const router = new VueRouter({
             name: 'userdefaults',
           }
         ]
-      }, {
-        path: 'uidump',
-        component: UIDumpView,
-        name: 'uidump',
       }]
     }
   ]
