@@ -103,6 +103,10 @@ const plugins = module.exports.plugins = [
     {
       from: path.join(__dirname, 'node_modules', 'monaco-editor', 'min', 'vs'),
       to: 'vs'
+    },
+    {
+      from: path.join(__dirname, 'src', 'assets', 'icon.svg'),
+      to: 'icon.svg'
     }
   ]),
 ]
