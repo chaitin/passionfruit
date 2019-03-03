@@ -1,4 +1,4 @@
-import "@babel/polyfill"
+import '@babel/polyfill'
 
 import checksec from './checksec'
 import cookies from './binarycookie'
@@ -11,7 +11,7 @@ import { imports, exports, modules } from './symbols'
 import { start as startPasteboardMonitor } from './pasteboard'
 import { list as dumpKeyChain } from './keychain'
 import { info, userDefaults } from './info'
-import { classes, ownClasses, methods, inspect } from './classdump'
+import { classes, ownClasses, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, plist, text, download } from './finder'
 import { dumpWindow, toggleTouchID } from './ui'
@@ -54,7 +54,7 @@ rpc.exports = {
   exports,
   classes,
   ownClasses,
-  methods,
+
   inspect,
   imports,
 

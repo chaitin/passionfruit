@@ -1,10 +1,10 @@
 function uniqueAndDemangle(list) {
-  const set = {}
+  const set = new Set()
   return list.filter((symbol) => {
     const key = symbol.address
-    if (({}).hasOwnProperty.call(set, key))
+    if (set.has(key))
       return false
-    set[key] = true
+    set.add(key)
     return true
   }).map((symbol) => {
     if (symbol.name.startsWith('_Z')) {
