@@ -1,11 +1,17 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/preset-env", {
       "modules": false,
       "targets": {
         "browsers": ["last 2 Chrome versions"]
       }
     }],
-    ["stage-2"]
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-spread",
+    "@babel/transform-runtime",
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }

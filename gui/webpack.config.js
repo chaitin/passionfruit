@@ -17,8 +17,9 @@ module.exports = {
       test: /\.vue$/,
       loader: 'vue-loader',
       options: {
-        loaders: {}
-        // other vue-loader options go here
+        loaders: {
+
+        }
       }
     },
     {
@@ -31,8 +32,13 @@ module.exports = {
     },
     {
       test: /\.js$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
     },
     {
       test: /\.(d\.ts|txt)$/,
@@ -56,19 +62,19 @@ module.exports = {
     historyApiFallback: {
       rewrites: [{
         from: /^\/app\/.*$/,
-        to: function() {
+        to: function () {
           return 'index.html'
         }
       },
       {
         from: /^\/welcome\/.*$/,
-        to: function() {
+        to: function () {
           return 'index.html'
         }
       },
       {
         from: /^\/url\/.*$/,
-        to: function() {
+        to: function () {
           return 'index.html'
         }
       }]
