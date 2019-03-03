@@ -13,14 +13,20 @@
         {
           "presets": [
             [
-              "es2015",
+              "@babel/preset-env",
               {
                 "loose": true
               }
             ]
           ],
           "plugins": [
-            "transform-runtime"
+            "@babel/plugin-transform-runtime",
+            [
+              "@babel/plugin-proposal-decorators",
+              {
+                "legacy": true
+              }
+            ]
           ]
         }
       ]
@@ -64,10 +70,10 @@
   },
   "homepage": "https://github.com/chaitin/passionfruit#readme",
   "dependencies": {
-    "colors": "^1.3.1",
+    "colors": "^1.3.3",
     "frida": "^12.2.14",
     "frida-compile": "^8.0.0",
-    "koa": "^2.5.2",
+    "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-compress": "^3.0.0",
     "koa-json": "^2.0.2",
@@ -76,24 +82,23 @@
     "koa-send": "^5.0.0",
     "plist": "^3.0.1",
     "promise.prototype.finally": "^3.1.0",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.2.0",
     "socket.io-stream": "^0.9.1",
-    "sqlite3": "^4.0.2"
+    "sqlite3": "^4.0.6"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-runtime": "^6.26.0",
-    "babelify": "^8.0.0",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/runtime": "^7.3.4",
+    "babelify": "^10.0.0",
     "cross-env": "^5.2.0",
-    "eslint": "^5.2.0",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-vue": "^4.7.0",
-    "fatmacho": "^0.1.1",
-    "macho": "^1.2.1",
+    "eslint": "^5.15.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "macho": "^1.3.0",
     "nodemon": "^1.18.6"
   }
 }
