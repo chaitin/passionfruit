@@ -1,3 +1,5 @@
+import "@babel/polyfill"
+
 import checksec from './checksec'
 import cookies from './binarycookie'
 import dumpdecrypted from './dumpdecrypted'
