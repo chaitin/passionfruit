@@ -1,10 +1,19 @@
 <template>
   <div>
     <b-modal :active.sync="active">
-      <loading :radius="40" v-if="loading"></loading>
-      <div class="preview" v-else>
-        <a :href="url" :download="download" title="Right click to save">
-          <img class="screenshot-preview" :src="url"></a>
+      <div class="preview">
+        <a class="viewport" :href="url" :download="download" title="Right click to save">
+          <img class="screenshot-preview" :src="url">
+          <div class="toolbar">
+            <span>Refresh rate</span>
+            <b-field>
+              <b-radio-button v-model="interval" native-value="-1">Don't</b-radio-button>
+              <b-radio-button v-model="interval" native-value="1">Fast</b-radio-button>
+              <b-radio-button v-model="interval" native-value="3">Medium</b-radio-button>
+              <b-radio-button v-model="interval" native-value="10">Slow</b-radio-button>
+            </b-field>
+          </div>
+        </a>
       </div>
     </b-modal>
   </div>
@@ -12,57 +21,64 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { GET_SOCKET } from '~/vuex/types'
-import Loading from '~/components/Loading.vue';
+import { GET_SOCKET } from "~/vuex/types";
 
 export default {
-  components: { Loading },
   props: {
-    open: Boolean,
+    open: Boolean
   },
   computed: {
     active: {
       set(val) {
-        this.$emit('update:open', val)
+        this.$emit("update:open", val);
       },
       get() {
-        return this.open
+        return this.open;
       }
     },
     ...mapGetters({
-      socket: GET_SOCKET,
+      socket: GET_SOCKET
     })
   },
   data() {
     return {
       loading: false,
-      url: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
-      download: 'screenshot.png',
+      interval: "-1",
+      timer: -1,
+      url:
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+      download: "screenshot.png"
     };
   },
   methods: {
     async refresh() {
       if (!this.socket || this.loading) return;
-
-      this.loading = true;
       const b64 = await this.socket.call("screenshot");
-      this.loading = false
-
       this.url = `data:image/png;base64,${b64}`;
       this.download = `screenshot-${new Date().getTime()}.png`;
     }
   },
   watch: {
     open(val, old) {
-      if (old === val)
-        return
+      if (old === val) return;
+
+      if (val) this.refresh();
+    },
+    interval(val, old) {
+      const interval = +val
+      if (this.timer !== -1) {
+        clearInterval(this.timer)
+        this.timer = -1
+      }
       
-      if (val)
-        this.refresh()
+      if (interval === -1)
+        return
+
+      this.timer = setInterval(this.refresh, interval * 1000)
     }
   },
   mounted() {
-    this.refresh()
+    this.refresh();
   }
 };
 </script>
@@ -70,6 +86,31 @@ export default {
 <style lang="scss" scoped>
 .preview {
   text-align: center;
+}
+
+.viewport {
+  display: block;
+  position: relative;
+
+  .toolbar {
+    position: absolute;
+    z-index: 2;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: auto;
+    padding: 10px;
+    color: white;
+    border-radius: 4px;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+    background: black;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
 }
 
 img {
