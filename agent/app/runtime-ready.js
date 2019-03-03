@@ -1,0 +1,1 @@
+Module.ensureInitialized('Foundation')

@@ -1,4 +1,5 @@
 import '@babel/polyfill'
+import './runtime-ready'
 
 import checksec from './checksec'
 import cookies from './binarycookie'
