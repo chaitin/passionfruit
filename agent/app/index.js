@@ -12,7 +12,7 @@ import { info, userDefaults } from './info'
 import { classes, ownClasses, methods, inspect } from './classdump'
 import { tables, data, query } from './sqlite'
 import { ls, plist, text, download } from './finder'
-import { dumpWindow, toggleTouchID, toggleDebugOverlay } from './ui'
+import { dumpWindow, toggleTouchID } from './ui'
 import { hook, unhook, swizzle, unswizzle } from './hook'
 import { start as startSyslog, stop as stopSyslog } from './syslog'
 
@@ -69,7 +69,6 @@ rpc.exports = {
 
   dumpWindow,
   toggleTouchID,
-  toggleDebugOverlay,
 
   dumpKeyChain,
 
