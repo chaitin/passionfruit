@@ -66,7 +66,7 @@
 
         <div v-if="info.urls">
           <h3>URL Scheme</h3>
-          <b-panel collapsible v-for="url in info.urls" :key="url.name">
+          <b-panel collapsible v-for="(url, index) in info.urls" :key="index">
             <span slot="header">{{ url.name || '(empty name)' }}</span>
             <ul>
               <li v-for="scheme in url.schemes" :key="scheme">
@@ -126,6 +126,9 @@ export default {
       this.socket.call('info').then(({ info, sec }) => {
         this.loading = false
         this.info = info
+        // Object.assign(info, {
+        //   urls: info.urls.map((url, index) => Object.assign(url, { id: index }))
+        // })
         this.metainfo = info.json
         this.sec = sec
       })
