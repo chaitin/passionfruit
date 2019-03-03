@@ -2,15 +2,9 @@
   <div>
     <b-field>
       <b-input icon="search" v-model="filter" type="search" placeholder="Filter modules..." expanded></b-input>
-      <b-select v-model="paginator">
-        <option value="0">Don't paginate</option>
-        <option value="50">50 per page</option>
-        <option value="100">100 per page</option>
-        <option value="200">200 per page</option>
-      </b-select>
     </b-field>
 
-    <b-table class="fixed" :data="filtered" narrowed :loading="loading" :paginated="paginator > 0" :per-page="paginator" default-sort="baseAddress" detailed @details-open="openDetail">
+    <b-table class="fixed" :data="filtered" narrowed :loading="loading" default-sort="baseAddress" detailed @details-open="openDetail">
       <template slot-scope="props">
         <b-table-column field="name" label="Name" sortable width="320">
           <b-tooltip label="Dump decrypted">
@@ -29,7 +23,7 @@
           {{ props.row.size | hex }}
         </b-table-column>
 
-        <b-table-column field="path" label="Path" class="break-all">
+        <b-table-column field="path" label="Path" class="break-all" sortable>
           {{ props.row.path }}
         </b-table-column>
       </template>
@@ -150,7 +144,6 @@ export default {
       filtered: [],
       matcher: null,
       modules: [],
-      paginator: 100,
       imports: [],
     }
   },
