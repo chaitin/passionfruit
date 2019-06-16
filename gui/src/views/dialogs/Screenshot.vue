@@ -11,7 +11,7 @@
         <div class="toolbar">
           <span>Refresh rate</span>
           <b-field>
-            <b-radio-button v-model="interval" native-value="-1">Don't</b-radio-button>
+            <b-radio-button v-model="interval" native-value="-1">Never</b-radio-button>
             <b-radio-button v-model="interval" native-value="1">Fast</b-radio-button>
             <b-radio-button v-model="interval" native-value="3">Medium</b-radio-button>
             <b-radio-button v-model="interval" native-value="10">Slow</b-radio-button>
