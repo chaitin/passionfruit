@@ -34,39 +34,33 @@ export default function checksec() {
 
   let entitlements = null
 
-  for (const cmd of info.cmds) {
-    if (cmd.type === 'code_signature') {
-      /* eslint no-loop-func: 0 */
-
-      let executableOffset = 0
-      Process.enumerateRanges('r', {
-        onMatch(range) {
-          if (!range.file || range.file.path.indexOf(appModule.path) === -1)
-            return ''
-
-          if (range.protection === 'r-x') {
-            executableOffset = range.file.offset
-            return ''
-          }
-
-          if (range.protection !== 'r--')
-            return ''
-
-          const cmdPtr = range.base.sub(range.file.offset - executableOffset).add(cmd.dataoff)
-          const buf = new ReadOnlyMemoryBuffer(cmdPtr, cmd.datasize)
-          if (buf.readUInt32BE(0) === CSMAGIC_EMBEDDED_SIGNATURE) {
-            entitlements = parseEntitlements(buf)
-            return 'stop'
-          }
-
+  info.cmds.filter(cmd => cmd.type === 'code_signature').forEach((cmd) => {
+    let executableOffset = 0
+    Process.enumerateRanges('r', {
+      onMatch(range) {
+        if (!range.file || range.file.path.indexOf(appModule.path) === -1)
           return ''
-        },
-        onComplete() {}
-      })
 
-      break
-    }
-  }
+        if (range.protection === 'r-x') {
+          executableOffset = range.file.offset
+          return ''
+        }
+
+        if (range.protection !== 'r--')
+          return ''
+
+        const cmdPtr = range.base.sub(range.file.offset - executableOffset).add(cmd.dataoff)
+        const buf = new ReadOnlyMemoryBuffer(cmdPtr, cmd.datasize)
+        if (buf.readUInt32BE(0) === CSMAGIC_EMBEDDED_SIGNATURE) {
+          entitlements = parseEntitlements(buf)
+          return 'stop'
+        }
+
+        return ''
+      },
+      onComplete() {}
+    })
+  })
 
   const importNames = Module.enumerateImportsSync(appModule.path).reduce((names, imp) => {
     names.add(imp.name)

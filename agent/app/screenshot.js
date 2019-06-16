@@ -59,8 +59,7 @@ export default function screenshot() {
     UIGraphicsEndImageContext()
 
     const png = new ObjC.Object(UIImagePNGRepresentation(image))
-    const buffer = Memory.readByteArray(png.bytes(), png.length())
-
-    return Duktape.enc('base64', buffer)
+    console.log(png.base64EncodedStringWithOptions_(0))
+    return png.base64EncodedStringWithOptions_(0).toString()
   })
 }

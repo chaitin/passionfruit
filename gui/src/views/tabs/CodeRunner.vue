@@ -97,8 +97,8 @@ async function initMonaco(container, value) {
     monaco.languages.typescript.javascriptDefaults.addExtraLib(
       await import('frida-gum-types/frida-gum/frida-gum.d.ts'), 'frida-gum.d.ts')
     
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(
-      await import('~/assets/duktape.d.ts'), 'duktape.d.ts')
+    // monaco.languages.typescript.javascriptDefaults.addExtraLib(
+    //   await import('~/assets/duktape.d.ts'), 'duktape.d.ts')
   }
 
   const editor = monaco.editor.create(container, {

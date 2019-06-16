@@ -1,4 +1,3 @@
-import '@babel/polyfill'
 import './runtime-ready'
 
 import checksec from './checksec'
