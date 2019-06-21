@@ -3,6 +3,8 @@
 [![npm version](https://badge.fury.io/js/passionfruit.svg)](https://badge.fury.io/js/passionfruit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+Contact me on [Discord](https://discord.gg/pwutZNx)
+
 Simple iOS app blackbox assessment tool. Powered by [frida.re](https://www.frida.re) and [vuejs](https://www.vuejs.org).
 
 ## TL;DR
