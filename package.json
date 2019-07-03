@@ -1,6 +1,6 @@
 {
   "name": "passionfruit",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Inject to iOS App",
   "main": "app.js",
   "engines": {
