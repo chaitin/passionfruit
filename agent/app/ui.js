@@ -10,6 +10,11 @@ let originalImplementation = null
 
 
 function toggleTouchID(enable) {
+  if (!Process.findModuleByName('LocalAuthentication'))
+    return
+
+  Module.ensureInitialized('LocalAuthentication')
+
   const { LAContext } = ObjC.classes
   const subject = 'touchid'
   if (!LAContext)
