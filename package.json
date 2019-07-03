@@ -34,8 +34,7 @@
     "lib/",
     "bin/",
     "scripts/post-install.js",
-    "agent/*.bundle.js",
-    "agent/*.bundle.bin"
+    "agent/*.bundle.js"
   ],
   "author": "CodeColorist",
   "license": "MIT",
