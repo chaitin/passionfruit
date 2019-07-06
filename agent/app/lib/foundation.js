@@ -4,11 +4,16 @@ import { hasOwnProperty } from './utils'
 const fileManager = ObjC.classes.NSFileManager.defaultManager()
 
 
-export function NSTemporaryDirectory() {
-  const func = new NativeFunction(Module.findExportByName(null, 'NSTemporaryDirectory'), 'pointer', [])
-  const tmp = func()
-  return tmp ? new ObjC.Object(tmp).toString() : null
+function NSStringWrapper(name) {
+  return function() {
+    const func = new NativeFunction(Module.findExportByName(null, name), 'pointer', [])
+    const result = func()
+    return new ObjC.Object(result).toString()
+  }
 }
+
+export const NSTemporaryDirectory = NSStringWrapper('NSTemporaryDirectory')
+export const NSHomeDirectory = NSStringWrapper('NSHomeDirectory')
 
 
 export function getDataAttrForPath(path) {
