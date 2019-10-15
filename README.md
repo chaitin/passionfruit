@@ -16,7 +16,7 @@ passionfruit
 
 ## Features
 
-* **Cross plarform web GUI!**
+* **Cross platform web GUI!**
 * Also supports non-jailbroken device (see [Non-jailbroken device](#non-jailbroken-device)).
 * List all url schemes.
 * Check signature entitlements.
