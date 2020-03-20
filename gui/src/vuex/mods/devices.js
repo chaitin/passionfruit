@@ -38,17 +38,13 @@ export const getters = {
 
 
 export const mutations = {
-  [types.ADD_DEVICE]: (state, device) => state.list.push(device),
-  [types.REMOVE_DEVICE]: (state, device) => {
-    if (device.id == state.selected.id) {
-      state.selected = {}
-    }
-    state.list = state.list.filter(dev => dev.id !== device.id)
-  },
   [types.DEVICES_LOADING]: (state, loading) => state.loading = loading,
   [types.UPDATE_DEVICES]: (state, { list, version }) => {
     state.list = list
     state.version = version
+    if (!state.list.find(dev => dev.id === state.selected.id)) {
+      state.selected = {}
+    }
   },
   [types.STORE_DEVICE]: (state, device) => {
     state.selected = device
@@ -80,9 +76,6 @@ export const mutations = {
 
 export const actions = {
   [types.LOAD_DEVICES]({ commit, state }) {
-    if (state.list.length)
-      return
-
     commit(types.DEVICES_LOADING, true)
     axios.get('/devices')
       .then(({ data }) => commit(types.UPDATE_DEVICES, data))

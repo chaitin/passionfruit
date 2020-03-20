@@ -13,7 +13,7 @@ import RPC from '~/lib/wsrpc'
 
 import 'material-design-icons/iconfont/material-icons.css'
 
-import { ADD_DEVICE, REMOVE_DEVICE } from '~/vuex/types'
+import { LOAD_DEVICES } from '~/vuex/types'
 
 //
 require('promise.prototype.finally').shim()
@@ -36,12 +36,12 @@ const v = new Vue({
 const socket = io('/devices', { path: '/msg' })
 socket
   .on('deviceRemove', (dev) => {
-    store.commit(REMOVE_DEVICE, dev)
+    store.dispatch(LOAD_DEVICES)
     v.$toast.open(`${dev.name} has been removed`)
   })
   .on('deviceAdd', (dev) => {
-    store.commit(ADD_DEVICE, dev)
-    v.$toast.open(`New device ${dev.name} has been connected`)
+    store.dispatch(LOAD_DEVICES)
+    v.$toast.open(`New device ${dev.name}`)
 
     if (v.$route.name === 'welcome')
       v.$router.push({ name: 'apps', params: { device: dev.id }})

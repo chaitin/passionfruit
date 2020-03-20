@@ -61,23 +61,12 @@ module.exports = {
   devServer: {
     historyApiFallback: {
       rewrites: [{
-        from: /^\/app\/.*$/,
+        from: /^\/(apps?|welcome|url)\/.*$/,
         to: function () {
           return 'index.html'
         }
       },
-      {
-        from: /^\/welcome\/.*$/,
-        to: function () {
-          return 'index.html'
-        }
-      },
-      {
-        from: /^\/url\/.*$/,
-        to: function () {
-          return 'index.html'
-        }
-      }]
+      ]
     },
     noInfo: true,
     proxy: {

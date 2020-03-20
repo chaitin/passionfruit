@@ -25,10 +25,11 @@ const router = new Router({ prefix: '/api' })
 
 router
   .get('/devices', async (ctx) => {
-    const list = await frida.enumerateDevices()
+    const mgr = await frida.getDeviceManager()
+    const list = await mgr.enumerateDevices()
     ctx.body = {
       version: FRIDA_VERSION,
-      list: list.filter(FridaUtil.isUSB).map(serializeDevice),
+      list: list.map(serializeDevice),
     }
   })
   .get('/device/:device/apps', async (ctx) => {
@@ -53,6 +54,29 @@ router
     const pid = await dev.spawn([bundle], { url })
     await dev.resume(pid)
     ctx.body = { status: 'ok', pid }
+  })
+  .put('/device/add', async (ctx) => {
+    const ip = ctx.request.rawBody
+    const mgr = await frida.getDeviceManager()
+    try {
+      mgr.addRemoteDevice(ip)
+    } catch(e) {
+      ctx.status = 400
+      ctx.body = { status: 'failed', error: e.message }
+      return
+    }
+    ctx.body = { status: 'ok' }
+  })
+  .delete('/device/:device', async (ctx) => {
+    const mgr = await frida.getDeviceManager()
+    try {
+      await mgr.removeRemoteDevice(ctx.params.device)
+    } catch(e) {
+      ctx.status = 404
+      ctx.body = { status: 'failed', error: e.message }
+      return
+    }
+    ctx.body = { status: 'ok' }
   })
 
 app
