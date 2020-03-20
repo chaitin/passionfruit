@@ -70,8 +70,18 @@ export const mutations = {
     if (loading)
       apps.list = []
   },
-  [types.UPDATE_APPS]: (state, list) => state.device.apps.list = list,
-  [types.APPS_ERROR]: (state, err) => state.device.apps.error = err,
+  [types.UPDATE_APPS]: (state, { device, data }) => {
+    // race condition
+    if (state.selected.id !== device)
+      return;
+    state.device.apps.list = data
+  },
+  [types.APPS_ERROR]: (state, { device, err }) => {
+    // race condition
+    if (state.selected.id !== device)
+      return;
+    state.device.apps.error = err
+  },
 }
 
 export const actions = {
@@ -90,8 +100,9 @@ export const actions = {
       return
 
     commit(types.LOADING_APPS, true)
+    const device = state.selected.id
     axios.get(`/device/${state.selected.id}/apps/`)
-      .then(({ data }) => commit(types.UPDATE_APPS, data))
+      .then(({ data }) => commit(types.UPDATE_APPS, { device, data }))
       .catch(({ response }) => commit(types.APPS_ERROR, response.data))
       .finally(() => commit(types.LOADING_APPS, false))
   }
