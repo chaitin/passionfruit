@@ -1,3 +1,11 @@
+**Important Announcement**
+
+A brand new, completly redesigned tool will be announced soon. Please join the Discord group for further updates. This project is going to be archived.
+
+https://github.com/chaitin/passionfruit/issues/74
+
+----
+
 <img src="images/logo.png" alt="Passionfruit" width="400" align="center">
 
 [![npm version](https://badge.fury.io/js/passionfruit.svg)](https://badge.fury.io/js/passionfruit)
