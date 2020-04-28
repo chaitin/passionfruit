@@ -49,7 +49,7 @@ Please check out Wiki for more information.
 
 ### Desktop requirements:
 
-* Latest [node.js](https://nodejs.org/) (>=7.10.1) and [npm](https://www.npmjs.com) to run the api server and web gui
+* [node.js](https://nodejs.org/) **LTS** and [npm](https://www.npmjs.com) to run the api server and web gui
 * Any modern desktop browser you like
 
 Passionfruit is now avaliable on npm, so just type following command to install:
