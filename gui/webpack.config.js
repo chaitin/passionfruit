@@ -1,7 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
+// const { VueLoaderPlugin } = require('vue-loader')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
 
@@ -83,12 +84,12 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: 'eval-source-map'
 }
 
 const plugins = module.exports.plugins = [
   new WriteFilePlugin(),
-  new CopyWebpackPlugin([
+  new CopyPlugin([
     {
       from: path.join(__dirname, 'node_modules', 'monaco-editor', 'min', 'vs'),
       to: 'vs'
@@ -101,7 +102,7 @@ const plugins = module.exports.plugins = [
 ]
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
+  module.exports.devtool = 'source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = plugins.concat([
     new webpack.DefinePlugin({

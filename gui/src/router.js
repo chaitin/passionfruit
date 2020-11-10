@@ -12,7 +12,7 @@ const ModulesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Mo
 const ClassesView = () => import(/* webpackChunkName: "first" */'~/views/tabs/Classes.vue')
 const FinderView = () => import('~/views/tabs/Finder.vue')
 const ConsoleView = () => import('~/views/tabs/Console.vue')
-const CodeView = () => import(/** webpackChunkName: "editor" */'~/views/tabs/CodeRunner.vue')
+const CodeView = () => import(/* webpackChunkName: "editor" */'~/views/tabs/CodeRunner.vue')
 const KeyChainView = () => import('~/views/tabs/KeyChain.vue')
 const BinaryCookieView = () => import('~/views/tabs/BinaryCookie.vue')
 const UserDefaultsView = () => import('~/views/tabs/UserDefaults.vue')

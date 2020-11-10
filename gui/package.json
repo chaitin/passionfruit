@@ -30,6 +30,7 @@
     "@babel/plugin-transform-spread": "^7.2.2",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-stage-2": "^7.0.0",
+    "@types/frida-gum": "^16.2.0",
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^3.0.0",
