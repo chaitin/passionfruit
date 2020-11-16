@@ -4,6 +4,10 @@ A brand new, completly redesigned tool will be announced soon. Please join the D
 
 https://github.com/chaitin/passionfruit/issues/74
 
+## frida@14 compatibility issues
+
+frida@14 introduces lots of breaking changes. After struggling a bit, I was unable to solve them. If you still need passionfruit, please keep the frida on your device to stay at 12.x.
+
 ----
 
 <img src="images/logo.png" alt="Passionfruit" width="400" align="center">
