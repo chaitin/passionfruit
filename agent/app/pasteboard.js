@@ -1,11 +1,10 @@
-const { UIPasteboard } = ObjC.classes
 const subject = 'pasteboard'
 
 let current = null
 let timer = null
 
 export function start() {
-  const pasteboard = UIPasteboard.generalPasteboard()
+  const pasteboard = ObjC.classes.UIPasteboard.generalPasteboard()
   timer = setInterval(() => {
     let str = pasteboard.string()
     if (!str)

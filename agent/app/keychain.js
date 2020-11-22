@@ -1,5 +1,3 @@
-const { NSMutableDictionary } = ObjC.classes
-
 
 const SecItemCopyMatching = new NativeFunction(ptr(Module.findExportByName('Security', 'SecItemCopyMatching')), 'pointer', ['pointer', 'pointer'])
 const SecItemDelete = new NativeFunction(ptr(Module.findExportByName('Security', 'SecItemDelete')), 'pointer', ['pointer'])
@@ -8,8 +6,6 @@ const SecAccessControlGetConstraints = new NativeFunction(
   'pointer', ['pointer'],
 )
 
-
-const kCFBooleanTrue = ObjC.classes.__NSCFBoolean.numberWithBool_(true)
 
 /* eslint no-unused-vars: 0 */
 const kSecReturnAttributes = 'r_Attributes',
@@ -155,7 +151,7 @@ function decodeAcl(entry) {
   if (constraints.isNull())
     return []
 
-  const accessControls = ObjC.Object(constraints)
+  const accessControls = new ObjC.Object(constraints)
   const flags = []
   const enumerator = accessControls.keyEnumerator()
   for (let key = enumerator.nextObject(); key !== null; key = enumerator.nextObject()) {
@@ -181,9 +177,10 @@ function decodeAcl(entry) {
 
 
 export function list() {
+  const kCFBooleanTrue = ObjC.classes.__NSCFBoolean.numberWithBool_(true)
   const result = []
 
-  const query = NSMutableDictionary.alloc().init()
+  const query = ObjC.classes.NSMutableDictionary.alloc().init()
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnAttributes)
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnData)
   query.setObject_forKey_(kCFBooleanTrue, kSecReturnRef)
@@ -231,6 +228,7 @@ export function list() {
 }
 
 export function clear() {
+  const { NSMutableDictionary } = ObjC.classes
   // keychain item times to query for
   kSecClasses.forEach((clazz) => {
     const query = NSMutableDictionary.alloc().init()

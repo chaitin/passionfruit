@@ -1,5 +1,3 @@
-const { NSThread, UIScreen, UIApplication } = ObjC.classes
-
 const CGFloat = (Process.pointerSize === 4) ? 'float' : 'double'
 const CGSize = [CGFloat, CGFloat]
 
@@ -24,6 +22,7 @@ const UIImagePNGRepresentation = new NativeFunction(
 )
 
 function performOnMainThread(action) {
+  const { NSThread } = ObjC.classes
   return new Promise((resolve, reject) => {
     function performAction() {
       try {
@@ -43,6 +42,7 @@ function performOnMainThread(action) {
 
 
 export default function screenshot() {
+  const { UIScreen, UIApplication } = ObjC.classes
   return performOnMainThread(() => {
     const bounds = UIScreen.mainScreen().bounds()
     const cgsize = bounds[1]

@@ -3,12 +3,10 @@ import uuidv4 from './lib/uuid'
 import { open } from './lib/libc'
 import { getDataAttrForPath } from './lib/foundation'
 
-const { NSFileManager, NSProcessInfo, NSDictionary, NSBundle } = ObjC.classes
-
-const fileManager = NSFileManager.defaultManager()
-
 
 export function ls(path, root) {
+  const { NSFileManager, NSProcessInfo, NSBundle } = ObjC.classes
+
   const prefix = root === 'bundle'
     ? NSBundle.mainBundle().bundlePath().toString()
     : NSProcessInfo.processInfo().environment().objectForKey_('HOME').toString()
@@ -16,7 +14,7 @@ export function ls(path, root) {
   const pErr = Memory.alloc(Process.pointerSize)
   Memory.writePointer(pErr, NULL)
   const cwd = [prefix, path].join('/')
-  const nsArray = fileManager.contentsOfDirectoryAtPath_error_(cwd, pErr)
+  const nsArray = NSFileManager.defaultManager().contentsOfDirectoryAtPath_error_(cwd, pErr)
   const err = Memory.readPointer(pErr)
 
   if (!err.isNull()) {
@@ -30,7 +28,7 @@ export function ls(path, root) {
   const isDir = Memory.alloc(Process.pointerSize)
   const list = arrayFromNSArray(nsArray, 100).map((filename) => {
     const fullPath = [prefix, path, filename].join('/')
-    fileManager.fileExistsAtPath_isDirectory_(fullPath, isDir)
+    NSFileManager.defaultManager().fileExistsAtPath_isDirectory_(fullPath, isDir)
 
     return {
       /* eslint eqeqeq:0 */
@@ -46,6 +44,7 @@ export function ls(path, root) {
 
 
 export function plist(path) {
+  const { NSDictionary } = ObjC.classes
   const info = NSDictionary.dictionaryWithContentsOfFile_(path)
   if (info === null)
     throw new Error(`malformed plist file: ${path}`)

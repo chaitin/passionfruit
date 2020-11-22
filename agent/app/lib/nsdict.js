@@ -5,24 +5,12 @@ import { hasOwnProperty } from './utils'
 // eslint-disable-next-line
 null;
 
-
-const {
-  NSMutableDictionary,
-  NSArray,
-  NSData,
-  NSDictionary,
-  NSMutableArray,
-  NSNumber,
-  NSString,
-  NSNull,
-  NSPropertyListSerialization,
-  __NSCFBoolean
-} = ObjC.classes
-
 const NSPropertyListImmutable = 0
 
 
 export function toJSON(value) {
+  const { NSArray, NSDictionary, NSNumber } = ObjC.classes
+
   if (value === null || typeof value !== 'object')
     return value
   if (value.isKindOfClass_(NSArray))
@@ -48,6 +36,8 @@ export function dictFromNSDictionary(nsDict) {
 }
 
 export function dictFromPlistCharArray(address, size) {
+  const { NSData, NSPropertyListSerialization } = ObjC.classes
+
   const format = Memory.alloc(Process.pointerSize)
   const err = Memory.alloc(Process.pointerSize)
   const data = NSData.dataWithBytesNoCopy_length_(address, size)
@@ -79,6 +69,8 @@ export function arrayFromNSArray(nsArray, max) {
 }
 
 export function toNSObject(obj) {
+  const { NSMutableDictionary, NSMutableArray, NSString, NSNull, __NSCFBoolean } = ObjC.classes
+
   // not tested, may be buggy
   if ('isKindOfClass_' in obj)
     return obj
