@@ -1,10 +1,10 @@
 {
   "name": "passionfruit",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Inject to iOS App",
   "main": "app.js",
   "engines": {
-    "node": ">= 14.0"
+    "node": ">= 12.0"
   },
   "scripts": {
     "prepare": "pushd gui && npm install && popd && npm run compile",
