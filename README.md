@@ -1,6 +1,6 @@
-**Important Announcement**
+**Discontinued Project**
 
-A brand new, completly redesigned tool will be announced soon. Please join the Discord group for further updates. This project is going to be archived. The new project repo remains private until it's finished. Don't use other branches here, they are abandoned.
+This project has been discontinued. Please use the new [Grapefruit](https://github.com/chichou/grapefruit)
 
 https://github.com/chaitin/passionfruit/issues/74
 
